@@ -1,0 +1,7 @@
+type: module
+nickname: nit_tools
+
+client_package_path: ../nit_tools_client
+
+extraClasses:
+- /src/custom_classes/object_wrapper.dart:ObjectWrapper
