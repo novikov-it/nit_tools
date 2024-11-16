@@ -1,25 +1,28 @@
-import 'package:serverpod_client/serverpod_client.dart';
+import 'package:serverpod/serverpod.dart';
 
 class ObjectWrapper implements SerializableModel {
-  static late SerializationManager protocol;
+  static SerializationManagerServer get _protocol =>
+      Serverpod.instance.serializationManager;
+
+  static ObjectWrapper? wrap(TableRow? object) =>
+      object != null ? ObjectWrapper(object: object) : null;
 
   ObjectWrapper({
-    required this.model,
-    this.modelId,
+    required this.object,
     // this.entities,
-  }) : className = protocol.getClassNameForObject(model) ?? 'unknown';
+  }) : className = _protocol.getClassNameForObject(object) ?? 'unknown';
 
   final String className;
-  final SerializableModel model;
-  final int? modelId;
+  final TableRow object;
+  // final int? id;
   // final List<SerializableModel>? entities;
 
   factory ObjectWrapper.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
     return ObjectWrapper(
-      modelId: jsonSerialization['data']['id'],
-      model: protocol.deserializeByClassName(jsonSerialization),
+      // id: jsonSerialization['id'],
+      object: _protocol.deserializeByClassName(jsonSerialization),
       // value: jsonSerialization['value'] as T,
       // warning: jsonSerialization['warning'] as String,
       // error: jsonSerialization['error'] as String,
@@ -32,8 +35,9 @@ class ObjectWrapper implements SerializableModel {
   @override
   toJson() {
     return {
-      'className': protocol.getClassNameForObject(model),
-      'data': model.toJson(),
+      'className': className,
+      // 'id': id,
+      'data': object.toJson(),
       // if (entities != null)
       //   'entities': entities?.toJson(valueToJson: (v) => v.toJson()),
     };

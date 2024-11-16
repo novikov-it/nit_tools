@@ -4,4 +4,6 @@ nickname: nit_tools
 client_package_path: ../nit_tools_client
 
 extraClasses:
-- /src/custom_classes/object_wrapper.dart:ObjectWrapper
+- /src/extra_classes/object_wrapper.dart:ObjectWrapper
+- /src/extra_classes/api_response.dart:ApiResponse
+- /src/extra_classes/nit_backend_filter.dart:NitBackendFilter

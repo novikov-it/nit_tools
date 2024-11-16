@@ -1,25 +1,25 @@
-import 'package:serverpod/serverpod.dart';
+import 'static.dart';
+import 'package:serverpod_client/serverpod_client.dart';
 
 class ObjectWrapper implements SerializableModel {
-  static SerializationManagerServer get _protocol =>
-      Serverpod.instance.serializationManager;
-
   ObjectWrapper({
-    required this.object,
+    required this.model,
+    this.modelId,
     // this.entities,
-  }) : className = _protocol.getClassNameForObject(object) ?? 'unknown';
+  }) : className =
+            NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
 
   final String className;
-  final TableRow object;
-  // final int? id;
+  final SerializableModel model;
+  final int? modelId;
   // final List<SerializableModel>? entities;
 
   factory ObjectWrapper.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
     return ObjectWrapper(
-      // id: jsonSerialization['id'],
-      object: _protocol.deserializeByClassName(jsonSerialization),
+      modelId: jsonSerialization['data']['id'],
+      model: NitToolsClient.protocol.deserializeByClassName(jsonSerialization),
       // value: jsonSerialization['value'] as T,
       // warning: jsonSerialization['warning'] as String,
       // error: jsonSerialization['error'] as String,
@@ -32,9 +32,8 @@ class ObjectWrapper implements SerializableModel {
   @override
   toJson() {
     return {
-      'className': className,
-      // 'id': id,
-      'data': object.toJson(),
+      'className': NitToolsClient.protocol.getClassNameForObject(model),
+      'data': model.toJson(),
       // if (entities != null)
       //   'entities': entities?.toJson(valueToJson: (v) => v.toJson()),
     };
