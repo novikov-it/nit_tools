@@ -34,7 +34,11 @@ class Protocol extends _i1.SerializationManager {
     if (T.toString().startsWith('ApiResponse')) {
       return _i4.ApiResponse.manualDeserialization<T>(data);
     }
-
+    if (t == List<_i2.NitBackendFilter>) {
+      return (data as List)
+          .map((e) => deserialize<_i2.NitBackendFilter>(e))
+          .toList() as dynamic;
+    }
     if (t == _i1.getType<List<_i2.NitBackendFilter>?>()) {
       return (data != null
           ? (data as List)

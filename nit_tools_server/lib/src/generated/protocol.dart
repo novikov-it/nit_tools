@@ -33,6 +33,11 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
+    if (t == List<_i3.NitBackendFilter>) {
+      return (data as List)
+          .map((e) => deserialize<_i3.NitBackendFilter>(e))
+          .toList() as dynamic;
+    }
     if (t == _i1.getType<List<_i3.NitBackendFilter>?>()) {
       return (data != null
           ? (data as List)

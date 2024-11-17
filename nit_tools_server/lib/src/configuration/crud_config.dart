@@ -1,19 +1,24 @@
 import 'package:nit_tools_server/src/configuration/get_all_config.dart';
-import 'package:nit_tools_server/src/configuration/get_one_config.dart';
+import 'package:nit_tools_server/src/configuration/get_one_by_id.dart';
+import 'package:nit_tools_server/src/configuration/get_one_custom.dart';
 import 'package:nit_tools_server/src/configuration/post_config.dart';
-import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart';
 import 'package:serverpod/serverpod.dart';
+
+import '../extra_classes/nit_backend_filter.dart';
 
 class CrudConfig<T extends TableRow> {
   const CrudConfig({
     required this.table,
-    this.getOne,
+    this.getOneById,
+    this.getOneCustomConfigs,
     this.getAll,
     this.post,
   });
 
   final Table table;
-  final GetOneConfig<T>? getOne;
+  final GetOneByIdConfig<T>? getOneById;
+  final List<GetOneCustomConfig<T, dynamic>>? getOneCustomConfigs;
+
   final GetAllConfig<T>? getAll;
   final PostConfig<T>? post;
 

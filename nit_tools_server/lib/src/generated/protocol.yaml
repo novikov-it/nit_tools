@@ -1,5 +1,6 @@
 crud:
-  - getOne:
+  - getOneById:
+  - getOneCustom:
   - getAll:
   - saveModel:
   - delete:

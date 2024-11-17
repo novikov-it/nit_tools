@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:nit_tools_server/src/extra_classes/api_response.dart';
-import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart';
 import 'package:serverpod/serverpod.dart';
+
+import '../extra_classes/nit_backend_filter.dart';
 
 class CrudEndpoint extends Endpoint {
   static final Map<String, CrudConfig> _serverConfiguration = {};
@@ -14,24 +16,51 @@ class CrudEndpoint extends Endpoint {
     );
   }
 
-  Future<ApiResponse<int>> getOne(
+  Future<ApiResponse<int>> getOneById(
     Session session, {
     required String className,
     required int id,
   }) async {
     final caller = _serverConfiguration[className];
 
-    if (caller?.getOne == null) {
+    if (caller?.getOneById == null) {
       return ApiResponse.notConfigured();
     }
-    return await caller!.getOne!.call(session, id,
-        whereClause: caller.getOne!.customAttribute != null
-            ? caller.prepareWhere([
-                NitBackendFilter(
-                    fieldName: caller.getOne!.customAttribute!,
-                    equalsTo: id.toString())
-              ])
-            : null);
+    return await caller!.getOneById!.call(
+      session,
+      id,
+    );
+  }
+
+  Future<ApiResponse<int>> getOneCustom(
+    Session session, {
+    required String className,
+    required List<NitBackendFilter> filters,
+  }) async {
+    final caller = _serverConfiguration[className];
+
+    if (caller?.getOneCustomConfigs == null ||
+        caller!.getOneCustomConfigs!.isEmpty) {
+      return ApiResponse.notConfigured();
+    }
+
+    final filteredAttrs = filters.map((e) => e.fieldName);
+
+    final config = caller.getOneCustomConfigs!.firstWhereOrNull((e) =>
+        e.attributeNames.where((a) => filteredAttrs.contains(a)).length ==
+        e.attributeNames.length);
+
+    if (config == null) {
+      return ApiResponse.notConfigured();
+    }
+
+    return await config.call(
+      session,
+      filters,
+      caller.prepareWhere(
+        filters,
+      ),
+    );
   }
 
   Future<ApiResponse<List<int>>> getAll(

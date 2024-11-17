@@ -8,7 +8,7 @@ class GetAllConfig<T extends TableRow> {
 
   Future<ApiResponse<List<int>>> call(
     Session session, {
-    Expression<T>? whereClause,
+    Expression? whereClause,
   }) async {
     final list = await session.db.find<T>(
       where: whereClause,

@@ -37,8 +37,8 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'crud',
       endpoint: endpoints['crud']!,
       methodConnectors: {
-        'getOne': _i1.MethodConnector(
-          name: 'getOne',
+        'getOneById': _i1.MethodConnector(
+          name: 'getOneById',
           params: {
             'className': _i1.ParameterDescription(
               name: 'className',
@@ -55,10 +55,34 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).getOne(
+              (endpoints['crud'] as _i2.CrudEndpoint).getOneById(
             session,
             className: params['className'],
             id: params['id'],
+          ),
+        ),
+        'getOneCustom': _i1.MethodConnector(
+          name: 'getOneCustom',
+          params: {
+            'className': _i1.ParameterDescription(
+              name: 'className',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'filters': _i1.ParameterDescription(
+              name: 'filters',
+              type: _i1.getType<List<_i4.NitBackendFilter>>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['crud'] as _i2.CrudEndpoint).getOneCustom(
+            session,
+            className: params['className'],
+            filters: params['filters'],
           ),
         ),
         'getAll': _i1.MethodConnector(

@@ -3,7 +3,7 @@ import 'package:serverpod_client/serverpod_client.dart';
 import 'object_wrapper.dart';
 
 // if (T.toString().startsWith('ApiResponse')) {
-//       return _i3.ApiResponse.manualDeserialization<T>(data);
+//       return _i4.ApiResponse.manualDeserialization<T>(data);
 //     }
 
 class ApiResponse<T> implements SerializableModel {
@@ -43,6 +43,8 @@ class ApiResponse<T> implements SerializableModel {
       return ApiResponse<List<int>>.fromJson(jsonSerialization) as K;
     } else if (K == ApiResponse<int>) {
       return ApiResponse<int>.fromJson(jsonSerialization) as K;
+    } else if (K == ApiResponse<bool>) {
+      return ApiResponse<bool>.fromJson(jsonSerialization) as K;
     }
 
     // if (T.toString().startsWith('ApiResponse')) {

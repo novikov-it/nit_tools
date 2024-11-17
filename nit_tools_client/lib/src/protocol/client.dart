@@ -23,16 +23,29 @@ class EndpointCrud extends _i1.EndpointRef {
   @override
   String get name => 'nit_tools.crud';
 
-  _i2.Future<_i3.ApiResponse<int>> getOne({
+  _i2.Future<_i3.ApiResponse<int>> getOneById({
     required String className,
     required int id,
   }) =>
       caller.callServerEndpoint<_i3.ApiResponse<int>>(
         'nit_tools.crud',
-        'getOne',
+        'getOneById',
         {
           'className': className,
           'id': id,
+        },
+      );
+
+  _i2.Future<_i3.ApiResponse<int>> getOneCustom({
+    required String className,
+    required List<_i4.NitBackendFilter> filters,
+  }) =>
+      caller.callServerEndpoint<_i3.ApiResponse<int>>(
+        'nit_tools.crud',
+        'getOneCustom',
+        {
+          'className': className,
+          'filters': filters,
         },
       );
 

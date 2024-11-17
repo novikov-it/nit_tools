@@ -7,3 +7,4 @@ environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:
   serverpod_client: 2.1.5
+  freezed_annotation: ^2.4.4
