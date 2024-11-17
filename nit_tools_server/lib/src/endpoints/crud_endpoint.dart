@@ -19,12 +19,19 @@ class CrudEndpoint extends Endpoint {
     required String className,
     required int id,
   }) async {
-    final caller = _serverConfiguration[className]?.getOne;
+    final caller = _serverConfiguration[className];
 
-    if (caller == null) {
+    if (caller?.getOne == null) {
       return ApiResponse.notConfigured();
     }
-    return await caller.call(session, id);
+    return await caller!.getOne!.call(session, id,
+        whereClause: caller.getOne!.customAttribute != null
+            ? caller.prepareWhere([
+                NitBackendFilter(
+                    fieldName: caller.getOne!.customAttribute!,
+                    equalsTo: id.toString())
+              ])
+            : null);
   }
 
   Future<ApiResponse<List<int>>> getAll(

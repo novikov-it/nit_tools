@@ -36,6 +36,6 @@ class CrudConfig<T extends TableRow> {
 
     if (where == null) return null;
 
-    return where as Expression<T>;
+    return where; // as Expression<T>;
   }
 }
