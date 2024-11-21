@@ -17,7 +17,7 @@ class CrudConfig<T extends TableRow> {
 
   final Table table;
   final GetOneByIdConfig<T>? getOneById;
-  final List<GetOneCustomConfig<T, dynamic>>? getOneCustomConfigs;
+  final List<GetOneCustomConfig<T>>? getOneCustomConfigs;
 
   final GetAllConfig<T>? getAll;
   final PostConfig<T>? post;

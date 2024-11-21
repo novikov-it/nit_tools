@@ -4,7 +4,7 @@ import 'package:serverpod/serverpod.dart';
 import '../extra_classes/nit_backend_filter.dart';
 import '../extra_classes/object_wrapper.dart';
 
-class GetOneCustomConfig<T extends TableRow, K> {
+class GetOneCustomConfig<T extends TableRow> {
   const GetOneCustomConfig({
     required this.attributeNames,
     this.createIfMissing,
