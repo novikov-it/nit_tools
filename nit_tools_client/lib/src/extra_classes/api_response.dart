@@ -5,6 +5,9 @@ import 'object_wrapper.dart';
 // if (T.toString().startsWith('ApiResponse')) {
 //       return _i4.ApiResponse.manualDeserialization<T>(data);
 //     }
+// if (t == _i1.getType<List<int>>()) {
+//   return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
+// }
 
 class ApiResponse<T> implements SerializableModel {
   const ApiResponse({
