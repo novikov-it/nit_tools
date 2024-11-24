@@ -70,7 +70,7 @@ class ApiResponse<T> implements SerializableModel {
           : NitToolsClient.protocol.deserialize<T>(jsonSerialization['value']),
       warning: jsonSerialization['warning'] as String?,
       error: jsonSerialization['error'] as String?,
-      updatedEntities: jsonSerialization['value'] == null
+      updatedEntities: jsonSerialization['updatedEntities'] == null
           ? null
           : (jsonSerialization['updatedEntities'] as List)
               .map((e) => NitToolsClient.protocol.deserialize<ObjectWrapper>(e))

@@ -44,15 +44,27 @@ class PostConfig<T extends TableRow> {
   Future<ApiResponse<bool>> delete(Session session, T model) async {
     if (model.id == null) return ApiResponse(isOk: true, value: true);
 
+    if (allowDelete == null) {
+      return ApiResponse.notConfigured();
+    }
+
     if (true != await allowDelete?.call(session, model)) {
       return ApiResponse.forbidden();
     }
 
-    await session.db.deleteRow(model);
+    try {
+      await session.db.deleteRow(model);
 
-    return ApiResponse(
-      isOk: true,
-      value: true,
-    );
+      return ApiResponse(
+        isOk: true,
+        value: true,
+      );
+    } on DatabaseException {
+      return ApiResponse(
+        isOk: true,
+        value: true,
+        warning: 'Сущность была удалена ранее',
+      );
+    }
   }
 }

@@ -110,10 +110,10 @@ class CrudEndpoint extends Endpoint {
   }) async {
     final caller = _serverConfiguration[wrappedModel.className]?.post;
 
-    if (caller == null || caller.allowDelete == null) {
+    if (caller == null) {
       return ApiResponse.notConfigured();
     }
 
-    return await caller.delete(session, wrappedModel.object);
+    return await caller!.delete(session, wrappedModel.object);
   }
 }

@@ -41,9 +41,11 @@ class ApiResponse<T> implements SerializableModel {
       value: _protocol.deserialize<T>(jsonSerialization['value']),
       warning: jsonSerialization['warning'] as String?,
       error: jsonSerialization['error'] as String?,
-      updatedEntities: (jsonSerialization['updatedEntities'] as List)
-          .map((e) => _protocol.deserialize<ObjectWrapper>(e))
-          .toList() as dynamic,
+      updatedEntities: jsonSerialization['updatedEntities'] == null
+          ? null
+          : (jsonSerialization['updatedEntities'] as List)
+              .map((e) => _protocol.deserialize<ObjectWrapper>(e))
+              .toList() as dynamic,
     );
   }
 
