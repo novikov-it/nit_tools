@@ -78,11 +78,38 @@ class CrudEndpoint extends Endpoint {
         .call(session, whereClause: caller.prepareWhere(filters));
   }
 
+  Future<ApiResponse<List<int>>> saveModels(
+    Session session, {
+    required List<ObjectWrapper> wrappedModels,
+  }) async {
+    final res =
+        ApiResponse<List<int>>(isOk: true, value: [], updatedEntities: []);
+    for (ObjectWrapper model in wrappedModels) {
+      final t = await saveModel(session, wrappedModel: model);
+
+      if (t.isOk && t.value != null) {
+        res.value!.add(t.value!);
+        res.updatedEntities!.addAll(
+          t.updatedEntities ?? [],
+        );
+      } else {
+        return ApiResponse(
+          isOk: false,
+          value: null,
+          error: t.error,
+          warning: t.warning,
+        );
+      }
+    }
+
+    return res;
+  }
+
   Future<ApiResponse<int>> saveModel(
     Session session, {
     required ObjectWrapper wrappedModel,
   }) async {
-    final caller = _serverConfiguration[wrappedModel.className]?.post;
+    final caller = _serverConfiguration[wrappedModel.nitMappingClassname]?.post;
 
     // if (caller == null ||
     //     (wrappedModel.object.id == null
@@ -108,12 +135,12 @@ class CrudEndpoint extends Endpoint {
     Session session, {
     required ObjectWrapper wrappedModel,
   }) async {
-    final caller = _serverConfiguration[wrappedModel.className]?.post;
+    final caller = _serverConfiguration[wrappedModel.nitMappingClassname]?.post;
 
     if (caller == null) {
       return ApiResponse.notConfigured();
     }
 
-    return await caller!.delete(session, wrappedModel.object);
+    return await caller.delete(session, wrappedModel.object);
   }
 }

@@ -2,6 +2,7 @@ crud:
   - getOneById:
   - getOneCustom:
   - getAll:
+  - saveModels:
   - saveModel:
   - delete:
 upload:

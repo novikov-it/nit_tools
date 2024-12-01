@@ -109,6 +109,24 @@ class Endpoints extends _i1.EndpointDispatch {
             filters: params['filters'],
           ),
         ),
+        'saveModels': _i1.MethodConnector(
+          name: 'saveModels',
+          params: {
+            'wrappedModels': _i1.ParameterDescription(
+              name: 'wrappedModels',
+              type: _i1.getType<List<_i5.ObjectWrapper>>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['crud'] as _i2.CrudEndpoint).saveModels(
+            session,
+            wrappedModels: params['wrappedModels'],
+          ),
+        ),
         'saveModel': _i1.MethodConnector(
           name: 'saveModel',
           params: {

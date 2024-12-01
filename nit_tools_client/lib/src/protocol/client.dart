@@ -62,6 +62,14 @@ class EndpointCrud extends _i1.EndpointRef {
         },
       );
 
+  _i2.Future<_i3.ApiResponse<List<int>>> saveModels(
+          {required List<_i5.ObjectWrapper> wrappedModels}) =>
+      caller.callServerEndpoint<_i3.ApiResponse<List<int>>>(
+        'nit_tools.crud',
+        'saveModels',
+        {'wrappedModels': wrappedModels},
+      );
+
   _i2.Future<_i3.ApiResponse<int>> saveModel(
           {required _i5.ObjectWrapper wrappedModel}) =>
       caller.callServerEndpoint<_i3.ApiResponse<int>>(

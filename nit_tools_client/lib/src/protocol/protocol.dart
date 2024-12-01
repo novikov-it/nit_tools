@@ -13,9 +13,10 @@ library protocol; // ignore_for_file: no_leading_underscores_for_library_prefixe
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
     as _i2;
-import '/src/extra_classes/object_wrapper.dart' as _i3;
-import '/src/extra_classes/api_response.dart' as _i4;
-import '/src/extra_classes/nit_backend_filter.dart' as _i5;
+import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i3;
+import '/src/extra_classes/object_wrapper.dart' as _i4;
+import '/src/extra_classes/api_response.dart' as _i5;
+import '/src/extra_classes/nit_backend_filter.dart' as _i6;
 export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
@@ -33,12 +34,8 @@ class Protocol extends _i1.SerializationManager {
     t ??= T;
 
     if (T.toString().startsWith('ApiResponse')) {
-      return _i4.ApiResponse.manualDeserialization<T>(data);
+      return _i5.ApiResponse.manualDeserialization<T>(data);
     }
-    if (t == _i1.getType<List<int>>()) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
-    }
-
     if (t == List<_i2.NitBackendFilter>) {
       return (data as List)
           .map((e) => deserialize<_i2.NitBackendFilter>(e))
@@ -51,23 +48,28 @@ class Protocol extends _i1.SerializationManager {
               .toList()
           : null) as dynamic;
     }
-    if (t == _i3.ObjectWrapper) {
-      return _i3.ObjectWrapper.fromJson(data) as T;
+    if (t == List<_i3.ObjectWrapper>) {
+      return (data as List)
+          .map((e) => deserialize<_i3.ObjectWrapper>(e))
+          .toList() as dynamic;
     }
-    if (t == _i4.ApiResponse) {
-      return _i4.ApiResponse.fromJson(data) as T;
+    if (t == _i4.ObjectWrapper) {
+      return _i4.ObjectWrapper.fromJson(data) as T;
     }
-    if (t == _i5.NitBackendFilter) {
-      return _i5.NitBackendFilter.fromJson(data) as T;
+    if (t == _i5.ApiResponse) {
+      return _i5.ApiResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i3.ObjectWrapper?>()) {
-      return (data != null ? _i3.ObjectWrapper.fromJson(data) : null) as T;
+    if (t == _i6.NitBackendFilter) {
+      return _i6.NitBackendFilter.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.ApiResponse?>()) {
-      return (data != null ? _i4.ApiResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.ObjectWrapper?>()) {
+      return (data != null ? _i4.ObjectWrapper.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i5.NitBackendFilter?>()) {
-      return (data != null ? _i5.NitBackendFilter.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.ApiResponse?>()) {
+      return (data != null ? _i5.ApiResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i6.NitBackendFilter?>()) {
+      return (data != null ? _i6.NitBackendFilter.fromJson(data) : null) as T;
     }
     return super.deserialize<T>(data, t);
   }
@@ -76,13 +78,13 @@ class Protocol extends _i1.SerializationManager {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i3.ObjectWrapper) {
+    if (data is _i4.ObjectWrapper) {
       return 'ObjectWrapper';
     }
-    if (data is _i4.ApiResponse) {
+    if (data is _i5.ApiResponse) {
       return 'ApiResponse';
     }
-    if (data is _i5.NitBackendFilter) {
+    if (data is _i6.NitBackendFilter) {
       return 'NitBackendFilter';
     }
     return null;
@@ -91,13 +93,13 @@ class Protocol extends _i1.SerializationManager {
   @override
   dynamic deserializeByClassName(Map<String, dynamic> data) {
     if (data['className'] == 'ObjectWrapper') {
-      return deserialize<_i3.ObjectWrapper>(data['data']);
+      return deserialize<_i4.ObjectWrapper>(data['data']);
     }
     if (data['className'] == 'ApiResponse') {
-      return deserialize<_i4.ApiResponse>(data['data']);
+      return deserialize<_i5.ApiResponse>(data['data']);
     }
     if (data['className'] == 'NitBackendFilter') {
-      return deserialize<_i5.NitBackendFilter>(data['data']);
+      return deserialize<_i6.NitBackendFilter>(data['data']);
     }
     return super.deserializeByClassName(data);
   }

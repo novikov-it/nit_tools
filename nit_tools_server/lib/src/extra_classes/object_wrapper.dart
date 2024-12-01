@@ -11,11 +11,16 @@ class ObjectWrapper implements SerializableModel {
     required this.object,
     // this.entities,
   }) : className = _protocol.getClassNameForObject(object) ?? 'unknown';
+  //  className = (_protocol.getClassNameForObject(object) ?? 'unknown')
+  //           .split('.')
+  //           .last;
 
   final String className;
   final TableRow object;
   // final int? id;
   // final List<SerializableModel>? entities;
+
+  String get nitMappingClassname => className.split('.').last;
 
   factory ObjectWrapper.fromJson(
     Map<String, dynamic> jsonSerialization,

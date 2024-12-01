@@ -2,7 +2,13 @@ import 'static.dart';
 import 'package:serverpod_client/serverpod_client.dart';
 
 class ObjectWrapper implements SerializableModel {
-  ObjectWrapper({
+  ObjectWrapper.wrap({
+    required this.model,
+  })  : modelId = null,
+        className =
+            NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
+
+  ObjectWrapper._({
     required this.model,
     this.modelId,
     // this.entities,
@@ -14,10 +20,12 @@ class ObjectWrapper implements SerializableModel {
   final int? modelId;
   // final List<SerializableModel>? entities;
 
+  String get nitMappingClassname => className.split('.').last;
+
   factory ObjectWrapper.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
-    return ObjectWrapper(
+    return ObjectWrapper._(
       modelId: jsonSerialization['data']['id'],
       model: NitToolsClient.protocol.deserializeByClassName(jsonSerialization),
       // value: jsonSerialization['value'] as T,
