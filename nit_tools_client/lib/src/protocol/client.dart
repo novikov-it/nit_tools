@@ -78,12 +78,17 @@ class EndpointCrud extends _i1.EndpointRef {
         {'wrappedModel': wrappedModel},
       );
 
-  _i2.Future<_i3.ApiResponse<bool>> delete(
-          {required _i5.ObjectWrapper wrappedModel}) =>
+  _i2.Future<_i3.ApiResponse<bool>> delete({
+    required String className,
+    required int modelId,
+  }) =>
       caller.callServerEndpoint<_i3.ApiResponse<bool>>(
         'nit_tools.crud',
         'delete',
-        {'wrappedModel': wrappedModel},
+        {
+          'className': className,
+          'modelId': modelId,
+        },
       );
 }
 

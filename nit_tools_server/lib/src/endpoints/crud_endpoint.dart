@@ -133,14 +133,16 @@ class CrudEndpoint extends Endpoint {
 
   Future<ApiResponse<bool>> delete(
     Session session, {
-    required ObjectWrapper wrappedModel,
+    required String className,
+    required int modelId,
+    // required ObjectWrapper wrappedModel,
   }) async {
-    final caller = _serverConfiguration[wrappedModel.nitMappingClassname]?.post;
+    final caller = _serverConfiguration[className]?.post;
 
     if (caller == null) {
       return ApiResponse.notConfigured();
     }
 
-    return await caller.delete(session, wrappedModel.object);
+    return await caller.delete(session, modelId);
   }
 }

@@ -148,11 +148,16 @@ class Endpoints extends _i1.EndpointDispatch {
         'delete': _i1.MethodConnector(
           name: 'delete',
           params: {
-            'wrappedModel': _i1.ParameterDescription(
-              name: 'wrappedModel',
-              type: _i1.getType<_i5.ObjectWrapper>(),
+            'className': _i1.ParameterDescription(
+              name: 'className',
+              type: _i1.getType<String>(),
               nullable: false,
-            )
+            ),
+            'modelId': _i1.ParameterDescription(
+              name: 'modelId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -160,7 +165,8 @@ class Endpoints extends _i1.EndpointDispatch {
           ) async =>
               (endpoints['crud'] as _i2.CrudEndpoint).delete(
             session,
-            wrappedModel: params['wrappedModel'],
+            className: params['className'],
+            modelId: params['modelId'],
           ),
         ),
       },

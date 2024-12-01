@@ -41,8 +41,16 @@ class PostConfig<T extends TableRow> {
     ]);
   }
 
-  Future<ApiResponse<bool>> delete(Session session, T model) async {
-    if (model.id == null) return ApiResponse(isOk: true, value: true);
+  Future<ApiResponse<bool>> delete(Session session, int modelId) async {
+    final T? model = await session.db.findById<T>(modelId);
+
+    if (model == null) {
+      return ApiResponse(
+        isOk: true,
+        value: true,
+        warning: 'Объект не найден, возможно, удален ранее',
+      );
+    }
 
     if (allowDelete == null) {
       return ApiResponse.notConfigured();
@@ -52,19 +60,20 @@ class PostConfig<T extends TableRow> {
       return ApiResponse.forbidden();
     }
 
-    try {
-      await session.db.deleteRow(model);
+    // try {
+    await session.db.deleteRow(model);
 
-      return ApiResponse(
-        isOk: true,
-        value: true,
-      );
-    } on DatabaseException {
-      return ApiResponse(
-        isOk: true,
-        value: true,
-        warning: 'Сущность была удалена ранее',
-      );
-    }
+    return ApiResponse(
+      isOk: true,
+      value: true,
+    );
+    // }
+    // on DatabaseException {
+    //   return ApiResponse(
+    //     isOk: true,
+    //     value: true,
+    //     warning: 'Сущность была удалена ранее',
+    //   );
+    // }
   }
 }
