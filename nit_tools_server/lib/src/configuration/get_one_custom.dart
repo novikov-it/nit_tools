@@ -48,9 +48,9 @@ class GetOneCustomConfig<T extends TableRow> {
   ) async {
     final t = await _getObject(session, filters, whereClause).then(
       (result) async => ApiResponse<int>(
-        isOk: result != null,
+        isOk: true,
         value: result?.id,
-        error: result == null ? 'Объект не найден' : null,
+        // error: result == null ? 'Объект не найден' : null,
         updatedEntities: result != null
             ? [
                 ObjectWrapper(object: result),

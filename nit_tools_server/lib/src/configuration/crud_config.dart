@@ -36,6 +36,13 @@ class CrudConfig<T extends TableRow> {
         } else {
           where = where & ex;
         }
+      } else if (c is ColumnString) {
+        final ex = c.equals(filter.equalsTo);
+        if (where == null) {
+          where = ex;
+        } else {
+          where = where & ex;
+        }
       }
     }
 
