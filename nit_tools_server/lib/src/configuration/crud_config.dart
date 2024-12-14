@@ -25,19 +25,25 @@ class CrudConfig<T extends TableRow> {
   String get className => T.toString();
 
   prepareWhere(List<NitBackendFilter>? filters) {
+    if (filters == null) return null;
     Expression? where;
-    for (var filter in filters ?? []) {
+    for (var filter in filters) {
+      print(filter.fieldName);
       final c =
           table.columns.firstWhere((col) => col.columnName == filter.fieldName);
+      var ex = null;
       if (c is ColumnInt) {
-        final ex = c.equals(int.tryParse(filter.equalsTo));
-        if (where == null) {
-          where = ex;
-        } else {
-          where = where & ex;
-        }
+        ex = c.equals(int.tryParse(filter.equalsTo));
       } else if (c is ColumnString) {
-        final ex = c.equals(filter.equalsTo);
+        ex = c.equals(filter.equalsTo);
+      } else if (c is ColumnBool) {
+        ex = c.equals(switch (filter.equalsTo) {
+          'true' => true,
+          'false' => false,
+          _ => null,
+        });
+      }
+      if (ex != null) {
         if (where == null) {
           where = ex;
         } else {
