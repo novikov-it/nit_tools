@@ -38,7 +38,7 @@ class ApiResponse<T> implements SerializableModel {
   final String? error;
   final List<ObjectWrapper>? updatedEntities;
 
-  static K manualDeserialization<K>(
+  static K? manualDeserialization<K>(
     Map<String, dynamic> jsonSerialization,
   ) {
     // if (K.toString() == 'ApiResponse<List<int>>') {
@@ -50,9 +50,11 @@ class ApiResponse<T> implements SerializableModel {
       return ApiResponse<bool>.fromJson(jsonSerialization) as K;
     }
 
+    return null;
+
     // if (T.toString().startsWith('ApiResponse')) {
-    print('Exact option for $K deserialization not configured');
-    throw UnimplementedError();
+    // print('Exact option for $K deserialization not configured');
+    // throw UnimplementedError();
     // }
   }
   // print(T.toString());
