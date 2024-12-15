@@ -9,6 +9,12 @@ import 'object_wrapper.dart';
 //   return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
 // }
 
+// if (data is Map<String, dynamic>) {
+//       final manualDeserialization =
+//           _i5.ApiResponse.manualDeserialization<T>(data);
+//       if (manualDeserialization != null) return manualDeserialization;
+//     }
+
 class ApiResponse<T> implements SerializableModel {
   const ApiResponse({
     required this.isOk,
