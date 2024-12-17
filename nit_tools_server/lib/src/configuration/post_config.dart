@@ -1,36 +1,50 @@
-import 'package:nit_tools_server/nit_tools_server.dart';
-import 'package:nit_tools_server/src/extra_classes/api_response.dart';
 import 'package:serverpod/serverpod.dart';
+
+import '../extra_classes/api_response.dart';
+import '../extra_classes/object_wrapper.dart';
 
 class PostConfig<T extends TableRow> {
   const PostConfig({
     this.allowInsert,
     this.allowUpdate,
     this.allowDelete,
+    this.afterInsert,
+    this.afterUpdate,
+    this.afterDelete,
+    this.callAfterUpdateOnInsert = true,
   });
 
   const PostConfig.simple({
     required Future<bool> Function(Session session, T model) allowAllActions,
   })  : allowInsert = allowAllActions,
         allowUpdate = allowAllActions,
-        allowDelete = allowAllActions;
+        allowDelete = allowAllActions,
+        afterInsert = null,
+        afterUpdate = null,
+        afterDelete = null,
+        callAfterUpdateOnInsert = true;
 
   final Future<bool> Function(Session session, T model)? allowInsert;
   final Future<bool> Function(Session session, T model)? allowUpdate;
   final Future<bool> Function(Session session, T model)? allowDelete;
 
+  final Future<List<TableRow>> Function(Session session, T model)? afterInsert;
+  final bool callAfterUpdateOnInsert;
+  final Future<List<TableRow>> Function(Session session, T model)? afterUpdate;
+  final Future<List<TableRow>> Function(Session session, T model)? afterDelete;
+
   Future<ApiResponse<int>> upsert(Session session, T model) async {
-    if (null == (model.id == null ? allowInsert : allowUpdate)) {
+    final isInsert = model.id == null;
+    if (null == (isInsert ? allowInsert : allowUpdate)) {
       return ApiResponse.notConfigured();
     }
 
     if (true !=
-        await (model.id == null ? allowInsert : allowUpdate)
-            ?.call(session, model)) {
+        await (isInsert ? allowInsert : allowUpdate)?.call(session, model)) {
       return ApiResponse.forbidden();
     }
 
-    final updatedModel = model.id == null
+    final updatedModel = isInsert
         ? await session.db.insertRow<T>(model)
         : await session.db.updateRow<T>(model);
 
@@ -38,6 +52,14 @@ class PostConfig<T extends TableRow> {
       ObjectWrapper(
         object: updatedModel,
       ),
+      if (isInsert && afterInsert != null)
+        ...(await (afterInsert!(session, model))).map(
+          (e) => ObjectWrapper(object: e),
+        ),
+      if ((!isInsert || callAfterUpdateOnInsert) && afterUpdate != null)
+        ...(await (afterUpdate!(session, model))).map(
+          (e) => ObjectWrapper(object: e),
+        ),
     ]);
   }
 
@@ -66,6 +88,12 @@ class PostConfig<T extends TableRow> {
     return ApiResponse(
       isOk: true,
       value: true,
+      updatedEntities: [
+        if (afterDelete != null)
+          ...(await (afterDelete!(session, model))).map(
+            (e) => ObjectWrapper(object: e),
+          ),
+      ],
     );
     // }
     // on DatabaseException {
