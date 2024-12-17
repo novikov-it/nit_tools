@@ -28,9 +28,11 @@ class PostConfig<T extends TableRow> {
   final Future<bool> Function(Session session, T model)? allowUpdate;
   final Future<bool> Function(Session session, T model)? allowDelete;
 
-  final Future<List<TableRow>> Function(Session session, T model)? afterInsert;
+  final Future<List<TableRow>> Function(Session session, T insertedModel)?
+      afterInsert;
   final bool callAfterUpdateOnInsert;
-  final Future<List<TableRow>> Function(Session session, T model)? afterUpdate;
+  final Future<List<TableRow>> Function(Session session, T updatedModel)?
+      afterUpdate;
   final Future<List<TableRow>> Function(Session session, T model)? afterDelete;
 
   Future<ApiResponse<int>> upsert(Session session, T model) async {
@@ -53,11 +55,11 @@ class PostConfig<T extends TableRow> {
         object: updatedModel,
       ),
       if (isInsert && afterInsert != null)
-        ...(await (afterInsert!(session, model))).map(
+        ...(await (afterInsert!(session, updatedModel))).map(
           (e) => ObjectWrapper(object: e),
         ),
       if ((!isInsert || callAfterUpdateOnInsert) && afterUpdate != null)
-        ...(await (afterUpdate!(session, model))).map(
+        ...(await (afterUpdate!(session, updatedModel))).map(
           (e) => ObjectWrapper(object: e),
         ),
     ]);
