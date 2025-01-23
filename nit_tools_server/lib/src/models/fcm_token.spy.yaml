@@ -1,0 +1,5 @@
+class: FcmToken
+table: fcm_token
+fields:
+  userId: int
+  fcmToken: String

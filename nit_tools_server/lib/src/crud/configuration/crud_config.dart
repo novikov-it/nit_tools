@@ -1,10 +1,10 @@
-import 'package:nit_tools_server/src/configuration/get_all_config.dart';
-import 'package:nit_tools_server/src/configuration/get_one_by_id.dart';
-import 'package:nit_tools_server/src/configuration/get_one_custom.dart';
-import 'package:nit_tools_server/src/configuration/post_config.dart';
+import 'package:nit_tools_server/src/crud/configuration/get_all_config.dart';
+import 'package:nit_tools_server/src/crud/configuration/get_one_by_id.dart';
+import 'package:nit_tools_server/src/crud/configuration/get_one_custom.dart';
+import 'package:nit_tools_server/src/crud/configuration/post_config.dart';
 import 'package:serverpod/serverpod.dart';
 
-import '../extra_classes/nit_backend_filter.dart';
+import '../../extra_classes/nit_backend_filter.dart';
 
 class CrudConfig<T extends TableRow> {
   const CrudConfig({

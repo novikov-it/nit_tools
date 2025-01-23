@@ -1,7 +1,7 @@
 import 'package:nit_tools_server/src/extra_classes/api_response.dart';
 import 'package:serverpod/serverpod.dart';
 
-import '../extra_classes/object_wrapper.dart';
+import '../../extra_classes/object_wrapper.dart';
 
 class GetOneByIdConfig<T extends TableRow> {
   const GetOneByIdConfig({

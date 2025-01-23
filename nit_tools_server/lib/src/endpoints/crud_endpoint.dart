@@ -1,19 +1,63 @@
 import 'package:collection/collection.dart';
-import 'package:nit_tools_server/nit_tools_server.dart';
-import 'package:nit_tools_server/src/extra_classes/api_response.dart';
+
 import 'package:serverpod/serverpod.dart';
 
+import '../crud/configuration/crud_config.dart';
+import '../crud/fcm_token.dart';
+import '../extra_classes/api_response.dart';
 import '../extra_classes/nit_backend_filter.dart';
+import '../extra_classes/object_wrapper.dart';
 
 class CrudEndpoint extends Endpoint {
   static final Map<String, CrudConfig> _serverConfiguration = {};
 
+  static userUpdatesChannel(int userId) => 'userUpdates$userId';
+
   static initConfiguration(List<CrudConfig> configuration) {
     _serverConfiguration.addEntries(
-      configuration.map(
+      [
+        fcmTokenConfig,
+        ...configuration,
+      ].map(
         (config) => MapEntry(config.className, config),
       ),
     );
+  }
+
+  @override
+  Future<void> streamOpened(StreamingSession session) async {
+    final userId = await session.authenticated.then((auth) => auth?.userId);
+
+    if (userId == null) {
+      return;
+    }
+
+    final channel = userUpdatesChannel(userId);
+
+    setUserObject(
+      session,
+      channel,
+    );
+
+    session.log('Subscribing to channel $channel');
+
+    session.messages.addListener(
+      channel,
+      (update) {
+        if (update is TableRow) {
+          sendStreamMessage(session, ObjectWrapper.wrap(update)!);
+        } else {
+          sendStreamMessage(session, update);
+        }
+      },
+    );
+  }
+
+  @override
+  Future<void> streamClosed(StreamingSession session) async {
+    session.messages.removeListener(getUserObject(session), (update) {
+      sendStreamMessage(session, update);
+    });
   }
 
   Future<ApiResponse<int>> getOneById(

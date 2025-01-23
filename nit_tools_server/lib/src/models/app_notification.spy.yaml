@@ -1,0 +1,11 @@
+class: AppNotification
+table: app_notification
+fields:
+    toUserId: int
+    timestamp: DateTime, default = now
+    title: String
+    body: String?
+    goToPath: String?
+    # type: String
+    # relatedEntityId: int?
+    isRead: bool, default = false
