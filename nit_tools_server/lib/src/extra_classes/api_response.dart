@@ -13,10 +13,12 @@ class ApiResponse<T> implements SerializableModel {
     this.updatedEntities,
   });
 
-  const ApiResponse.notConfigured()
-      : isOk = false,
+  const ApiResponse.notConfigured({
+    required String? source,
+  })  : isOk = false,
         value = null,
-        error = 'Действие не поддерживается сервером',
+        error =
+            'Действие не поддерживается сервером${source != null ? ' ($source)' : ''}',
         warning = null,
         updatedEntities = null;
 

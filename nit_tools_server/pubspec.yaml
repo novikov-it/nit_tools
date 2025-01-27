@@ -7,6 +7,7 @@ environment:
 dependencies:
   serverpod: 2.1.5
   collection: ^1.19.1
+  googleapis_auth: ^1.6.0
 
 dev_dependencies:
   lints: '>=3.0.0 <6.0.0'

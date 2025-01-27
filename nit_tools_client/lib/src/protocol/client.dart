@@ -93,6 +93,21 @@ class EndpointCrud extends _i1.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointServices extends _i1.EndpointRef {
+  EndpointServices(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'nit_tools.services';
+
+  _i2.Future<_i3.ApiResponse<bool>> setFcmToken({required String fcmToken}) =>
+      caller.callServerEndpoint<_i3.ApiResponse<bool>>(
+        'nit_tools.services',
+        'setFcmToken',
+        {'fcmToken': fcmToken},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointUpload extends _i1.EndpointRef {
   EndpointUpload(_i1.EndpointCaller caller) : super(caller);
 
@@ -117,16 +132,20 @@ class EndpointUpload extends _i1.EndpointRef {
 class Caller extends _i1.ModuleEndpointCaller {
   Caller(_i1.ServerpodClientShared client) : super(client) {
     crud = EndpointCrud(this);
+    services = EndpointServices(this);
     upload = EndpointUpload(this);
   }
 
   late final EndpointCrud crud;
+
+  late final EndpointServices services;
 
   late final EndpointUpload upload;
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
         'nit_tools.crud': crud,
+        'nit_tools.services': services,
         'nit_tools.upload': upload,
       };
 }

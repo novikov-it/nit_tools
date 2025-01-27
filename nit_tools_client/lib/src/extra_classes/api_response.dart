@@ -9,6 +9,10 @@ import 'object_wrapper.dart';
 //   return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
 // }
 
+// if (t == List<int>) {
+//       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
+//     }
+
 // if (data is Map<String, dynamic>) {
 //       final manualDeserialization =
 //           _i7.ApiResponse.manualDeserialization<T>(data);
@@ -70,7 +74,7 @@ class ApiResponse<T> implements SerializableModel {
     // Type t;
   ) {
     // final t = jsonSerialization['value'];
-
+    // try {
     return ApiResponse(
       isOk: jsonSerialization['isOk'] as bool,
       value: jsonSerialization['value'] == null
@@ -84,6 +88,10 @@ class ApiResponse<T> implements SerializableModel {
               .map((e) => NitToolsClient.protocol.deserialize<ObjectWrapper>(e))
               .toList() as dynamic,
     );
+    // } catch (e) {
+    //   print(e);
+    //   return ApiResponse(isOk: false, value: null);
+    // }
   }
 
   @override

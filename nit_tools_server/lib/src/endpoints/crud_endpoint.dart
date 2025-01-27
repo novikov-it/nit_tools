@@ -68,7 +68,7 @@ class CrudEndpoint extends Endpoint {
     final caller = _serverConfiguration[className];
 
     if (caller?.getOneById == null) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'получение $className по id');
     }
     return await caller!.getOneById!.call(
       session,
@@ -85,7 +85,7 @@ class CrudEndpoint extends Endpoint {
 
     if (caller?.getOneCustomConfigs == null ||
         caller!.getOneCustomConfigs!.isEmpty) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'получение $className');
     }
 
     final filteredAttrs = filters.map((e) => e.fieldName);
@@ -95,7 +95,7 @@ class CrudEndpoint extends Endpoint {
         e.attributeNames.length);
 
     if (config == null) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'получение $className');
     }
 
     return await config.call(
@@ -115,7 +115,7 @@ class CrudEndpoint extends Endpoint {
     final caller = _serverConfiguration[className];
 
     if (caller?.getAll == null) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'получение списка $className');
     }
 
     return await caller!.getAll!
@@ -170,7 +170,8 @@ class CrudEndpoint extends Endpoint {
         //     : caller.allowUpdate) ==
         // null
         ) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(
+          source: 'сохранение ${wrappedModel.nitMappingClassname}');
     }
     return await caller.upsert(session, wrappedModel.object);
   }
@@ -184,7 +185,7 @@ class CrudEndpoint extends Endpoint {
     final caller = _serverConfiguration[className]?.post;
 
     if (caller == null) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'удаление $className');
     }
 
     return await caller.delete(session, modelId);

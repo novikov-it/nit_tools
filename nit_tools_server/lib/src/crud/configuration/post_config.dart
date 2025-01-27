@@ -38,7 +38,7 @@ class PostConfig<T extends TableRow> {
   Future<ApiResponse<int>> upsert(Session session, T model) async {
     final isInsert = model.id == null;
     if (null == (isInsert ? allowInsert : allowUpdate)) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'обновление $T');
     }
 
     if (true !=
@@ -77,7 +77,7 @@ class PostConfig<T extends TableRow> {
     }
 
     if (allowDelete == null) {
-      return ApiResponse.notConfigured();
+      return ApiResponse.notConfigured(source: 'удаление $T');
     }
 
     if (true != await allowDelete?.call(session, model)) {

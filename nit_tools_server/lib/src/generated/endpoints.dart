@@ -11,10 +11,11 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 import '../endpoints/crud_endpoint.dart' as _i2;
-import '../endpoints/upload_endpoint.dart' as _i3;
+import '../endpoints/services_endpoint.dart' as _i3;
+import '../endpoints/upload_endpoint.dart' as _i4;
 import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
-    as _i4;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i5;
+    as _i5;
+import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i6;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -26,7 +27,13 @@ class Endpoints extends _i1.EndpointDispatch {
           'crud',
           'nit_tools',
         ),
-      'upload': _i3.UploadEndpoint()
+      'services': _i3.ServicesEndpoint()
+        ..initialize(
+          server,
+          'services',
+          'nit_tools',
+        ),
+      'upload': _i4.UploadEndpoint()
         ..initialize(
           server,
           'upload',
@@ -71,7 +78,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'filters': _i1.ParameterDescription(
               name: 'filters',
-              type: _i1.getType<List<_i4.NitBackendFilter>>(),
+              type: _i1.getType<List<_i5.NitBackendFilter>>(),
               nullable: false,
             ),
           },
@@ -95,7 +102,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'filters': _i1.ParameterDescription(
               name: 'filters',
-              type: _i1.getType<List<_i4.NitBackendFilter>?>(),
+              type: _i1.getType<List<_i5.NitBackendFilter>?>(),
               nullable: true,
             ),
           },
@@ -114,7 +121,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'wrappedModels': _i1.ParameterDescription(
               name: 'wrappedModels',
-              type: _i1.getType<List<_i5.ObjectWrapper>>(),
+              type: _i1.getType<List<_i6.ObjectWrapper>>(),
               nullable: false,
             )
           },
@@ -132,7 +139,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'wrappedModel': _i1.ParameterDescription(
               name: 'wrappedModel',
-              type: _i1.getType<_i5.ObjectWrapper>(),
+              type: _i1.getType<_i6.ObjectWrapper>(),
               nullable: false,
             )
           },
@@ -171,6 +178,30 @@ class Endpoints extends _i1.EndpointDispatch {
         ),
       },
     );
+    connectors['services'] = _i1.EndpointConnector(
+      name: 'services',
+      endpoint: endpoints['services']!,
+      methodConnectors: {
+        'setFcmToken': _i1.MethodConnector(
+          name: 'setFcmToken',
+          params: {
+            'fcmToken': _i1.ParameterDescription(
+              name: 'fcmToken',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['services'] as _i3.ServicesEndpoint).setFcmToken(
+            session,
+            fcmToken: params['fcmToken'],
+          ),
+        )
+      },
+    );
     connectors['upload'] = _i1.EndpointConnector(
       name: 'upload',
       endpoint: endpoints['upload']!,
@@ -188,7 +219,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['upload'] as _i3.UploadEndpoint).getUploadDescription(
+              (endpoints['upload'] as _i4.UploadEndpoint).getUploadDescription(
             session,
             path: params['path'],
           ),
@@ -206,7 +237,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['upload'] as _i3.UploadEndpoint).verifyUpload(
+              (endpoints['upload'] as _i4.UploadEndpoint).verifyUpload(
             session,
             path: params['path'],
           ),

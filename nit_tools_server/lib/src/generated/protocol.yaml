@@ -5,6 +5,8 @@ crud:
   - saveModels:
   - saveModel:
   - delete:
+services:
+  - setFcmToken:
 upload:
   - getUploadDescription:
   - verifyUpload:
