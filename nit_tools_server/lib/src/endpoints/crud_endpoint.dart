@@ -24,6 +24,20 @@ class CrudEndpoint extends Endpoint {
     );
   }
 
+  // Stream<SerializableModel> updatesStream(Session session) async* {
+  //   final userId = await session.authenticated.then((auth) => auth?.userId);
+
+  //   if (userId == null) {
+  //     return;
+  //   }
+
+  //   final channel = userUpdatesChannel(userId);
+
+  //   yield* session.messages.createStream<SerializableModel>(channel).map(
+  //         (update) => update is TableRow ? ObjectWrapper.wrap(update)! : update,
+  //       );
+  // }
+
   @override
   Future<void> streamOpened(StreamingSession session) async {
     final userId = await session.authenticated.then((auth) => auth?.userId);

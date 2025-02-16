@@ -9,6 +9,7 @@ import 'object_wrapper.dart';
 //   return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
 // }
 
+// Code to be pasted into Protocol after serverpod generate
 // if (t == List<int>) {
 //       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
 //     }
