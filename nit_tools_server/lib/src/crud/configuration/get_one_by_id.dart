@@ -14,17 +14,18 @@ class GetOneByIdConfig<T extends TableRow> {
     Session session,
     int id,
   ) async {
-    T? t = await session.db.findById<T>(id);
+    // T? t = await session.db.findById<T>(id);
 
-    if (t == null && createIfMissing != null) {
-      t ??= await createIfMissing?.call(session, id);
+    // if (t == null && createIfMissing != null) {
+    //   t ??= await createIfMissing?.call(session, id);
 
-      if (t != null) {
-        t = await session.db.insertRow<T>(t);
-      }
-    }
+    //   if (t != null) {
+    //     t = await session.db.insertRow<T>(t);
+    //   }
+    // }
 
-    return t;
+    return await session.db.findById<T>(id) ??
+        await createIfMissing?.call(session, id);
   }
 
   Future<ApiResponse<int>> call(

@@ -1,6 +1,7 @@
-import 'static.dart';
 import 'package:serverpod_client/serverpod_client.dart';
+
 import 'object_wrapper.dart';
+import 'static.dart';
 
 // if (T.toString().startsWith('ApiResponse')) {
 //       return _i4.ApiResponse.manualDeserialization<T>(data);
@@ -16,7 +17,7 @@ import 'object_wrapper.dart';
 
 // if (data is Map<String, dynamic>) {
 //       final manualDeserialization =
-//           _i7.ApiResponse.manualDeserialization<T>(data);
+//           _i10.ApiResponse.manualDeserialization<T>(data);
 //       if (manualDeserialization != null) return manualDeserialization;
 //     }
 

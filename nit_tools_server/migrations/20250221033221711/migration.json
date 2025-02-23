@@ -1,0 +1,54 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "chat_channel",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "channel_name_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "channel"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"channel_name_idx\" is added to table \"chat_channel\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "chat_channel",
+            "columns": [
+              "channel"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"channel_name_idx\" is added to table \"chat_channel\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "chat_channel",
+      "columns": [
+        "channel"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

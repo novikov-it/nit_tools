@@ -1,0 +1,10 @@
+class: NitChatParticipant
+table: nit_chat_participant
+fields:
+    userInfoId: int, relation(parent=serverpod_user_info)
+    chatChannelId: int, relation(parent=nit_chat_channel)
+
+indexes:
+  chat_participants_idx:
+    fields: userInfoId, chatChannelId
+    unique: true

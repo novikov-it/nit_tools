@@ -1,5 +1,5 @@
-class: AppNotification
-table: app_notification
+class: NitAppNotification
+table: nit_app_notification
 fields:
     toUserId: int
     timestamp: DateTime, default = now

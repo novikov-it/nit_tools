@@ -7,3 +7,7 @@ extraClasses:
 - /src/extra_classes/object_wrapper.dart:ObjectWrapper
 - /src/extra_classes/api_response.dart:ApiResponse
 - /src/extra_classes/nit_backend_filter.dart:NitBackendFilter
+
+modules:
+  serverpod_auth:
+    nickname: auth

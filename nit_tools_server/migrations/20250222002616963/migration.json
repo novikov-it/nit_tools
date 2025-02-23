@@ -1,0 +1,60 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "chat_participant",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [
+          {
+            "indexName": "chat_participants_idx",
+            "elements": [
+              {
+                "type": 0,
+                "definition": "userInfoId"
+              },
+              {
+                "type": 0,
+                "definition": "chatChannelId"
+              }
+            ],
+            "type": "btree",
+            "isUnique": true,
+            "isPrimary": false
+          }
+        ],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "uniqueIndexCreated",
+            "message": "Unique index \"chat_participants_idx\" is added to table \"chat_participant\". If there are existing rows with duplicate values, this migration will fail.",
+            "table": "chat_participant",
+            "columns": [
+              "userInfoId",
+              "chatChannelId"
+            ],
+            "destrucive": false
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "uniqueIndexCreated",
+      "message": "Unique index \"chat_participants_idx\" is added to table \"chat_participant\". If there are existing rows with duplicate values, this migration will fail.",
+      "table": "chat_participant",
+      "columns": [
+        "userInfoId",
+        "chatChannelId"
+      ],
+      "destrucive": false
+    }
+  ],
+  "migrationApiVersion": 1
+}

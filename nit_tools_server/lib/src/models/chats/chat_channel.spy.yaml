@@ -1,0 +1,9 @@
+class: NitChatChannel
+table: nit_chat_channel
+fields:
+    channel: String
+
+indexes:
+  channel_name_idx:
+    fields: channel
+    unique: true

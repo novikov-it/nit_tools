@@ -11,8 +11,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class AppNotification implements _i1.SerializableModel {
-  AppNotification._({
+abstract class NitAppNotification implements _i1.SerializableModel {
+  NitAppNotification._({
     this.id,
     required this.toUserId,
     DateTime? timestamp,
@@ -23,7 +23,7 @@ abstract class AppNotification implements _i1.SerializableModel {
   })  : timestamp = timestamp ?? DateTime.now(),
         isRead = isRead ?? false;
 
-  factory AppNotification({
+  factory NitAppNotification({
     int? id,
     required int toUserId,
     DateTime? timestamp,
@@ -31,10 +31,10 @@ abstract class AppNotification implements _i1.SerializableModel {
     String? body,
     String? goToPath,
     bool? isRead,
-  }) = _AppNotificationImpl;
+  }) = _NitAppNotificationImpl;
 
-  factory AppNotification.fromJson(Map<String, dynamic> jsonSerialization) {
-    return AppNotification(
+  factory NitAppNotification.fromJson(Map<String, dynamic> jsonSerialization) {
+    return NitAppNotification(
       id: jsonSerialization['id'] as int?,
       toUserId: jsonSerialization['toUserId'] as int,
       timestamp:
@@ -63,7 +63,7 @@ abstract class AppNotification implements _i1.SerializableModel {
 
   bool isRead;
 
-  AppNotification copyWith({
+  NitAppNotification copyWith({
     int? id,
     int? toUserId,
     DateTime? timestamp,
@@ -93,8 +93,8 @@ abstract class AppNotification implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _AppNotificationImpl extends AppNotification {
-  _AppNotificationImpl({
+class _NitAppNotificationImpl extends NitAppNotification {
+  _NitAppNotificationImpl({
     int? id,
     required int toUserId,
     DateTime? timestamp,
@@ -113,7 +113,7 @@ class _AppNotificationImpl extends AppNotification {
         );
 
   @override
-  AppNotification copyWith({
+  NitAppNotification copyWith({
     Object? id = _Undefined,
     int? toUserId,
     DateTime? timestamp,
@@ -122,7 +122,7 @@ class _AppNotificationImpl extends AppNotification {
     Object? goToPath = _Undefined,
     bool? isRead,
   }) {
-    return AppNotification(
+    return NitAppNotification(
       id: id is int? ? id : this.id,
       toUserId: toUserId ?? this.toUserId,
       timestamp: timestamp ?? this.timestamp,

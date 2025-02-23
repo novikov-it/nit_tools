@@ -13,9 +13,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-abstract class AppNotification
+abstract class NitAppNotification
     implements _i1.TableRow, _i1.ProtocolSerialization {
-  AppNotification._({
+  NitAppNotification._({
     this.id,
     required this.toUserId,
     DateTime? timestamp,
@@ -26,7 +26,7 @@ abstract class AppNotification
   })  : timestamp = timestamp ?? DateTime.now(),
         isRead = isRead ?? false;
 
-  factory AppNotification({
+  factory NitAppNotification({
     int? id,
     required int toUserId,
     DateTime? timestamp,
@@ -34,10 +34,10 @@ abstract class AppNotification
     String? body,
     String? goToPath,
     bool? isRead,
-  }) = _AppNotificationImpl;
+  }) = _NitAppNotificationImpl;
 
-  factory AppNotification.fromJson(Map<String, dynamic> jsonSerialization) {
-    return AppNotification(
+  factory NitAppNotification.fromJson(Map<String, dynamic> jsonSerialization) {
+    return NitAppNotification(
       id: jsonSerialization['id'] as int?,
       toUserId: jsonSerialization['toUserId'] as int,
       timestamp:
@@ -49,9 +49,9 @@ abstract class AppNotification
     );
   }
 
-  static final t = AppNotificationTable();
+  static final t = NitAppNotificationTable();
 
-  static const db = AppNotificationRepository._();
+  static const db = NitAppNotificationRepository._();
 
   @override
   int? id;
@@ -71,7 +71,7 @@ abstract class AppNotification
   @override
   _i1.Table get table => t;
 
-  AppNotification copyWith({
+  NitAppNotification copyWith({
     int? id,
     int? toUserId,
     DateTime? timestamp,
@@ -106,26 +106,26 @@ abstract class AppNotification
     };
   }
 
-  static AppNotificationInclude include() {
-    return AppNotificationInclude._();
+  static NitAppNotificationInclude include() {
+    return NitAppNotificationInclude._();
   }
 
-  static AppNotificationIncludeList includeList({
-    _i1.WhereExpressionBuilder<AppNotificationTable>? where,
+  static NitAppNotificationIncludeList includeList({
+    _i1.WhereExpressionBuilder<NitAppNotificationTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<AppNotificationTable>? orderBy,
+    _i1.OrderByBuilder<NitAppNotificationTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<AppNotificationTable>? orderByList,
-    AppNotificationInclude? include,
+    _i1.OrderByListBuilder<NitAppNotificationTable>? orderByList,
+    NitAppNotificationInclude? include,
   }) {
-    return AppNotificationIncludeList._(
+    return NitAppNotificationIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(AppNotification.t),
+      orderBy: orderBy?.call(NitAppNotification.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(AppNotification.t),
+      orderByList: orderByList?.call(NitAppNotification.t),
       include: include,
     );
   }
@@ -138,8 +138,8 @@ abstract class AppNotification
 
 class _Undefined {}
 
-class _AppNotificationImpl extends AppNotification {
-  _AppNotificationImpl({
+class _NitAppNotificationImpl extends NitAppNotification {
+  _NitAppNotificationImpl({
     int? id,
     required int toUserId,
     DateTime? timestamp,
@@ -158,7 +158,7 @@ class _AppNotificationImpl extends AppNotification {
         );
 
   @override
-  AppNotification copyWith({
+  NitAppNotification copyWith({
     Object? id = _Undefined,
     int? toUserId,
     DateTime? timestamp,
@@ -167,7 +167,7 @@ class _AppNotificationImpl extends AppNotification {
     Object? goToPath = _Undefined,
     bool? isRead,
   }) {
-    return AppNotification(
+    return NitAppNotification(
       id: id is int? ? id : this.id,
       toUserId: toUserId ?? this.toUserId,
       timestamp: timestamp ?? this.timestamp,
@@ -179,9 +179,9 @@ class _AppNotificationImpl extends AppNotification {
   }
 }
 
-class AppNotificationTable extends _i1.Table {
-  AppNotificationTable({super.tableRelation})
-      : super(tableName: 'app_notification') {
+class NitAppNotificationTable extends _i1.Table {
+  NitAppNotificationTable({super.tableRelation})
+      : super(tableName: 'nit_app_notification') {
     toUserId = _i1.ColumnInt(
       'toUserId',
       this,
@@ -234,19 +234,19 @@ class AppNotificationTable extends _i1.Table {
       ];
 }
 
-class AppNotificationInclude extends _i1.IncludeObject {
-  AppNotificationInclude._();
+class NitAppNotificationInclude extends _i1.IncludeObject {
+  NitAppNotificationInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => AppNotification.t;
+  _i1.Table get table => NitAppNotification.t;
 }
 
-class AppNotificationIncludeList extends _i1.IncludeList {
-  AppNotificationIncludeList._({
-    _i1.WhereExpressionBuilder<AppNotificationTable>? where,
+class NitAppNotificationIncludeList extends _i1.IncludeList {
+  NitAppNotificationIncludeList._({
+    _i1.WhereExpressionBuilder<NitAppNotificationTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -254,33 +254,33 @@ class AppNotificationIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(AppNotification.t);
+    super.where = where?.call(NitAppNotification.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => AppNotification.t;
+  _i1.Table get table => NitAppNotification.t;
 }
 
-class AppNotificationRepository {
-  const AppNotificationRepository._();
+class NitAppNotificationRepository {
+  const NitAppNotificationRepository._();
 
-  Future<List<AppNotification>> find(
+  Future<List<NitAppNotification>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<AppNotificationTable>? where,
+    _i1.WhereExpressionBuilder<NitAppNotificationTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<AppNotificationTable>? orderBy,
+    _i1.OrderByBuilder<NitAppNotificationTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<AppNotificationTable>? orderByList,
+    _i1.OrderByListBuilder<NitAppNotificationTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<AppNotification>(
-      where: where?.call(AppNotification.t),
-      orderBy: orderBy?.call(AppNotification.t),
-      orderByList: orderByList?.call(AppNotification.t),
+    return session.db.find<NitAppNotification>(
+      where: where?.call(NitAppNotification.t),
+      orderBy: orderBy?.call(NitAppNotification.t),
+      orderByList: orderByList?.call(NitAppNotification.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -288,125 +288,125 @@ class AppNotificationRepository {
     );
   }
 
-  Future<AppNotification?> findFirstRow(
+  Future<NitAppNotification?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<AppNotificationTable>? where,
+    _i1.WhereExpressionBuilder<NitAppNotificationTable>? where,
     int? offset,
-    _i1.OrderByBuilder<AppNotificationTable>? orderBy,
+    _i1.OrderByBuilder<NitAppNotificationTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<AppNotificationTable>? orderByList,
+    _i1.OrderByListBuilder<NitAppNotificationTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<AppNotification>(
-      where: where?.call(AppNotification.t),
-      orderBy: orderBy?.call(AppNotification.t),
-      orderByList: orderByList?.call(AppNotification.t),
+    return session.db.findFirstRow<NitAppNotification>(
+      where: where?.call(NitAppNotification.t),
+      orderBy: orderBy?.call(NitAppNotification.t),
+      orderByList: orderByList?.call(NitAppNotification.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<AppNotification?> findById(
+  Future<NitAppNotification?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<AppNotification>(
+    return session.db.findById<NitAppNotification>(
       id,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<AppNotification>> insert(
+  Future<List<NitAppNotification>> insert(
     _i1.Session session,
-    List<AppNotification> rows, {
+    List<NitAppNotification> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<AppNotification>(
+    return session.db.insert<NitAppNotification>(
       rows,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<AppNotification> insertRow(
+  Future<NitAppNotification> insertRow(
     _i1.Session session,
-    AppNotification row, {
+    NitAppNotification row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<AppNotification>(
+    return session.db.insertRow<NitAppNotification>(
       row,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<AppNotification>> update(
+  Future<List<NitAppNotification>> update(
     _i1.Session session,
-    List<AppNotification> rows, {
-    _i1.ColumnSelections<AppNotificationTable>? columns,
+    List<NitAppNotification> rows, {
+    _i1.ColumnSelections<NitAppNotificationTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<AppNotification>(
+    return session.db.update<NitAppNotification>(
       rows,
-      columns: columns?.call(AppNotification.t),
+      columns: columns?.call(NitAppNotification.t),
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<AppNotification> updateRow(
+  Future<NitAppNotification> updateRow(
     _i1.Session session,
-    AppNotification row, {
-    _i1.ColumnSelections<AppNotificationTable>? columns,
+    NitAppNotification row, {
+    _i1.ColumnSelections<NitAppNotificationTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<AppNotification>(
+    return session.db.updateRow<NitAppNotification>(
       row,
-      columns: columns?.call(AppNotification.t),
+      columns: columns?.call(NitAppNotification.t),
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<AppNotification>> delete(
+  Future<List<NitAppNotification>> delete(
     _i1.Session session,
-    List<AppNotification> rows, {
+    List<NitAppNotification> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<AppNotification>(
+    return session.db.delete<NitAppNotification>(
       rows,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<AppNotification> deleteRow(
+  Future<NitAppNotification> deleteRow(
     _i1.Session session,
-    AppNotification row, {
+    NitAppNotification row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<AppNotification>(
+    return session.db.deleteRow<NitAppNotification>(
       row,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<AppNotification>> deleteWhere(
+  Future<List<NitAppNotification>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<AppNotificationTable> where,
+    required _i1.WhereExpressionBuilder<NitAppNotificationTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<AppNotification>(
-      where: where(AppNotification.t),
+    return session.db.deleteWhere<NitAppNotification>(
+      where: where(NitAppNotification.t),
       transaction: transaction ?? session.transaction,
     );
   }
 
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<AppNotificationTable>? where,
+    _i1.WhereExpressionBuilder<NitAppNotificationTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<AppNotification>(
-      where: where?.call(AppNotification.t),
+    return session.db.count<NitAppNotification>(
+      where: where?.call(NitAppNotification.t),
       limit: limit,
       transaction: transaction ?? session.transaction,
     );

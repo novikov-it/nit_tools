@@ -23,22 +23,28 @@ class GetOneCustomConfig<T extends TableRow> {
     List<NitBackendFilter> filters,
     Expression? whereClause,
   ) async {
-    T? t = await session.db.findFirstRow(where: whereClause);
+    // T? t = await session.db.findFirstRow(where: whereClause);
 
-    if (t == null && createIfMissing != null) {
-      t ??= await createIfMissing?.call(
-        session,
-        attributeNames
-            .map((e) => filters.firstWhere((f) => f.fieldName == e).equalsTo)
-            .toList(),
-      );
+    // if (t == null && createIfMissing != null) {
+    //   t ??= await createIfMissing?.call(
+    //     session,
+    //     attributeNames
+    //         .map((e) => filters.firstWhere((f) => f.fieldName == e).equalsTo)
+    //         .toList(),
+    //   );
 
-      if (t != null) {
-        t = await session.db.insertRow<T>(t);
-      }
-    }
+    //   if (t != null) {
+    //     t = await session.db.insertRow<T>(t);
+    //   }
+    // }
 
-    return t;
+    return await session.db.findFirstRow(where: whereClause) ??
+        await createIfMissing?.call(
+          session,
+          attributeNames
+              .map((e) => filters.firstWhere((f) => f.fieldName == e).equalsTo)
+              .toList(),
+        );
   }
 
   Future<ApiResponse<int>> call(

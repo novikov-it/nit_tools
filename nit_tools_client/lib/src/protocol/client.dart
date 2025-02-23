@@ -17,21 +17,6 @@ import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
 import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i5;
 
 /// {@category Endpoint}
-class EndpointChat extends _i1.EndpointRef {
-  EndpointChat(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'nit_tools.chat';
-
-  _i2.Future<_i3.ApiResponse<bool>> setFcmToken({required String fcmToken}) =>
-      caller.callServerEndpoint<_i3.ApiResponse<bool>>(
-        'nit_tools.chat',
-        'setFcmToken',
-        {'fcmToken': fcmToken},
-      );
-}
-
-/// {@category Endpoint}
 class EndpointCrud extends _i1.EndpointRef {
   EndpointCrud(_i1.EndpointCaller caller) : super(caller);
 
@@ -146,13 +131,10 @@ class EndpointUpload extends _i1.EndpointRef {
 
 class Caller extends _i1.ModuleEndpointCaller {
   Caller(_i1.ServerpodClientShared client) : super(client) {
-    chat = EndpointChat(this);
     crud = EndpointCrud(this);
     services = EndpointServices(this);
     upload = EndpointUpload(this);
   }
-
-  late final EndpointChat chat;
 
   late final EndpointCrud crud;
 
@@ -162,7 +144,6 @@ class Caller extends _i1.ModuleEndpointCaller {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
-        'nit_tools.chat': chat,
         'nit_tools.crud': crud,
         'nit_tools.services': services,
         'nit_tools.upload': upload,

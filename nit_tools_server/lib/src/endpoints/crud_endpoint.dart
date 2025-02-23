@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-
+import 'package:nit_tools_server/src/business/chats/chat_crud_configs.dart';
 import 'package:serverpod/serverpod.dart';
 
 import '../crud/configuration/crud_config.dart';
@@ -17,6 +17,7 @@ class CrudEndpoint extends Endpoint {
     _serverConfiguration.addEntries(
       [
         fcmTokenConfig,
+        ...defaultChatCrudConfigs,
         ...configuration,
       ].map(
         (config) => MapEntry(config.className, config),
