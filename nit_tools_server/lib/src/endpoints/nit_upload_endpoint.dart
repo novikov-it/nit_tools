@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
-class UploadEndpoint extends Endpoint {
+class NitUploadEndpoint extends Endpoint {
   Future<String?> getUploadDescription(
     Session session, {
     required String path,

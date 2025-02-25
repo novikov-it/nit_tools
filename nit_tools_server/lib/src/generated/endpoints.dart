@@ -10,40 +10,81 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import '../endpoints/crud_endpoint.dart' as _i2;
-import '../endpoints/services_endpoint.dart' as _i3;
-import '../endpoints/upload_endpoint.dart' as _i4;
+import '../endpoints/nit_chat_endpoint.dart' as _i2;
+import '../endpoints/nit_crud_endpoint.dart' as _i3;
+import '../endpoints/nit_updates_endpoint.dart' as _i4;
+import '../endpoints/nit_upload_endpoint.dart' as _i5;
+import '../endpoints/services_endpoint.dart' as _i6;
 import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
-    as _i5;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i6;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i7;
+    as _i7;
+import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i8;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i9;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
   void initializeEndpoints(_i1.Server server) {
     var endpoints = <String, _i1.Endpoint>{
-      'crud': _i2.CrudEndpoint()
+      'nitChat': _i2.NitChatEndpoint()
         ..initialize(
           server,
-          'crud',
+          'nitChat',
           'nit_tools',
         ),
-      'services': _i3.ServicesEndpoint()
+      'nitCrud': _i3.NitCrudEndpoint()
+        ..initialize(
+          server,
+          'nitCrud',
+          'nit_tools',
+        ),
+      'nitUpdates': _i4.NitUpdatesEndpoint()
+        ..initialize(
+          server,
+          'nitUpdates',
+          'nit_tools',
+        ),
+      'nitUpload': _i5.NitUploadEndpoint()
+        ..initialize(
+          server,
+          'nitUpload',
+          'nit_tools',
+        ),
+      'services': _i6.ServicesEndpoint()
         ..initialize(
           server,
           'services',
           'nit_tools',
         ),
-      'upload': _i4.UploadEndpoint()
-        ..initialize(
-          server,
-          'upload',
-          'nit_tools',
-        ),
     };
-    connectors['crud'] = _i1.EndpointConnector(
-      name: 'crud',
-      endpoint: endpoints['crud']!,
+    connectors['nitChat'] = _i1.EndpointConnector(
+      name: 'nitChat',
+      endpoint: endpoints['nitChat']!,
+      methodConnectors: {
+        'updatesStream': _i1.MethodStreamConnector(
+          name: 'updatesStream',
+          params: {
+            'chatId': _i1.ParameterDescription(
+              name: 'chatId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+            Map<String, Stream> streamParams,
+          ) =>
+              (endpoints['nitChat'] as _i2.NitChatEndpoint).updatesStream(
+            session,
+            chatId: params['chatId'],
+          ),
+        )
+      },
+    );
+    connectors['nitCrud'] = _i1.EndpointConnector(
+      name: 'nitCrud',
+      endpoint: endpoints['nitCrud']!,
       methodConnectors: {
         'getOneById': _i1.MethodConnector(
           name: 'getOneById',
@@ -63,7 +104,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).getOneById(
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getOneById(
             session,
             className: params['className'],
             id: params['id'],
@@ -79,7 +120,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'filters': _i1.ParameterDescription(
               name: 'filters',
-              type: _i1.getType<List<_i5.NitBackendFilter>>(),
+              type: _i1.getType<List<_i7.NitBackendFilter>>(),
               nullable: false,
             ),
           },
@@ -87,7 +128,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).getOneCustom(
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getOneCustom(
             session,
             className: params['className'],
             filters: params['filters'],
@@ -103,7 +144,7 @@ class Endpoints extends _i1.EndpointDispatch {
             ),
             'filters': _i1.ParameterDescription(
               name: 'filters',
-              type: _i1.getType<List<_i5.NitBackendFilter>?>(),
+              type: _i1.getType<List<_i7.NitBackendFilter>?>(),
               nullable: true,
             ),
           },
@@ -111,7 +152,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).getAll(
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getAll(
             session,
             className: params['className'],
             filters: params['filters'],
@@ -122,7 +163,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'wrappedModels': _i1.ParameterDescription(
               name: 'wrappedModels',
-              type: _i1.getType<List<_i6.ObjectWrapper>>(),
+              type: _i1.getType<List<_i8.ObjectWrapper>>(),
               nullable: false,
             )
           },
@@ -130,7 +171,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).saveModels(
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).saveModels(
             session,
             wrappedModels: params['wrappedModels'],
           ),
@@ -140,7 +181,7 @@ class Endpoints extends _i1.EndpointDispatch {
           params: {
             'wrappedModel': _i1.ParameterDescription(
               name: 'wrappedModel',
-              type: _i1.getType<_i6.ObjectWrapper>(),
+              type: _i1.getType<_i8.ObjectWrapper>(),
               nullable: false,
             )
           },
@@ -148,7 +189,7 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).saveModel(
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).saveModel(
             session,
             wrappedModel: params['wrappedModel'],
           ),
@@ -171,10 +212,58 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['crud'] as _i2.CrudEndpoint).delete(
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).delete(
             session,
             className: params['className'],
             modelId: params['modelId'],
+          ),
+        ),
+      },
+    );
+    connectors['nitUpdates'] = _i1.EndpointConnector(
+      name: 'nitUpdates',
+      endpoint: endpoints['nitUpdates']!,
+      methodConnectors: {},
+    );
+    connectors['nitUpload'] = _i1.EndpointConnector(
+      name: 'nitUpload',
+      endpoint: endpoints['nitUpload']!,
+      methodConnectors: {
+        'getUploadDescription': _i1.MethodConnector(
+          name: 'getUploadDescription',
+          params: {
+            'path': _i1.ParameterDescription(
+              name: 'path',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['nitUpload'] as _i5.NitUploadEndpoint)
+                  .getUploadDescription(
+            session,
+            path: params['path'],
+          ),
+        ),
+        'verifyUpload': _i1.MethodConnector(
+          name: 'verifyUpload',
+          params: {
+            'path': _i1.ParameterDescription(
+              name: 'path',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['nitUpload'] as _i5.NitUploadEndpoint).verifyUpload(
+            session,
+            path: params['path'],
           ),
         ),
       },
@@ -196,55 +285,13 @@ class Endpoints extends _i1.EndpointDispatch {
             _i1.Session session,
             Map<String, dynamic> params,
           ) async =>
-              (endpoints['services'] as _i3.ServicesEndpoint).setFcmToken(
+              (endpoints['services'] as _i6.ServicesEndpoint).setFcmToken(
             session,
             fcmToken: params['fcmToken'],
           ),
         )
       },
     );
-    connectors['upload'] = _i1.EndpointConnector(
-      name: 'upload',
-      endpoint: endpoints['upload']!,
-      methodConnectors: {
-        'getUploadDescription': _i1.MethodConnector(
-          name: 'getUploadDescription',
-          params: {
-            'path': _i1.ParameterDescription(
-              name: 'path',
-              type: _i1.getType<String>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['upload'] as _i4.UploadEndpoint).getUploadDescription(
-            session,
-            path: params['path'],
-          ),
-        ),
-        'verifyUpload': _i1.MethodConnector(
-          name: 'verifyUpload',
-          params: {
-            'path': _i1.ParameterDescription(
-              name: 'path',
-              type: _i1.getType<String>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['upload'] as _i4.UploadEndpoint).verifyUpload(
-            session,
-            path: params['path'],
-          ),
-        ),
-      },
-    );
-    modules['serverpod_auth'] = _i7.Endpoints()..initializeEndpoints(server);
+    modules['serverpod_auth'] = _i9.Endpoints()..initializeEndpoints(server);
   }
 }

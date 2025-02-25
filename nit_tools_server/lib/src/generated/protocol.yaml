@@ -1,12 +1,15 @@
-crud:
+nitChat:
+  - updatesStream:
+nitCrud:
   - getOneById:
   - getOneCustom:
   - getAll:
   - saveModels:
   - saveModel:
   - delete:
-services:
-  - setFcmToken:
-upload:
+nitUpdates:
+nitUpload:
   - getUploadDescription:
   - verifyUpload:
+services:
+  - setFcmToken:

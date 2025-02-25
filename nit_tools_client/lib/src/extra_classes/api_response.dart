@@ -17,7 +17,7 @@ import 'static.dart';
 
 // if (data is Map<String, dynamic>) {
 //       final manualDeserialization =
-//           _i10.ApiResponse.manualDeserialization<T>(data);
+//           _i13.ApiResponse.manualDeserialization<T>(data);
 //       if (manualDeserialization != null) return manualDeserialization;
 //     }
 

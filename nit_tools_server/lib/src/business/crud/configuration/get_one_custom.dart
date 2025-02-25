@@ -1,8 +1,5 @@
-import 'package:nit_tools_server/src/extra_classes/api_response.dart';
+import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
-
-import '../../extra_classes/nit_backend_filter.dart';
-import '../../extra_classes/object_wrapper.dart';
 
 class GetOneCustomConfig<T extends TableRow> {
   const GetOneCustomConfig({

@@ -11,24 +11,42 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:nit_tools_client/src/extra_classes/api_response.dart' as _i3;
+import 'package:serverpod_serialization/src/serialization.dart' as _i3;
+import 'package:nit_tools_client/src/extra_classes/api_response.dart' as _i4;
 import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
-    as _i4;
-import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i5;
+    as _i5;
+import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i6;
 
 /// {@category Endpoint}
-class EndpointCrud extends _i1.EndpointRef {
-  EndpointCrud(_i1.EndpointCaller caller) : super(caller);
+class EndpointNitChat extends _i1.EndpointRef {
+  EndpointNitChat(_i1.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'nit_tools.crud';
+  String get name => 'nit_tools.nitChat';
 
-  _i2.Future<_i3.ApiResponse<int>> getOneById({
+  _i2.Stream<_i3.SerializableModel> updatesStream({required int chatId}) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.SerializableModel>,
+          _i3.SerializableModel>(
+        'nit_tools.nitChat',
+        'updatesStream',
+        {'chatId': chatId},
+        {},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointNitCrud extends _i1.EndpointRef {
+  EndpointNitCrud(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'nit_tools.nitCrud';
+
+  _i2.Future<_i4.ApiResponse<int>> getOneById({
     required String className,
     required int id,
   }) =>
-      caller.callServerEndpoint<_i3.ApiResponse<int>>(
-        'nit_tools.crud',
+      caller.callServerEndpoint<_i4.ApiResponse<int>>(
+        'nit_tools.nitCrud',
         'getOneById',
         {
           'className': className,
@@ -36,12 +54,12 @@ class EndpointCrud extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.ApiResponse<int>> getOneCustom({
+  _i2.Future<_i4.ApiResponse<int>> getOneCustom({
     required String className,
-    required List<_i4.NitBackendFilter> filters,
+    required List<_i5.NitBackendFilter> filters,
   }) =>
-      caller.callServerEndpoint<_i3.ApiResponse<int>>(
-        'nit_tools.crud',
+      caller.callServerEndpoint<_i4.ApiResponse<int>>(
+        'nit_tools.nitCrud',
         'getOneCustom',
         {
           'className': className,
@@ -49,12 +67,12 @@ class EndpointCrud extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.ApiResponse<List<int>>> getAll({
+  _i2.Future<_i4.ApiResponse<List<int>>> getAll({
     required String className,
-    List<_i4.NitBackendFilter>? filters,
+    List<_i5.NitBackendFilter>? filters,
   }) =>
-      caller.callServerEndpoint<_i3.ApiResponse<List<int>>>(
-        'nit_tools.crud',
+      caller.callServerEndpoint<_i4.ApiResponse<List<int>>>(
+        'nit_tools.nitCrud',
         'getAll',
         {
           'className': className,
@@ -62,33 +80,63 @@ class EndpointCrud extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.ApiResponse<List<int>>> saveModels(
-          {required List<_i5.ObjectWrapper> wrappedModels}) =>
-      caller.callServerEndpoint<_i3.ApiResponse<List<int>>>(
-        'nit_tools.crud',
+  _i2.Future<_i4.ApiResponse<List<int>>> saveModels(
+          {required List<_i6.ObjectWrapper> wrappedModels}) =>
+      caller.callServerEndpoint<_i4.ApiResponse<List<int>>>(
+        'nit_tools.nitCrud',
         'saveModels',
         {'wrappedModels': wrappedModels},
       );
 
-  _i2.Future<_i3.ApiResponse<int>> saveModel(
-          {required _i5.ObjectWrapper wrappedModel}) =>
-      caller.callServerEndpoint<_i3.ApiResponse<int>>(
-        'nit_tools.crud',
+  _i2.Future<_i4.ApiResponse<int>> saveModel(
+          {required _i6.ObjectWrapper wrappedModel}) =>
+      caller.callServerEndpoint<_i4.ApiResponse<int>>(
+        'nit_tools.nitCrud',
         'saveModel',
         {'wrappedModel': wrappedModel},
       );
 
-  _i2.Future<_i3.ApiResponse<bool>> delete({
+  _i2.Future<_i4.ApiResponse<bool>> delete({
     required String className,
     required int modelId,
   }) =>
-      caller.callServerEndpoint<_i3.ApiResponse<bool>>(
-        'nit_tools.crud',
+      caller.callServerEndpoint<_i4.ApiResponse<bool>>(
+        'nit_tools.nitCrud',
         'delete',
         {
           'className': className,
           'modelId': modelId,
         },
+      );
+}
+
+/// {@category Endpoint}
+class EndpointNitUpdates extends _i1.EndpointRef {
+  EndpointNitUpdates(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'nit_tools.nitUpdates';
+}
+
+/// {@category Endpoint}
+class EndpointNitUpload extends _i1.EndpointRef {
+  EndpointNitUpload(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'nit_tools.nitUpload';
+
+  _i2.Future<String?> getUploadDescription({required String path}) =>
+      caller.callServerEndpoint<String?>(
+        'nit_tools.nitUpload',
+        'getUploadDescription',
+        {'path': path},
+      );
+
+  _i2.Future<String?> verifyUpload({required String path}) =>
+      caller.callServerEndpoint<String?>(
+        'nit_tools.nitUpload',
+        'verifyUpload',
+        {'path': path},
       );
 }
 
@@ -99,53 +147,39 @@ class EndpointServices extends _i1.EndpointRef {
   @override
   String get name => 'nit_tools.services';
 
-  _i2.Future<_i3.ApiResponse<bool>> setFcmToken({required String fcmToken}) =>
-      caller.callServerEndpoint<_i3.ApiResponse<bool>>(
+  _i2.Future<_i4.ApiResponse<bool>> setFcmToken({required String fcmToken}) =>
+      caller.callServerEndpoint<_i4.ApiResponse<bool>>(
         'nit_tools.services',
         'setFcmToken',
         {'fcmToken': fcmToken},
       );
 }
 
-/// {@category Endpoint}
-class EndpointUpload extends _i1.EndpointRef {
-  EndpointUpload(_i1.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'nit_tools.upload';
-
-  _i2.Future<String?> getUploadDescription({required String path}) =>
-      caller.callServerEndpoint<String?>(
-        'nit_tools.upload',
-        'getUploadDescription',
-        {'path': path},
-      );
-
-  _i2.Future<String?> verifyUpload({required String path}) =>
-      caller.callServerEndpoint<String?>(
-        'nit_tools.upload',
-        'verifyUpload',
-        {'path': path},
-      );
-}
-
 class Caller extends _i1.ModuleEndpointCaller {
   Caller(_i1.ServerpodClientShared client) : super(client) {
-    crud = EndpointCrud(this);
+    nitChat = EndpointNitChat(this);
+    nitCrud = EndpointNitCrud(this);
+    nitUpdates = EndpointNitUpdates(this);
+    nitUpload = EndpointNitUpload(this);
     services = EndpointServices(this);
-    upload = EndpointUpload(this);
   }
 
-  late final EndpointCrud crud;
+  late final EndpointNitChat nitChat;
+
+  late final EndpointNitCrud nitCrud;
+
+  late final EndpointNitUpdates nitUpdates;
+
+  late final EndpointNitUpload nitUpload;
 
   late final EndpointServices services;
 
-  late final EndpointUpload upload;
-
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
-        'nit_tools.crud': crud,
+        'nit_tools.nitChat': nitChat,
+        'nit_tools.nitCrud': nitCrud,
+        'nit_tools.nitUpdates': nitUpdates,
+        'nit_tools.nitUpload': nitUpload,
         'nit_tools.services': services,
-        'nit_tools.upload': upload,
       };
 }

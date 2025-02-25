@@ -1,86 +1,14 @@
 import 'package:collection/collection.dart';
-import 'package:nit_tools_server/src/business/chats/chat_crud_configs.dart';
+import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
-import '../crud/configuration/crud_config.dart';
-import '../crud/fcm_token.dart';
-import '../extra_classes/api_response.dart';
-import '../extra_classes/nit_backend_filter.dart';
-import '../extra_classes/object_wrapper.dart';
-
-class CrudEndpoint extends Endpoint {
-  static final Map<String, CrudConfig> _serverConfiguration = {};
-
-  static userUpdatesChannel(int userId) => 'userUpdates$userId';
-
-  static initConfiguration(List<CrudConfig> configuration) {
-    _serverConfiguration.addEntries(
-      [
-        fcmTokenConfig,
-        ...defaultChatCrudConfigs,
-        ...configuration,
-      ].map(
-        (config) => MapEntry(config.className, config),
-      ),
-    );
-  }
-
-  // Stream<SerializableModel> updatesStream(Session session) async* {
-  //   final userId = await session.authenticated.then((auth) => auth?.userId);
-
-  //   if (userId == null) {
-  //     return;
-  //   }
-
-  //   final channel = userUpdatesChannel(userId);
-
-  //   yield* session.messages.createStream<SerializableModel>(channel).map(
-  //         (update) => update is TableRow ? ObjectWrapper.wrap(update)! : update,
-  //       );
-  // }
-
-  @override
-  Future<void> streamOpened(StreamingSession session) async {
-    final userId = await session.authenticated.then((auth) => auth?.userId);
-
-    if (userId == null) {
-      return;
-    }
-
-    final channel = userUpdatesChannel(userId);
-
-    setUserObject(
-      session,
-      channel,
-    );
-
-    session.log('Subscribing to channel $channel');
-
-    session.messages.addListener(
-      channel,
-      (update) {
-        if (update is TableRow) {
-          sendStreamMessage(session, ObjectWrapper.wrap(update)!);
-        } else {
-          sendStreamMessage(session, update);
-        }
-      },
-    );
-  }
-
-  @override
-  Future<void> streamClosed(StreamingSession session) async {
-    session.messages.removeListener(getUserObject(session), (update) {
-      sendStreamMessage(session, update);
-    });
-  }
-
+class NitCrudEndpoint extends Endpoint {
   Future<ApiResponse<int>> getOneById(
     Session session, {
     required String className,
     required int id,
   }) async {
-    final caller = _serverConfiguration[className];
+    final caller = CrudConfig.getCaller(className);
 
     if (caller?.getOneById == null) {
       return ApiResponse.notConfigured(source: 'получение $className по id');
@@ -96,7 +24,7 @@ class CrudEndpoint extends Endpoint {
     required String className,
     required List<NitBackendFilter> filters,
   }) async {
-    final caller = _serverConfiguration[className];
+    final caller = CrudConfig.getCaller(className);
 
     if (caller?.getOneCustomConfigs == null ||
         caller!.getOneCustomConfigs!.isEmpty) {
@@ -127,7 +55,7 @@ class CrudEndpoint extends Endpoint {
     required String className,
     List<NitBackendFilter>? filters,
   }) async {
-    final caller = _serverConfiguration[className];
+    final caller = CrudConfig.getCaller(className);
 
     if (caller?.getAll == null) {
       return ApiResponse.notConfigured(source: 'получение списка $className');
@@ -168,7 +96,8 @@ class CrudEndpoint extends Endpoint {
     Session session, {
     required ObjectWrapper wrappedModel,
   }) async {
-    final caller = _serverConfiguration[wrappedModel.nitMappingClassname]?.post;
+    final className = wrappedModel.nitMappingClassname;
+    final caller = CrudConfig.getCaller(className)?.post;
 
     // if (caller == null ||
     //     (wrappedModel.object.id == null
@@ -185,8 +114,7 @@ class CrudEndpoint extends Endpoint {
         //     : caller.allowUpdate) ==
         // null
         ) {
-      return ApiResponse.notConfigured(
-          source: 'сохранение ${wrappedModel.nitMappingClassname}');
+      return ApiResponse.notConfigured(source: 'сохранение $className');
     }
     return await caller.upsert(session, wrappedModel.object);
   }
@@ -197,7 +125,7 @@ class CrudEndpoint extends Endpoint {
     required int modelId,
     // required ObjectWrapper wrappedModel,
   }) async {
-    final caller = _serverConfiguration[className]?.post;
+    final caller = CrudConfig.getCaller(className)?.post;
 
     if (caller == null) {
       return ApiResponse.notConfigured(source: 'удаление $className');

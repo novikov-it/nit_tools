@@ -1,0 +1,4 @@
+class: NitChatInitialData
+fields:
+  messages: List<NitChatMessage>
+  participantProfiles: List<module:auth:UserInfo>
