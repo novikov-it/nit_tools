@@ -42,50 +42,6 @@ class Protocol extends _i1.SerializationManagerServer {
 
   static final List<_i2.TableDefinition> targetTableDefinitions = [
     _i2.TableDefinition(
-      name: 'fcm_token',
-      dartName: 'FcmToken',
-      schema: 'public',
-      module: 'nit_tools',
-      columns: [
-        _i2.ColumnDefinition(
-          name: 'id',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int?',
-          columnDefault: 'nextval(\'fcm_token_id_seq\'::regclass)',
-        ),
-        _i2.ColumnDefinition(
-          name: 'userId',
-          columnType: _i2.ColumnType.bigint,
-          isNullable: false,
-          dartType: 'int',
-        ),
-        _i2.ColumnDefinition(
-          name: 'fcmToken',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
-      ],
-      foreignKeys: [],
-      indexes: [
-        _i2.IndexDefinition(
-          indexName: 'fcm_token_pkey',
-          tableSpace: null,
-          elements: [
-            _i2.IndexElementDefinition(
-              type: _i2.IndexElementDefinitionType.column,
-              definition: 'id',
-            )
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: true,
-        )
-      ],
-      managed: true,
-    ),
-    _i2.TableDefinition(
       name: 'nit_app_notification',
       dartName: 'NitAppNotification',
       schema: 'public',
@@ -308,6 +264,25 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: false,
           dartType: 'int',
         ),
+        _i2.ColumnDefinition(
+          name: 'lastMessage',
+          columnType: _i2.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'lastMessageSentAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _i2.ColumnDefinition(
+          name: 'unreadCount',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -365,6 +340,50 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
+    _i2.TableDefinition(
+      name: 'nit_fcm_token',
+      dartName: 'NitFcmToken',
+      schema: 'public',
+      module: 'nit_tools',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'nit_fcm_token_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'userId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'fcmToken',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'nit_fcm_token_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
   ];
 
@@ -389,8 +408,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i8.NitChatParticipant) {
       return _i8.NitChatParticipant.fromJson(data) as T;
     }
-    if (t == _i9.FcmToken) {
-      return _i9.FcmToken.fromJson(data) as T;
+    if (t == _i9.NitFcmToken) {
+      return _i9.NitFcmToken.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.NitAppNotification?>()) {
       return (data != null ? _i4.NitAppNotification.fromJson(data) : null) as T;
@@ -407,8 +426,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i8.NitChatParticipant?>()) {
       return (data != null ? _i8.NitChatParticipant.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i9.FcmToken?>()) {
-      return (data != null ? _i9.FcmToken.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i9.NitFcmToken?>()) {
+      return (data != null ? _i9.NitFcmToken.fromJson(data) : null) as T;
     }
     if (t == List<_i10.NitChatMessage>) {
       return (data as List)
@@ -491,8 +510,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i8.NitChatParticipant) {
       return 'NitChatParticipant';
     }
-    if (data is _i9.FcmToken) {
-      return 'FcmToken';
+    if (data is _i9.NitFcmToken) {
+      return 'NitFcmToken';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -531,8 +550,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data['className'] == 'NitChatParticipant') {
       return deserialize<_i8.NitChatParticipant>(data['data']);
     }
-    if (data['className'] == 'FcmToken') {
-      return deserialize<_i9.FcmToken>(data['data']);
+    if (data['className'] == 'NitFcmToken') {
+      return deserialize<_i9.NitFcmToken>(data['data']);
     }
     if (data['className'].startsWith('serverpod.')) {
       data['className'] = data['className'].substring(10);
@@ -568,8 +587,8 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i7.NitChatMessage.t;
       case _i8.NitChatParticipant:
         return _i8.NitChatParticipant.t;
-      case _i9.FcmToken:
-        return _i9.FcmToken.t;
+      case _i9.NitFcmToken:
+        return _i9.NitFcmToken.t;
     }
     return null;
   }

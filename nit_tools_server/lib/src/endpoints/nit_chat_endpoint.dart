@@ -3,6 +3,8 @@ import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 
 class NitChatEndpoint extends Endpoint {
+  static chatUpdatesChannel(int chatId) => 'chatUpdates$chatId';
+
   Stream<SerializableModel> updatesStream(
     Session session, {
     required int chatId,
@@ -16,11 +18,17 @@ class NitChatEndpoint extends Endpoint {
     // final channel = userUpdatesChannel(userId);
 
     final stream = session.messages.createStream<SerializableModel>(
-        MessagingSessionExtension.chatUpdatesChannel(chatId));
+      chatUpdatesChannel(chatId),
+    );
 
     final messages = await NitChatMessage.db.find(
       session,
       where: (t) => t.chatChannelId.equals(chatId),
+      orderByList: (t) => [
+        Order(
+          column: t.sentAt,
+        ),
+      ],
     );
 
     final participants = await NitChatParticipant.db

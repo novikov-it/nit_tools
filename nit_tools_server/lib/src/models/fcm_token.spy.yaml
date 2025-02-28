@@ -1,5 +1,5 @@
-class: FcmToken
-table: fcm_token
+class: NitFcmToken
+table: nit_fcm_token
 fields:
   userId: int
   fcmToken: String

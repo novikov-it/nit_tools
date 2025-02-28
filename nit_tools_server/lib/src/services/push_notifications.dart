@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:googleapis_auth/auth_io.dart' as google_auth;
 import 'dart:developer' as devtools show log;
+import 'dart:io';
 
+import 'package:googleapis_auth/auth_io.dart' as google_auth;
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -35,7 +35,7 @@ class NitPushNotifications {
     required String title,
     required String body,
   }) async {
-    final fcmTokens = await FcmToken.db.find(
+    final fcmTokens = await NitFcmToken.db.find(
       session,
       where: (t) => t.userId.inSet(
         userIds.toSet(),

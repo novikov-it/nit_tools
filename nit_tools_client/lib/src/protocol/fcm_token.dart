@@ -11,21 +11,21 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class FcmToken implements _i1.SerializableModel {
-  FcmToken._({
+abstract class NitFcmToken implements _i1.SerializableModel {
+  NitFcmToken._({
     this.id,
     required this.userId,
     required this.fcmToken,
   });
 
-  factory FcmToken({
+  factory NitFcmToken({
     int? id,
     required int userId,
     required String fcmToken,
-  }) = _FcmTokenImpl;
+  }) = _NitFcmTokenImpl;
 
-  factory FcmToken.fromJson(Map<String, dynamic> jsonSerialization) {
-    return FcmToken(
+  factory NitFcmToken.fromJson(Map<String, dynamic> jsonSerialization) {
+    return NitFcmToken(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
       fcmToken: jsonSerialization['fcmToken'] as String,
@@ -41,7 +41,7 @@ abstract class FcmToken implements _i1.SerializableModel {
 
   String fcmToken;
 
-  FcmToken copyWith({
+  NitFcmToken copyWith({
     int? id,
     int? userId,
     String? fcmToken,
@@ -63,8 +63,8 @@ abstract class FcmToken implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _FcmTokenImpl extends FcmToken {
-  _FcmTokenImpl({
+class _NitFcmTokenImpl extends NitFcmToken {
+  _NitFcmTokenImpl({
     int? id,
     required int userId,
     required String fcmToken,
@@ -75,12 +75,12 @@ class _FcmTokenImpl extends FcmToken {
         );
 
   @override
-  FcmToken copyWith({
+  NitFcmToken copyWith({
     Object? id = _Undefined,
     int? userId,
     String? fcmToken,
   }) {
-    return FcmToken(
+    return NitFcmToken(
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
       fcmToken: fcmToken ?? this.fcmToken,

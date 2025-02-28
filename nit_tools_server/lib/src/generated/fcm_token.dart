@@ -13,30 +13,30 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-abstract class FcmToken implements _i1.TableRow, _i1.ProtocolSerialization {
-  FcmToken._({
+abstract class NitFcmToken implements _i1.TableRow, _i1.ProtocolSerialization {
+  NitFcmToken._({
     this.id,
     required this.userId,
     required this.fcmToken,
   });
 
-  factory FcmToken({
+  factory NitFcmToken({
     int? id,
     required int userId,
     required String fcmToken,
-  }) = _FcmTokenImpl;
+  }) = _NitFcmTokenImpl;
 
-  factory FcmToken.fromJson(Map<String, dynamic> jsonSerialization) {
-    return FcmToken(
+  factory NitFcmToken.fromJson(Map<String, dynamic> jsonSerialization) {
+    return NitFcmToken(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
       fcmToken: jsonSerialization['fcmToken'] as String,
     );
   }
 
-  static final t = FcmTokenTable();
+  static final t = NitFcmTokenTable();
 
-  static const db = FcmTokenRepository._();
+  static const db = NitFcmTokenRepository._();
 
   @override
   int? id;
@@ -48,7 +48,7 @@ abstract class FcmToken implements _i1.TableRow, _i1.ProtocolSerialization {
   @override
   _i1.Table get table => t;
 
-  FcmToken copyWith({
+  NitFcmToken copyWith({
     int? id,
     int? userId,
     String? fcmToken,
@@ -71,26 +71,26 @@ abstract class FcmToken implements _i1.TableRow, _i1.ProtocolSerialization {
     };
   }
 
-  static FcmTokenInclude include() {
-    return FcmTokenInclude._();
+  static NitFcmTokenInclude include() {
+    return NitFcmTokenInclude._();
   }
 
-  static FcmTokenIncludeList includeList({
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+  static NitFcmTokenIncludeList includeList({
+    _i1.WhereExpressionBuilder<NitFcmTokenTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
+    _i1.OrderByBuilder<NitFcmTokenTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
-    FcmTokenInclude? include,
+    _i1.OrderByListBuilder<NitFcmTokenTable>? orderByList,
+    NitFcmTokenInclude? include,
   }) {
-    return FcmTokenIncludeList._(
+    return NitFcmTokenIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(FcmToken.t),
+      orderBy: orderBy?.call(NitFcmToken.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(FcmToken.t),
+      orderByList: orderByList?.call(NitFcmToken.t),
       include: include,
     );
   }
@@ -103,8 +103,8 @@ abstract class FcmToken implements _i1.TableRow, _i1.ProtocolSerialization {
 
 class _Undefined {}
 
-class _FcmTokenImpl extends FcmToken {
-  _FcmTokenImpl({
+class _NitFcmTokenImpl extends NitFcmToken {
+  _NitFcmTokenImpl({
     int? id,
     required int userId,
     required String fcmToken,
@@ -115,12 +115,12 @@ class _FcmTokenImpl extends FcmToken {
         );
 
   @override
-  FcmToken copyWith({
+  NitFcmToken copyWith({
     Object? id = _Undefined,
     int? userId,
     String? fcmToken,
   }) {
-    return FcmToken(
+    return NitFcmToken(
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
       fcmToken: fcmToken ?? this.fcmToken,
@@ -128,8 +128,8 @@ class _FcmTokenImpl extends FcmToken {
   }
 }
 
-class FcmTokenTable extends _i1.Table {
-  FcmTokenTable({super.tableRelation}) : super(tableName: 'fcm_token') {
+class NitFcmTokenTable extends _i1.Table {
+  NitFcmTokenTable({super.tableRelation}) : super(tableName: 'nit_fcm_token') {
     userId = _i1.ColumnInt(
       'userId',
       this,
@@ -152,19 +152,19 @@ class FcmTokenTable extends _i1.Table {
       ];
 }
 
-class FcmTokenInclude extends _i1.IncludeObject {
-  FcmTokenInclude._();
+class NitFcmTokenInclude extends _i1.IncludeObject {
+  NitFcmTokenInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table get table => FcmToken.t;
+  _i1.Table get table => NitFcmToken.t;
 }
 
-class FcmTokenIncludeList extends _i1.IncludeList {
-  FcmTokenIncludeList._({
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+class NitFcmTokenIncludeList extends _i1.IncludeList {
+  NitFcmTokenIncludeList._({
+    _i1.WhereExpressionBuilder<NitFcmTokenTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -172,33 +172,33 @@ class FcmTokenIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(FcmToken.t);
+    super.where = where?.call(NitFcmToken.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table get table => FcmToken.t;
+  _i1.Table get table => NitFcmToken.t;
 }
 
-class FcmTokenRepository {
-  const FcmTokenRepository._();
+class NitFcmTokenRepository {
+  const NitFcmTokenRepository._();
 
-  Future<List<FcmToken>> find(
+  Future<List<NitFcmToken>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _i1.WhereExpressionBuilder<NitFcmTokenTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
+    _i1.OrderByBuilder<NitFcmTokenTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _i1.OrderByListBuilder<NitFcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<FcmToken>(
-      where: where?.call(FcmToken.t),
-      orderBy: orderBy?.call(FcmToken.t),
-      orderByList: orderByList?.call(FcmToken.t),
+    return session.db.find<NitFcmToken>(
+      where: where?.call(NitFcmToken.t),
+      orderBy: orderBy?.call(NitFcmToken.t),
+      orderByList: orderByList?.call(NitFcmToken.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -206,125 +206,125 @@ class FcmTokenRepository {
     );
   }
 
-  Future<FcmToken?> findFirstRow(
+  Future<NitFcmToken?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _i1.WhereExpressionBuilder<NitFcmTokenTable>? where,
     int? offset,
-    _i1.OrderByBuilder<FcmTokenTable>? orderBy,
+    _i1.OrderByBuilder<NitFcmTokenTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<FcmTokenTable>? orderByList,
+    _i1.OrderByListBuilder<NitFcmTokenTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<FcmToken>(
-      where: where?.call(FcmToken.t),
-      orderBy: orderBy?.call(FcmToken.t),
-      orderByList: orderByList?.call(FcmToken.t),
+    return session.db.findFirstRow<NitFcmToken>(
+      where: where?.call(NitFcmToken.t),
+      orderBy: orderBy?.call(NitFcmToken.t),
+      orderByList: orderByList?.call(NitFcmToken.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<FcmToken?> findById(
+  Future<NitFcmToken?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<FcmToken>(
+    return session.db.findById<NitFcmToken>(
       id,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<FcmToken>> insert(
+  Future<List<NitFcmToken>> insert(
     _i1.Session session,
-    List<FcmToken> rows, {
+    List<NitFcmToken> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<FcmToken>(
+    return session.db.insert<NitFcmToken>(
       rows,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<FcmToken> insertRow(
+  Future<NitFcmToken> insertRow(
     _i1.Session session,
-    FcmToken row, {
+    NitFcmToken row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<FcmToken>(
+    return session.db.insertRow<NitFcmToken>(
       row,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<FcmToken>> update(
+  Future<List<NitFcmToken>> update(
     _i1.Session session,
-    List<FcmToken> rows, {
-    _i1.ColumnSelections<FcmTokenTable>? columns,
+    List<NitFcmToken> rows, {
+    _i1.ColumnSelections<NitFcmTokenTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<FcmToken>(
+    return session.db.update<NitFcmToken>(
       rows,
-      columns: columns?.call(FcmToken.t),
+      columns: columns?.call(NitFcmToken.t),
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<FcmToken> updateRow(
+  Future<NitFcmToken> updateRow(
     _i1.Session session,
-    FcmToken row, {
-    _i1.ColumnSelections<FcmTokenTable>? columns,
+    NitFcmToken row, {
+    _i1.ColumnSelections<NitFcmTokenTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<FcmToken>(
+    return session.db.updateRow<NitFcmToken>(
       row,
-      columns: columns?.call(FcmToken.t),
+      columns: columns?.call(NitFcmToken.t),
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<FcmToken>> delete(
+  Future<List<NitFcmToken>> delete(
     _i1.Session session,
-    List<FcmToken> rows, {
+    List<NitFcmToken> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<FcmToken>(
+    return session.db.delete<NitFcmToken>(
       rows,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<FcmToken> deleteRow(
+  Future<NitFcmToken> deleteRow(
     _i1.Session session,
-    FcmToken row, {
+    NitFcmToken row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<FcmToken>(
+    return session.db.deleteRow<NitFcmToken>(
       row,
       transaction: transaction ?? session.transaction,
     );
   }
 
-  Future<List<FcmToken>> deleteWhere(
+  Future<List<NitFcmToken>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<FcmTokenTable> where,
+    required _i1.WhereExpressionBuilder<NitFcmTokenTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<FcmToken>(
-      where: where(FcmToken.t),
+    return session.db.deleteWhere<NitFcmToken>(
+      where: where(NitFcmToken.t),
       transaction: transaction ?? session.transaction,
     );
   }
 
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<FcmTokenTable>? where,
+    _i1.WhereExpressionBuilder<NitFcmTokenTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<FcmToken>(
-      where: where?.call(FcmToken.t),
+    return session.db.count<NitFcmToken>(
+      where: where?.call(NitFcmToken.t),
       limit: limit,
       transaction: transaction ?? session.transaction,
     );

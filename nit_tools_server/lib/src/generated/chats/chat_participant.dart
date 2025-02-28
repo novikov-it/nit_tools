@@ -19,12 +19,18 @@ abstract class NitChatParticipant
     this.id,
     required this.userInfoId,
     required this.chatChannelId,
-  });
+    this.lastMessage,
+    this.lastMessageSentAt,
+    int? unreadCount,
+  }) : unreadCount = unreadCount ?? 0;
 
   factory NitChatParticipant({
     int? id,
     required int userInfoId,
     required int chatChannelId,
+    String? lastMessage,
+    DateTime? lastMessageSentAt,
+    int? unreadCount,
   }) = _NitChatParticipantImpl;
 
   factory NitChatParticipant.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -32,6 +38,12 @@ abstract class NitChatParticipant
       id: jsonSerialization['id'] as int?,
       userInfoId: jsonSerialization['userInfoId'] as int,
       chatChannelId: jsonSerialization['chatChannelId'] as int,
+      lastMessage: jsonSerialization['lastMessage'] as String?,
+      lastMessageSentAt: jsonSerialization['lastMessageSentAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['lastMessageSentAt']),
+      unreadCount: jsonSerialization['unreadCount'] as int,
     );
   }
 
@@ -46,6 +58,12 @@ abstract class NitChatParticipant
 
   int chatChannelId;
 
+  String? lastMessage;
+
+  DateTime? lastMessageSentAt;
+
+  int unreadCount;
+
   @override
   _i1.Table get table => t;
 
@@ -53,6 +71,9 @@ abstract class NitChatParticipant
     int? id,
     int? userInfoId,
     int? chatChannelId,
+    String? lastMessage,
+    DateTime? lastMessageSentAt,
+    int? unreadCount,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -60,6 +81,10 @@ abstract class NitChatParticipant
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'chatChannelId': chatChannelId,
+      if (lastMessage != null) 'lastMessage': lastMessage,
+      if (lastMessageSentAt != null)
+        'lastMessageSentAt': lastMessageSentAt?.toJson(),
+      'unreadCount': unreadCount,
     };
   }
 
@@ -69,6 +94,10 @@ abstract class NitChatParticipant
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'chatChannelId': chatChannelId,
+      if (lastMessage != null) 'lastMessage': lastMessage,
+      if (lastMessageSentAt != null)
+        'lastMessageSentAt': lastMessageSentAt?.toJson(),
+      'unreadCount': unreadCount,
     };
   }
 
@@ -109,10 +138,16 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     int? id,
     required int userInfoId,
     required int chatChannelId,
+    String? lastMessage,
+    DateTime? lastMessageSentAt,
+    int? unreadCount,
   }) : super._(
           id: id,
           userInfoId: userInfoId,
           chatChannelId: chatChannelId,
+          lastMessage: lastMessage,
+          lastMessageSentAt: lastMessageSentAt,
+          unreadCount: unreadCount,
         );
 
   @override
@@ -120,11 +155,19 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     Object? id = _Undefined,
     int? userInfoId,
     int? chatChannelId,
+    Object? lastMessage = _Undefined,
+    Object? lastMessageSentAt = _Undefined,
+    int? unreadCount,
   }) {
     return NitChatParticipant(
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       chatChannelId: chatChannelId ?? this.chatChannelId,
+      lastMessage: lastMessage is String? ? lastMessage : this.lastMessage,
+      lastMessageSentAt: lastMessageSentAt is DateTime?
+          ? lastMessageSentAt
+          : this.lastMessageSentAt,
+      unreadCount: unreadCount ?? this.unreadCount,
     );
   }
 }
@@ -140,17 +183,39 @@ class NitChatParticipantTable extends _i1.Table {
       'chatChannelId',
       this,
     );
+    lastMessage = _i1.ColumnString(
+      'lastMessage',
+      this,
+    );
+    lastMessageSentAt = _i1.ColumnDateTime(
+      'lastMessageSentAt',
+      this,
+    );
+    unreadCount = _i1.ColumnInt(
+      'unreadCount',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final _i1.ColumnInt userInfoId;
 
   late final _i1.ColumnInt chatChannelId;
 
+  late final _i1.ColumnString lastMessage;
+
+  late final _i1.ColumnDateTime lastMessageSentAt;
+
+  late final _i1.ColumnInt unreadCount;
+
   @override
   List<_i1.Column> get columns => [
         id,
         userInfoId,
         chatChannelId,
+        lastMessage,
+        lastMessageSentAt,
+        unreadCount,
       ];
 }
 

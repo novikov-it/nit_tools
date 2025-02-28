@@ -6,7 +6,7 @@ class ServicesEndpoint extends Endpoint {
     Session session, {
     required String fcmToken,
   }) async {
-    await FcmToken.db.deleteWhere(
+    await NitFcmToken.db.deleteWhere(
       session,
       where: (t) => t.fcmToken.equals(fcmToken),
     );
@@ -14,7 +14,7 @@ class ServicesEndpoint extends Endpoint {
     await session.authenticated.then(
       (auth) async => auth != null
           ? await session.db.insertRow(
-              FcmToken(
+              NitFcmToken(
                 userId: auth.userId,
                 fcmToken: fcmToken,
               ),

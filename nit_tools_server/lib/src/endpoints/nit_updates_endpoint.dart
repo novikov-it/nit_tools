@@ -2,6 +2,8 @@ import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class NitUpdatesEndpoint extends Endpoint {
+  static userUpdatesChannel(int userId) => 'userUpdates$userId';
+
   // Stream<SerializableModel> updatesStream(
   //     Session session, Stream<SerializableModel> instream) async* {
   //   final userId = await session.authenticated.then((auth) => auth?.userId);
@@ -51,7 +53,7 @@ class NitUpdatesEndpoint extends Endpoint {
       return;
     }
 
-    final channel = MessagingSessionExtension.userUpdatesChannel(userId);
+    final channel = userUpdatesChannel(userId);
 
     setUserObject(
       session,

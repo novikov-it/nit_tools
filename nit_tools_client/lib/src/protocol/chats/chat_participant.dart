@@ -16,12 +16,18 @@ abstract class NitChatParticipant implements _i1.SerializableModel {
     this.id,
     required this.userInfoId,
     required this.chatChannelId,
-  });
+    this.lastMessage,
+    this.lastMessageSentAt,
+    int? unreadCount,
+  }) : unreadCount = unreadCount ?? 0;
 
   factory NitChatParticipant({
     int? id,
     required int userInfoId,
     required int chatChannelId,
+    String? lastMessage,
+    DateTime? lastMessageSentAt,
+    int? unreadCount,
   }) = _NitChatParticipantImpl;
 
   factory NitChatParticipant.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -29,6 +35,12 @@ abstract class NitChatParticipant implements _i1.SerializableModel {
       id: jsonSerialization['id'] as int?,
       userInfoId: jsonSerialization['userInfoId'] as int,
       chatChannelId: jsonSerialization['chatChannelId'] as int,
+      lastMessage: jsonSerialization['lastMessage'] as String?,
+      lastMessageSentAt: jsonSerialization['lastMessageSentAt'] == null
+          ? null
+          : _i1.DateTimeJsonExtension.fromJson(
+              jsonSerialization['lastMessageSentAt']),
+      unreadCount: jsonSerialization['unreadCount'] as int,
     );
   }
 
@@ -41,10 +53,19 @@ abstract class NitChatParticipant implements _i1.SerializableModel {
 
   int chatChannelId;
 
+  String? lastMessage;
+
+  DateTime? lastMessageSentAt;
+
+  int unreadCount;
+
   NitChatParticipant copyWith({
     int? id,
     int? userInfoId,
     int? chatChannelId,
+    String? lastMessage,
+    DateTime? lastMessageSentAt,
+    int? unreadCount,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -52,6 +73,10 @@ abstract class NitChatParticipant implements _i1.SerializableModel {
       if (id != null) 'id': id,
       'userInfoId': userInfoId,
       'chatChannelId': chatChannelId,
+      if (lastMessage != null) 'lastMessage': lastMessage,
+      if (lastMessageSentAt != null)
+        'lastMessageSentAt': lastMessageSentAt?.toJson(),
+      'unreadCount': unreadCount,
     };
   }
 
@@ -68,10 +93,16 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     int? id,
     required int userInfoId,
     required int chatChannelId,
+    String? lastMessage,
+    DateTime? lastMessageSentAt,
+    int? unreadCount,
   }) : super._(
           id: id,
           userInfoId: userInfoId,
           chatChannelId: chatChannelId,
+          lastMessage: lastMessage,
+          lastMessageSentAt: lastMessageSentAt,
+          unreadCount: unreadCount,
         );
 
   @override
@@ -79,11 +110,19 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     Object? id = _Undefined,
     int? userInfoId,
     int? chatChannelId,
+    Object? lastMessage = _Undefined,
+    Object? lastMessageSentAt = _Undefined,
+    int? unreadCount,
   }) {
     return NitChatParticipant(
       id: id is int? ? id : this.id,
       userInfoId: userInfoId ?? this.userInfoId,
       chatChannelId: chatChannelId ?? this.chatChannelId,
+      lastMessage: lastMessage is String? ? lastMessage : this.lastMessage,
+      lastMessageSentAt: lastMessageSentAt is DateTime?
+          ? lastMessageSentAt
+          : this.lastMessageSentAt,
+      unreadCount: unreadCount ?? this.unreadCount,
     );
   }
 }

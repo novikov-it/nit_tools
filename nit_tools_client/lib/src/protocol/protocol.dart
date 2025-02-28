@@ -72,8 +72,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i6.NitChatParticipant) {
       return _i6.NitChatParticipant.fromJson(data) as T;
     }
-    if (t == _i7.FcmToken) {
-      return _i7.FcmToken.fromJson(data) as T;
+    if (t == _i7.NitFcmToken) {
+      return _i7.NitFcmToken.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.NitAppNotification?>()) {
       return (data != null ? _i2.NitAppNotification.fromJson(data) : null) as T;
@@ -90,8 +90,8 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i6.NitChatParticipant?>()) {
       return (data != null ? _i6.NitChatParticipant.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.FcmToken?>()) {
-      return (data != null ? _i7.FcmToken.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.NitFcmToken?>()) {
+      return (data != null ? _i7.NitFcmToken.fromJson(data) : null) as T;
     }
     if (t == List<_i8.NitChatMessage>) {
       return (data as List)
@@ -171,8 +171,8 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i6.NitChatParticipant) {
       return 'NitChatParticipant';
     }
-    if (data is _i7.FcmToken) {
-      return 'FcmToken';
+    if (data is _i7.NitFcmToken) {
+      return 'NitFcmToken';
     }
     className = _i9.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -207,8 +207,8 @@ class Protocol extends _i1.SerializationManager {
     if (data['className'] == 'NitChatParticipant') {
       return deserialize<_i6.NitChatParticipant>(data['data']);
     }
-    if (data['className'] == 'FcmToken') {
-      return deserialize<_i7.FcmToken>(data['data']);
+    if (data['className'] == 'NitFcmToken') {
+      return deserialize<_i7.NitFcmToken>(data['data']);
     }
     if (data['className'].startsWith('serverpod_auth.')) {
       data['className'] = data['className'].substring(15);
