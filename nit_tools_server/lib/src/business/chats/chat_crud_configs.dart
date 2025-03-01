@@ -6,6 +6,12 @@ final defaultChatCrudConfigs = [
   CrudConfig<NitChatParticipant>(
     table: NitChatParticipant.t,
     getAll: GetAllConfig(
+      defaultOrderByList: [
+        Order(
+          column: NitChatParticipant.t.lastMessageSentAt,
+          orderDescending: true,
+        ),
+      ],
       additionalEntitiesFetchFunction: (session, models) async => [
         ...await UserInfo.db.find(
           session,
