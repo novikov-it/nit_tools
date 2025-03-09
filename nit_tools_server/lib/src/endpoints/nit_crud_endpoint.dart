@@ -54,6 +54,8 @@ class NitCrudEndpoint extends Endpoint {
     Session session, {
     required String className,
     List<NitBackendFilter>? filters,
+    int? limit,
+    int? offset,
   }) async {
     final caller = CrudConfig.getCaller(className);
 

@@ -6,31 +6,36 @@ class PostConfig<T extends TableRow> {
     this.allowInsert,
     this.allowUpdate,
     this.allowDelete,
+    this.beforeInsert,
+    this.beforeUpdate,
     this.afterInsert,
     this.afterUpdate,
     this.afterDelete,
-    this.callAfterUpdateOnInsert = true,
   });
 
   const PostConfig.simple({
     required Future<bool> Function(Session session, T model) allowAllActions,
+    this.beforeInsert,
+    this.beforeUpdate,
+    this.afterInsert,
+    this.afterUpdate,
+    this.afterDelete,
   })  : allowInsert = allowAllActions,
         allowUpdate = allowAllActions,
-        allowDelete = allowAllActions,
-        afterInsert = null,
-        afterUpdate = null,
-        afterDelete = null,
-        callAfterUpdateOnInsert = true;
+        allowDelete = allowAllActions;
 
   final Future<bool> Function(Session session, T model)? allowInsert;
   final Future<bool> Function(Session session, T model)? allowUpdate;
   final Future<bool> Function(Session session, T model)? allowDelete;
 
+  final Future<T> Function(Session session, T newModel)? beforeInsert;
+  final Future<T> Function(Session session, T currentModel, T newModel)?
+      beforeUpdate;
+
   final Future<List<TableRow>> Function(Session session, T insertedModel)?
       afterInsert;
-  final bool callAfterUpdateOnInsert;
-  final Future<List<TableRow>> Function(Session session, T updatedModel)?
-      afterUpdate;
+  final Future<List<TableRow>> Function(
+      Session session, T initialModel, T updatedModel)? afterUpdate;
   final Future<List<TableRow>> Function(Session session, T model)? afterDelete;
 
   Future<ApiResponse<int>> upsert(Session session, T model) async {
@@ -44,23 +49,54 @@ class PostConfig<T extends TableRow> {
       return ApiResponse.forbidden();
     }
 
-    final updatedModel = isInsert
-        ? await session.db.insertRow<T>(model)
-        : await session.db.updateRow<T>(model);
+    final initialModel =
+        (isInsert || (afterUpdate == null && beforeUpdate == null))
+            ? null
+            : await session.db.findById<T>(model.id!);
 
-    return ApiResponse(isOk: true, value: updatedModel.id, updatedEntities: [
-      ObjectWrapper(
-        object: updatedModel,
-      ),
-      if (isInsert && afterInsert != null)
-        ...(await (afterInsert!(session, updatedModel))).map(
-          (e) => ObjectWrapper(object: e),
+    final updatedModel = isInsert
+        ? await session.db.insertRow<T>(
+            beforeInsert == null ? model : await beforeInsert!(session, model))
+        : await session.db.updateRow<T>(
+            beforeUpdate == null
+                ? model
+                : await beforeUpdate!(
+                    session,
+                    initialModel!,
+                    model,
+                  ),
+          );
+
+    final results = <TableRow>[updatedModel];
+
+    if (isInsert && afterInsert != null) {
+      results.addAll(
+        await afterInsert!(
+          session,
+          updatedModel,
         ),
-      if ((!isInsert || callAfterUpdateOnInsert) && afterUpdate != null)
-        ...(await (afterUpdate!(session, updatedModel))).map(
-          (e) => ObjectWrapper(object: e),
+      );
+    }
+
+    if (!isInsert && afterUpdate != null) {
+      results.addAll(
+        await afterUpdate!(
+          session,
+          initialModel!,
+          updatedModel,
         ),
-    ]);
+      );
+    }
+
+    return ApiResponse(
+      isOk: true,
+      value: updatedModel.id,
+      updatedEntities: results
+          .map(
+            (e) => ObjectWrapper(object: e),
+          )
+          .toList(),
+    );
   }
 
   Future<ApiResponse<bool>> delete(Session session, int modelId) async {
@@ -82,7 +118,6 @@ class PostConfig<T extends TableRow> {
       return ApiResponse.forbidden();
     }
 
-    // try {
     await session.db.deleteRow(model);
 
     return ApiResponse(
@@ -95,13 +130,5 @@ class PostConfig<T extends TableRow> {
           ),
       ],
     );
-    // }
-    // on DatabaseException {
-    //   return ApiResponse(
-    //     isOk: true,
-    //     value: true,
-    //     warning: 'Сущность была удалена ранее',
-    //   );
-    // }
   }
 }

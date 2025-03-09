@@ -14,24 +14,33 @@ class GetAllConfig<T extends TableRow> {
   Future<ApiResponse<List<int>>> call(
     Session session, {
     Expression? whereClause,
+    int? limit,
+    int? offset,
   }) async {
-    final list = await session.db.find<T>(
+    final resultItems = await session.db.find<T>(
       where: whereClause,
       orderByList: defaultOrderByList,
+      limit: limit,
+      offset: offset,
     );
 
-    return ApiResponse<List<int>>(isOk: true, value: [
-      ...list.map((e) => e.id!)
-    ], updatedEntities: [
-      ...list.map((e) => ObjectWrapper(object: e)),
-      if (additionalEntitiesFetchFunction != null)
-        ...(await (additionalEntitiesFetchFunction!(
-          session,
-          list,
-        )))
-            .map(
-          (e) => ObjectWrapper(object: e),
-        )
-    ]);
+    return ApiResponse<List<int>>(
+      isOk: true,
+      value: [
+        ...resultItems.map((e) => e.id!),
+      ],
+      updatedEntities: [
+        ...resultItems,
+        if (additionalEntitiesFetchFunction != null)
+          ...(await additionalEntitiesFetchFunction!(
+            session,
+            resultItems,
+          ))
+      ]
+          .map(
+            (e) => ObjectWrapper(object: e),
+          )
+          .toList(),
+    );
   }
 }
