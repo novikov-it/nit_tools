@@ -1,22 +1,26 @@
-import 'static.dart';
 import 'package:serverpod_client/serverpod_client.dart';
+
+import 'static.dart';
 
 class ObjectWrapper implements SerializableModel {
   ObjectWrapper.wrap({
     required this.model,
   })  : modelId = null,
+        this.foreignKeys = {},
         className =
             NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
 
   ObjectWrapper._({
     required this.model,
-    this.modelId,
+    required this.modelId,
+    required this.foreignKeys,
     // this.entities,
   }) : className =
             NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
 
   final String className;
   final SerializableModel model;
+  final Map<String, int> foreignKeys;
   final int? modelId;
   // final List<SerializableModel>? entities;
 
@@ -25,8 +29,18 @@ class ObjectWrapper implements SerializableModel {
   factory ObjectWrapper.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
+    final foreignKeys = <String, int>{};
+
+    for (var key in (jsonSerialization['data'] as Map<String, dynamic>).keys) {
+      if (key.substring(key.length - 2) == 'Id' &&
+          jsonSerialization['data'][key] is int) {
+        foreignKeys[key] = jsonSerialization['data'][key] as int;
+      }
+    }
+
     return ObjectWrapper._(
       modelId: jsonSerialization['data']['id'],
+      foreignKeys: foreignKeys,
       model: NitToolsClient.protocol.deserializeByClassName(jsonSerialization),
       // value: jsonSerialization['value'] as T,
       // warning: jsonSerialization['warning'] as String,
