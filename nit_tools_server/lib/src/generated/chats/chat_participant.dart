@@ -17,7 +17,7 @@ abstract class NitChatParticipant
     implements _i1.TableRow, _i1.ProtocolSerialization {
   NitChatParticipant._({
     this.id,
-    required this.userInfoId,
+    required this.userId,
     required this.chatChannelId,
     this.lastMessage,
     this.lastMessageSentAt,
@@ -26,7 +26,7 @@ abstract class NitChatParticipant
 
   factory NitChatParticipant({
     int? id,
-    required int userInfoId,
+    required int userId,
     required int chatChannelId,
     String? lastMessage,
     DateTime? lastMessageSentAt,
@@ -36,7 +36,7 @@ abstract class NitChatParticipant
   factory NitChatParticipant.fromJson(Map<String, dynamic> jsonSerialization) {
     return NitChatParticipant(
       id: jsonSerialization['id'] as int?,
-      userInfoId: jsonSerialization['userInfoId'] as int,
+      userId: jsonSerialization['userId'] as int,
       chatChannelId: jsonSerialization['chatChannelId'] as int,
       lastMessage: jsonSerialization['lastMessage'] as String?,
       lastMessageSentAt: jsonSerialization['lastMessageSentAt'] == null
@@ -54,7 +54,7 @@ abstract class NitChatParticipant
   @override
   int? id;
 
-  int userInfoId;
+  int userId;
 
   int chatChannelId;
 
@@ -69,7 +69,7 @@ abstract class NitChatParticipant
 
   NitChatParticipant copyWith({
     int? id,
-    int? userInfoId,
+    int? userId,
     int? chatChannelId,
     String? lastMessage,
     DateTime? lastMessageSentAt,
@@ -79,7 +79,7 @@ abstract class NitChatParticipant
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'userInfoId': userInfoId,
+      'userId': userId,
       'chatChannelId': chatChannelId,
       if (lastMessage != null) 'lastMessage': lastMessage,
       if (lastMessageSentAt != null)
@@ -92,7 +92,7 @@ abstract class NitChatParticipant
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      'userInfoId': userInfoId,
+      'userId': userId,
       'chatChannelId': chatChannelId,
       if (lastMessage != null) 'lastMessage': lastMessage,
       if (lastMessageSentAt != null)
@@ -136,14 +136,14 @@ class _Undefined {}
 class _NitChatParticipantImpl extends NitChatParticipant {
   _NitChatParticipantImpl({
     int? id,
-    required int userInfoId,
+    required int userId,
     required int chatChannelId,
     String? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
   }) : super._(
           id: id,
-          userInfoId: userInfoId,
+          userId: userId,
           chatChannelId: chatChannelId,
           lastMessage: lastMessage,
           lastMessageSentAt: lastMessageSentAt,
@@ -153,7 +153,7 @@ class _NitChatParticipantImpl extends NitChatParticipant {
   @override
   NitChatParticipant copyWith({
     Object? id = _Undefined,
-    int? userInfoId,
+    int? userId,
     int? chatChannelId,
     Object? lastMessage = _Undefined,
     Object? lastMessageSentAt = _Undefined,
@@ -161,7 +161,7 @@ class _NitChatParticipantImpl extends NitChatParticipant {
   }) {
     return NitChatParticipant(
       id: id is int? ? id : this.id,
-      userInfoId: userInfoId ?? this.userInfoId,
+      userId: userId ?? this.userId,
       chatChannelId: chatChannelId ?? this.chatChannelId,
       lastMessage: lastMessage is String? ? lastMessage : this.lastMessage,
       lastMessageSentAt: lastMessageSentAt is DateTime?
@@ -175,8 +175,8 @@ class _NitChatParticipantImpl extends NitChatParticipant {
 class NitChatParticipantTable extends _i1.Table {
   NitChatParticipantTable({super.tableRelation})
       : super(tableName: 'nit_chat_participant') {
-    userInfoId = _i1.ColumnInt(
-      'userInfoId',
+    userId = _i1.ColumnInt(
+      'userId',
       this,
     );
     chatChannelId = _i1.ColumnInt(
@@ -198,7 +198,7 @@ class NitChatParticipantTable extends _i1.Table {
     );
   }
 
-  late final _i1.ColumnInt userInfoId;
+  late final _i1.ColumnInt userId;
 
   late final _i1.ColumnInt chatChannelId;
 
@@ -211,7 +211,7 @@ class NitChatParticipantTable extends _i1.Table {
   @override
   List<_i1.Column> get columns => [
         id,
-        userInfoId,
+        userId,
         chatChannelId,
         lastMessage,
         lastMessageSentAt,

@@ -176,7 +176,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'nit_chat_message_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'userInfoId',
+          name: 'userId',
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
@@ -203,7 +203,7 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'nit_chat_message_fk_0',
-          columns: ['userInfoId'],
+          columns: ['userId'],
           referenceTable: 'serverpod_user_info',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
@@ -253,7 +253,7 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'nit_chat_participant_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'userInfoId',
+          name: 'userId',
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
@@ -287,7 +287,7 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'nit_chat_participant_fk_0',
-          columns: ['userInfoId'],
+          columns: ['userId'],
           referenceTable: 'serverpod_user_info',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
@@ -326,7 +326,7 @@ class Protocol extends _i1.SerializationManagerServer {
           elements: [
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,
-              definition: 'userInfoId',
+              definition: 'userId',
             ),
             _i2.IndexElementDefinition(
               type: _i2.IndexElementDefinitionType.column,

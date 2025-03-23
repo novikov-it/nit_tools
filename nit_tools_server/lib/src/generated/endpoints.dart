@@ -147,6 +147,16 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<List<_i7.NitBackendFilter>?>(),
               nullable: true,
             ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _i1.ParameterDescription(
+              name: 'offset',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -156,6 +166,8 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             className: params['className'],
             filters: params['filters'],
+            limit: params['limit'],
+            offset: params['offset'],
           ),
         ),
         'saveModels': _i1.MethodConnector(

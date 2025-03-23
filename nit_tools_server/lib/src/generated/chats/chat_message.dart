@@ -17,7 +17,7 @@ abstract class NitChatMessage
     implements _i1.TableRow, _i1.ProtocolSerialization {
   NitChatMessage._({
     this.id,
-    required this.userInfoId,
+    required this.userId,
     required this.chatChannelId,
     required this.sentAt,
     this.text,
@@ -25,7 +25,7 @@ abstract class NitChatMessage
 
   factory NitChatMessage({
     int? id,
-    required int userInfoId,
+    required int userId,
     required int chatChannelId,
     required DateTime sentAt,
     String? text,
@@ -34,7 +34,7 @@ abstract class NitChatMessage
   factory NitChatMessage.fromJson(Map<String, dynamic> jsonSerialization) {
     return NitChatMessage(
       id: jsonSerialization['id'] as int?,
-      userInfoId: jsonSerialization['userInfoId'] as int,
+      userId: jsonSerialization['userId'] as int,
       chatChannelId: jsonSerialization['chatChannelId'] as int,
       sentAt: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sentAt']),
       text: jsonSerialization['text'] as String?,
@@ -48,7 +48,7 @@ abstract class NitChatMessage
   @override
   int? id;
 
-  int userInfoId;
+  int userId;
 
   int chatChannelId;
 
@@ -61,7 +61,7 @@ abstract class NitChatMessage
 
   NitChatMessage copyWith({
     int? id,
-    int? userInfoId,
+    int? userId,
     int? chatChannelId,
     DateTime? sentAt,
     String? text,
@@ -70,7 +70,7 @@ abstract class NitChatMessage
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'userInfoId': userInfoId,
+      'userId': userId,
       'chatChannelId': chatChannelId,
       'sentAt': sentAt.toJson(),
       if (text != null) 'text': text,
@@ -81,7 +81,7 @@ abstract class NitChatMessage
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      'userInfoId': userInfoId,
+      'userId': userId,
       'chatChannelId': chatChannelId,
       'sentAt': sentAt.toJson(),
       if (text != null) 'text': text,
@@ -123,13 +123,13 @@ class _Undefined {}
 class _NitChatMessageImpl extends NitChatMessage {
   _NitChatMessageImpl({
     int? id,
-    required int userInfoId,
+    required int userId,
     required int chatChannelId,
     required DateTime sentAt,
     String? text,
   }) : super._(
           id: id,
-          userInfoId: userInfoId,
+          userId: userId,
           chatChannelId: chatChannelId,
           sentAt: sentAt,
           text: text,
@@ -138,14 +138,14 @@ class _NitChatMessageImpl extends NitChatMessage {
   @override
   NitChatMessage copyWith({
     Object? id = _Undefined,
-    int? userInfoId,
+    int? userId,
     int? chatChannelId,
     DateTime? sentAt,
     Object? text = _Undefined,
   }) {
     return NitChatMessage(
       id: id is int? ? id : this.id,
-      userInfoId: userInfoId ?? this.userInfoId,
+      userId: userId ?? this.userId,
       chatChannelId: chatChannelId ?? this.chatChannelId,
       sentAt: sentAt ?? this.sentAt,
       text: text is String? ? text : this.text,
@@ -156,8 +156,8 @@ class _NitChatMessageImpl extends NitChatMessage {
 class NitChatMessageTable extends _i1.Table {
   NitChatMessageTable({super.tableRelation})
       : super(tableName: 'nit_chat_message') {
-    userInfoId = _i1.ColumnInt(
-      'userInfoId',
+    userId = _i1.ColumnInt(
+      'userId',
       this,
     );
     chatChannelId = _i1.ColumnInt(
@@ -174,7 +174,7 @@ class NitChatMessageTable extends _i1.Table {
     );
   }
 
-  late final _i1.ColumnInt userInfoId;
+  late final _i1.ColumnInt userId;
 
   late final _i1.ColumnInt chatChannelId;
 
@@ -185,7 +185,7 @@ class NitChatMessageTable extends _i1.Table {
   @override
   List<_i1.Column> get columns => [
         id,
-        userInfoId,
+        userId,
         chatChannelId,
         sentAt,
         text,

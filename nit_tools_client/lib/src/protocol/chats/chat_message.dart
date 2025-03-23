@@ -14,7 +14,7 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class NitChatMessage implements _i1.SerializableModel {
   NitChatMessage._({
     this.id,
-    required this.userInfoId,
+    required this.userId,
     required this.chatChannelId,
     required this.sentAt,
     this.text,
@@ -22,7 +22,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
 
   factory NitChatMessage({
     int? id,
-    required int userInfoId,
+    required int userId,
     required int chatChannelId,
     required DateTime sentAt,
     String? text,
@@ -31,7 +31,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
   factory NitChatMessage.fromJson(Map<String, dynamic> jsonSerialization) {
     return NitChatMessage(
       id: jsonSerialization['id'] as int?,
-      userInfoId: jsonSerialization['userInfoId'] as int,
+      userId: jsonSerialization['userId'] as int,
       chatChannelId: jsonSerialization['chatChannelId'] as int,
       sentAt: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sentAt']),
       text: jsonSerialization['text'] as String?,
@@ -43,7 +43,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int userInfoId;
+  int userId;
 
   int chatChannelId;
 
@@ -53,7 +53,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
 
   NitChatMessage copyWith({
     int? id,
-    int? userInfoId,
+    int? userId,
     int? chatChannelId,
     DateTime? sentAt,
     String? text,
@@ -62,7 +62,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'userInfoId': userInfoId,
+      'userId': userId,
       'chatChannelId': chatChannelId,
       'sentAt': sentAt.toJson(),
       if (text != null) 'text': text,
@@ -80,13 +80,13 @@ class _Undefined {}
 class _NitChatMessageImpl extends NitChatMessage {
   _NitChatMessageImpl({
     int? id,
-    required int userInfoId,
+    required int userId,
     required int chatChannelId,
     required DateTime sentAt,
     String? text,
   }) : super._(
           id: id,
-          userInfoId: userInfoId,
+          userId: userId,
           chatChannelId: chatChannelId,
           sentAt: sentAt,
           text: text,
@@ -95,14 +95,14 @@ class _NitChatMessageImpl extends NitChatMessage {
   @override
   NitChatMessage copyWith({
     Object? id = _Undefined,
-    int? userInfoId,
+    int? userId,
     int? chatChannelId,
     DateTime? sentAt,
     Object? text = _Undefined,
   }) {
     return NitChatMessage(
       id: id is int? ? id : this.id,
-      userInfoId: userInfoId ?? this.userInfoId,
+      userId: userId ?? this.userId,
       chatChannelId: chatChannelId ?? this.chatChannelId,
       sentAt: sentAt ?? this.sentAt,
       text: text is String? ? text : this.text,

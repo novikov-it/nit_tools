@@ -10,15 +10,7 @@
 
 library protocol; // ignore_for_file: no_leading_underscores_for_library_prefixes
 
-import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
-    as _i10;
-import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i11;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-
-import '/src/extra_classes/api_response.dart' as _i13;
-import '/src/extra_classes/nit_backend_filter.dart' as _i14;
-import '/src/extra_classes/object_wrapper.dart' as _i12;
 import 'app_notification.dart' as _i2;
 import 'chats/chat_channel.dart' as _i3;
 import 'chats/chat_initial_data.dart' as _i4;
@@ -26,14 +18,20 @@ import 'chats/chat_message.dart' as _i5;
 import 'chats/chat_participant.dart' as _i6;
 import 'fcm_token.dart' as _i7;
 import 'protocol.dart' as _i8;
-
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i9;
+import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
+    as _i10;
+import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i11;
+import '/src/extra_classes/object_wrapper.dart' as _i12;
+import '/src/extra_classes/api_response.dart' as _i13;
+import '/src/extra_classes/nit_backend_filter.dart' as _i14;
 export 'app_notification.dart';
 export 'chats/chat_channel.dart';
 export 'chats/chat_initial_data.dart';
 export 'chats/chat_message.dart';
 export 'chats/chat_participant.dart';
-export 'client.dart';
 export 'fcm_token.dart';
+export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
   Protocol._();
@@ -48,15 +46,6 @@ class Protocol extends _i1.SerializationManager {
     Type? t,
   ]) {
     t ??= T;
-    if (t == List<int>) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
-    }
-
-    if (data is Map<String, dynamic>) {
-      final manualDeserialization =
-          _i13.ApiResponse.manualDeserialization<T>(data);
-      if (manualDeserialization != null) return manualDeserialization;
-    }
     if (t == _i2.NitAppNotification) {
       return _i2.NitAppNotification.fromJson(data) as T;
     }

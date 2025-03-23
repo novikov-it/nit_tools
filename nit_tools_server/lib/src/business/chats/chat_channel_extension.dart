@@ -9,7 +9,7 @@ extension ChatChannelExtension on Session {
   }) async {
     try {
       return await db.insertRow(
-        NitChatParticipant(userInfoId: userId, chatChannelId: chatChannelId),
+        NitChatParticipant(userId: userId, chatChannelId: chatChannelId),
       );
     } on DatabaseException catch (e) {
       log(

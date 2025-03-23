@@ -16,7 +16,7 @@ final defaultChatCrudConfigs = [
         ...await UserInfo.db.find(
           session,
           where: (t) => t.id.inSet(
-            models.map((e) => e.userInfoId).toSet(),
+            models.map((e) => e.userId).toSet(),
           ),
         ),
         ...await NitChatChannel.db.find(
@@ -39,7 +39,7 @@ final defaultChatCrudConfigs = [
     ),
     post: PostConfig(
       allowInsert: (session, model) async {
-        return model.userInfoId == (await session.authenticated)?.userId;
+        return model.userId == (await session.authenticated)?.userId;
       },
       afterInsert: (session, model) async {
         final participants = await NitChatParticipant.db.find(
@@ -49,13 +49,13 @@ final defaultChatCrudConfigs = [
 
         for (var p in participants) {
           session.nitSendToUser(
-            p.userInfoId,
+            p.userId,
             await NitChatParticipant.db.updateRow(
               session,
               p.copyWith(
                 lastMessage: model.text,
                 lastMessageSentAt: model.sentAt,
-                unreadCount: await session.isUser(model.userInfoId)
+                unreadCount: await session.isUser(model.userId)
                     ? p.unreadCount
                     : p.unreadCount + 1,
               ),
@@ -66,8 +66,8 @@ final defaultChatCrudConfigs = [
         NitPushNotifications.sendPushToUsers(
           session,
           userIds: participants
-              .map((e) => e.userInfoId)
-              .where((e) => e != model.userInfoId)
+              .map((e) => e.userId)
+              .where((e) => e != model.userId)
               .toList(),
           title: model.text!,
           body: '',

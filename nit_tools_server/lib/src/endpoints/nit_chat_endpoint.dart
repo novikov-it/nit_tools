@@ -37,7 +37,7 @@ class NitChatEndpoint extends Endpoint {
     final participantProfiles = await UserInfo.db.find(
       session,
       where: (t) => t.id.inSet(
-        participants.map((e) => e.userInfoId).toSet(),
+        participants.map((e) => e.userId).toSet(),
       ),
     );
 

@@ -1,7 +1,7 @@
 class: NitChatParticipant
 table: nit_chat_participant
 fields:
-    userInfoId: int, relation(parent=serverpod_user_info)
+    userId: int, relation(parent=serverpod_user_info)
     chatChannelId: int, relation(parent=nit_chat_channel)
     lastMessage: String?
     lastMessageSentAt: DateTime?
@@ -9,5 +9,5 @@ fields:
 
 indexes:
   chat_participants_idx:
-    fields: userInfoId, chatChannelId
+    fields: userId, chatChannelId
     unique: true

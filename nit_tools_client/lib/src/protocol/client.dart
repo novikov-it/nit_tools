@@ -70,6 +70,8 @@ class EndpointNitCrud extends _i1.EndpointRef {
   _i2.Future<_i4.ApiResponse<List<int>>> getAll({
     required String className,
     List<_i5.NitBackendFilter>? filters,
+    int? limit,
+    int? offset,
   }) =>
       caller.callServerEndpoint<_i4.ApiResponse<List<int>>>(
         'nit_tools.nitCrud',
@@ -77,6 +79,8 @@ class EndpointNitCrud extends _i1.EndpointRef {
         {
           'className': className,
           'filters': filters,
+          'limit': limit,
+          'offset': offset,
         },
       );
 
