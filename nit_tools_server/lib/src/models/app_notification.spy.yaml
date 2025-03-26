@@ -9,3 +9,4 @@ fields:
     # type: String
     # relatedEntityId: int?
     isRead: bool, default = false
+    updatedEntities: List<ObjectWrapper>?, !persist

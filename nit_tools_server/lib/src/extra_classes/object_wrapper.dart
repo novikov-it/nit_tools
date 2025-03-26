@@ -1,6 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
-class ObjectWrapper implements SerializableModel {
+class ObjectWrapper implements SerializableModel, ProtocolSerialization {
   static SerializationManagerServer get _protocol =>
       Serverpod.instance.serializationManager;
 
@@ -28,10 +28,23 @@ class ObjectWrapper implements SerializableModel {
   toJson() {
     return {
       'className': className,
-      // 'id': id,
       'data': object.toJson(),
-      // if (entities != null)
-      //   'entities': entities?.toJson(valueToJson: (v) => v.toJson()),
     };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      'className': className,
+      'data': object.toJson(),
+    };
+  }
+
+  ObjectWrapper copyWith({
+    TableRow? object,
+  }) {
+    return ObjectWrapper(
+      object: object ?? this.object,
+    );
   }
 }

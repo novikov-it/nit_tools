@@ -2,7 +2,7 @@ import 'package:serverpod_client/serverpod_client.dart';
 
 import 'static.dart';
 
-class ObjectWrapper implements SerializableModel {
+class ObjectWrapper implements SerializableModel, ProtocolSerialization {
   ObjectWrapper.wrap({
     required this.model,
   })  : modelId = null,
@@ -14,7 +14,6 @@ class ObjectWrapper implements SerializableModel {
     required this.model,
     required this.modelId,
     required this.foreignKeys,
-    // this.entities,
   }) : className =
             NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
 
@@ -42,12 +41,6 @@ class ObjectWrapper implements SerializableModel {
       modelId: jsonSerialization['data']['id'],
       foreignKeys: foreignKeys,
       model: NitToolsClient.protocol.deserializeByClassName(jsonSerialization),
-      // value: jsonSerialization['value'] as T,
-      // warning: jsonSerialization['warning'] as String,
-      // error: jsonSerialization['error'] as String,
-      // entities: (jsonSerialization['entities'] as List)
-      //         .map((e) => T.fromJson((e as Map<String, dynamic>)))
-      //         .toList(),
     );
   }
 
@@ -56,8 +49,22 @@ class ObjectWrapper implements SerializableModel {
     return {
       'className': NitToolsClient.protocol.getClassNameForObject(model),
       'data': model.toJson(),
-      // if (entities != null)
-      //   'entities': entities?.toJson(valueToJson: (v) => v.toJson()),
     };
+  }
+
+  @override
+  toJsonForProtocol() {
+    return {
+      'className': NitToolsClient.protocol.getClassNameForObject(model),
+      'data': model.toJson(),
+    };
+  }
+
+  ObjectWrapper copyWith({
+    SerializableModel? model,
+  }) {
+    return ObjectWrapper.wrap(
+      model: model ?? this.model,
+    );
   }
 }

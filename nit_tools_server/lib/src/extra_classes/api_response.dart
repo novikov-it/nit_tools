@@ -1,5 +1,6 @@
-import 'object_wrapper.dart';
 import 'package:serverpod/serverpod.dart';
+
+import 'object_wrapper.dart';
 
 class ApiResponse<T> implements SerializableModel {
   static SerializationManagerServer get _protocol =>

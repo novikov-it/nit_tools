@@ -10,6 +10,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import '/src/extra_classes/object_wrapper.dart' as _i2;
 
 abstract class NitAppNotification implements _i1.SerializableModel {
   NitAppNotification._({
@@ -20,6 +21,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
     this.body,
     this.goToPath,
     bool? isRead,
+    this.updatedEntities,
   })  : timestamp = timestamp ?? DateTime.now(),
         isRead = isRead ?? false;
 
@@ -31,6 +33,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
     String? body,
     String? goToPath,
     bool? isRead,
+    List<_i2.ObjectWrapper>? updatedEntities,
   }) = _NitAppNotificationImpl;
 
   factory NitAppNotification.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -43,6 +46,9 @@ abstract class NitAppNotification implements _i1.SerializableModel {
       body: jsonSerialization['body'] as String?,
       goToPath: jsonSerialization['goToPath'] as String?,
       isRead: jsonSerialization['isRead'] as bool,
+      updatedEntities: (jsonSerialization['updatedEntities'] as List?)
+          ?.map((e) => _i2.ObjectWrapper.fromJson(e))
+          .toList(),
     );
   }
 
@@ -63,6 +69,8 @@ abstract class NitAppNotification implements _i1.SerializableModel {
 
   bool isRead;
 
+  List<_i2.ObjectWrapper>? updatedEntities;
+
   NitAppNotification copyWith({
     int? id,
     int? toUserId,
@@ -71,6 +79,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
     String? body,
     String? goToPath,
     bool? isRead,
+    List<_i2.ObjectWrapper>? updatedEntities,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -82,6 +91,9 @@ abstract class NitAppNotification implements _i1.SerializableModel {
       if (body != null) 'body': body,
       if (goToPath != null) 'goToPath': goToPath,
       'isRead': isRead,
+      if (updatedEntities != null)
+        'updatedEntities':
+            updatedEntities?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -102,6 +114,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
     String? body,
     String? goToPath,
     bool? isRead,
+    List<_i2.ObjectWrapper>? updatedEntities,
   }) : super._(
           id: id,
           toUserId: toUserId,
@@ -110,6 +123,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
           body: body,
           goToPath: goToPath,
           isRead: isRead,
+          updatedEntities: updatedEntities,
         );
 
   @override
@@ -121,6 +135,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
     Object? body = _Undefined,
     Object? goToPath = _Undefined,
     bool? isRead,
+    Object? updatedEntities = _Undefined,
   }) {
     return NitAppNotification(
       id: id is int? ? id : this.id,
@@ -130,6 +145,9 @@ class _NitAppNotificationImpl extends NitAppNotification {
       body: body is String? ? body : this.body,
       goToPath: goToPath is String? ? goToPath : this.goToPath,
       isRead: isRead ?? this.isRead,
+      updatedEntities: updatedEntities is List<_i2.ObjectWrapper>?
+          ? updatedEntities
+          : this.updatedEntities?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

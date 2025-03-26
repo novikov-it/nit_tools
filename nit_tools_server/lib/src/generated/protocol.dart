@@ -19,11 +19,11 @@ import 'chats/chat_initial_data.dart' as _i6;
 import 'chats/chat_message.dart' as _i7;
 import 'chats/chat_participant.dart' as _i8;
 import 'fcm_token.dart' as _i9;
-import 'protocol.dart' as _i10;
+import '/src/extra_classes/object_wrapper.dart' as _i10;
+import 'protocol.dart' as _i11;
 import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
-    as _i11;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i12;
-import '/src/extra_classes/object_wrapper.dart' as _i13;
+    as _i12;
+import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i13;
 import '/src/extra_classes/api_response.dart' as _i14;
 import '/src/extra_classes/nit_backend_filter.dart' as _i15;
 export 'app_notification.dart';
@@ -429,34 +429,41 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i9.NitFcmToken?>()) {
       return (data != null ? _i9.NitFcmToken.fromJson(data) : null) as T;
     }
-    if (t == List<_i10.NitChatMessage>) {
+    if (t == _i1.getType<List<_i10.ObjectWrapper>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i10.ObjectWrapper>(e))
+              .toList()
+          : null) as dynamic;
+    }
+    if (t == _i10.ObjectWrapper) {
+      return _i10.ObjectWrapper.fromJson(data) as T;
+    }
+    if (t == List<_i11.NitChatMessage>) {
       return (data as List)
-          .map((e) => deserialize<_i10.NitChatMessage>(e))
+          .map((e) => deserialize<_i11.NitChatMessage>(e))
           .toList() as dynamic;
     }
     if (t == List<_i3.UserInfo>) {
       return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
           as dynamic;
     }
-    if (t == List<_i11.NitBackendFilter>) {
+    if (t == List<_i12.NitBackendFilter>) {
       return (data as List)
-          .map((e) => deserialize<_i11.NitBackendFilter>(e))
+          .map((e) => deserialize<_i12.NitBackendFilter>(e))
           .toList() as dynamic;
     }
-    if (t == _i1.getType<List<_i11.NitBackendFilter>?>()) {
+    if (t == _i1.getType<List<_i12.NitBackendFilter>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i11.NitBackendFilter>(e))
+              .map((e) => deserialize<_i12.NitBackendFilter>(e))
               .toList()
           : null) as dynamic;
     }
-    if (t == List<_i12.ObjectWrapper>) {
+    if (t == List<_i13.ObjectWrapper>) {
       return (data as List)
-          .map((e) => deserialize<_i12.ObjectWrapper>(e))
+          .map((e) => deserialize<_i13.ObjectWrapper>(e))
           .toList() as dynamic;
-    }
-    if (t == _i13.ObjectWrapper) {
-      return _i13.ObjectWrapper.fromJson(data) as T;
     }
     if (t == _i14.ApiResponse) {
       return _i14.ApiResponse.fromJson(data) as T;
@@ -464,8 +471,8 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i15.NitBackendFilter) {
       return _i15.NitBackendFilter.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i13.ObjectWrapper?>()) {
-      return (data != null ? _i13.ObjectWrapper.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i10.ObjectWrapper?>()) {
+      return (data != null ? _i10.ObjectWrapper.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i14.ApiResponse?>()) {
       return (data != null ? _i14.ApiResponse.fromJson(data) : null) as T;
@@ -486,7 +493,7 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i13.ObjectWrapper) {
+    if (data is _i10.ObjectWrapper) {
       return 'ObjectWrapper';
     }
     if (data is _i14.ApiResponse) {
@@ -527,7 +534,7 @@ class Protocol extends _i1.SerializationManagerServer {
   @override
   dynamic deserializeByClassName(Map<String, dynamic> data) {
     if (data['className'] == 'ObjectWrapper') {
-      return deserialize<_i13.ObjectWrapper>(data['data']);
+      return deserialize<_i10.ObjectWrapper>(data['data']);
     }
     if (data['className'] == 'ApiResponse') {
       return deserialize<_i14.ApiResponse>(data['data']);
