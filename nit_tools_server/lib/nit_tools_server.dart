@@ -1,6 +1,7 @@
 library protocol;
 
 export 'src/business/chats/chat_channel_extension.dart';
+export 'src/business/chats/nit_chats_config.dart';
 export 'src/business/crud/configuration/crud_config.dart';
 export 'src/business/crud/configuration/get_all_config.dart';
 export 'src/business/crud/configuration/get_one_by_id.dart';

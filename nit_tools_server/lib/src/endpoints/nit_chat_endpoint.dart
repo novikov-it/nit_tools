@@ -1,6 +1,5 @@
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 
 class NitChatEndpoint extends Endpoint {
   static chatUpdatesChannel(int chatId) => 'chatUpdates$chatId';
@@ -14,8 +13,6 @@ class NitChatEndpoint extends Endpoint {
     if (userId == null) {
       return;
     }
-
-    // final channel = userUpdatesChannel(userId);
 
     final stream = session.messages.createStream<SerializableModel>(
       chatUpdatesChannel(chatId),
@@ -34,17 +31,14 @@ class NitChatEndpoint extends Endpoint {
     final participants = await NitChatParticipant.db
         .find(session, where: (t) => t.chatChannelId.equals(chatId));
 
-    final participantProfiles = await UserInfo.db.find(
-      session,
-      where: (t) => t.id.inSet(
-        participants.map((e) => e.userId).toSet(),
-      ),
-    );
+    final participantIds = participants.map((e) => e.userId).toSet();
 
     yield NitChatInitialData(
-      messages: messages,
-      participantProfiles: participantProfiles,
-    );
+        messages: messages,
+        participantIds: participantIds.toList(),
+        additionalEntities:
+            await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
+                session, participantIds));
 
     await for (var update in stream) {
       yield update;

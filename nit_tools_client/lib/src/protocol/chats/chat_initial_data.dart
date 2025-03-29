@@ -11,17 +11,19 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import '../protocol.dart' as _i2;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i3;
+import '/src/extra_classes/object_wrapper.dart' as _i3;
 
 abstract class NitChatInitialData implements _i1.SerializableModel {
   NitChatInitialData._({
     required this.messages,
-    required this.participantProfiles,
+    required this.participantIds,
+    required this.additionalEntities,
   });
 
   factory NitChatInitialData({
     required List<_i2.NitChatMessage> messages,
-    required List<_i3.UserInfo> participantProfiles,
+    required List<int> participantIds,
+    required List<_i3.ObjectWrapper> additionalEntities,
   }) = _NitChatInitialDataImpl;
 
   factory NitChatInitialData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -29,26 +31,33 @@ abstract class NitChatInitialData implements _i1.SerializableModel {
       messages: (jsonSerialization['messages'] as List)
           .map((e) => _i2.NitChatMessage.fromJson((e as Map<String, dynamic>)))
           .toList(),
-      participantProfiles: (jsonSerialization['participantProfiles'] as List)
-          .map((e) => _i3.UserInfo.fromJson((e as Map<String, dynamic>)))
+      participantIds: (jsonSerialization['participantIds'] as List)
+          .map((e) => e as int)
+          .toList(),
+      additionalEntities: (jsonSerialization['additionalEntities'] as List)
+          .map((e) => _i3.ObjectWrapper.fromJson(e))
           .toList(),
     );
   }
 
   List<_i2.NitChatMessage> messages;
 
-  List<_i3.UserInfo> participantProfiles;
+  List<int> participantIds;
+
+  List<_i3.ObjectWrapper> additionalEntities;
 
   NitChatInitialData copyWith({
     List<_i2.NitChatMessage>? messages,
-    List<_i3.UserInfo>? participantProfiles,
+    List<int>? participantIds,
+    List<_i3.ObjectWrapper>? additionalEntities,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       'messages': messages.toJson(valueToJson: (v) => v.toJson()),
-      'participantProfiles':
-          participantProfiles.toJson(valueToJson: (v) => v.toJson()),
+      'participantIds': participantIds.toJson(),
+      'additionalEntities':
+          additionalEntities.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -61,21 +70,26 @@ abstract class NitChatInitialData implements _i1.SerializableModel {
 class _NitChatInitialDataImpl extends NitChatInitialData {
   _NitChatInitialDataImpl({
     required List<_i2.NitChatMessage> messages,
-    required List<_i3.UserInfo> participantProfiles,
+    required List<int> participantIds,
+    required List<_i3.ObjectWrapper> additionalEntities,
   }) : super._(
           messages: messages,
-          participantProfiles: participantProfiles,
+          participantIds: participantIds,
+          additionalEntities: additionalEntities,
         );
 
   @override
   NitChatInitialData copyWith({
     List<_i2.NitChatMessage>? messages,
-    List<_i3.UserInfo>? participantProfiles,
+    List<int>? participantIds,
+    List<_i3.ObjectWrapper>? additionalEntities,
   }) {
     return NitChatInitialData(
       messages: messages ?? this.messages.map((e0) => e0.copyWith()).toList(),
-      participantProfiles: participantProfiles ??
-          this.participantProfiles.map((e0) => e0.copyWith()).toList(),
+      participantIds:
+          participantIds ?? this.participantIds.map((e0) => e0).toList(),
+      additionalEntities: additionalEntities ??
+          this.additionalEntities.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

@@ -444,9 +444,13 @@ class Protocol extends _i1.SerializationManagerServer {
           .map((e) => deserialize<_i11.NitChatMessage>(e))
           .toList() as dynamic;
     }
-    if (t == List<_i3.UserInfo>) {
-      return (data as List).map((e) => deserialize<_i3.UserInfo>(e)).toList()
-          as dynamic;
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
+    }
+    if (t == List<_i10.ObjectWrapper>) {
+      return (data as List)
+          .map((e) => deserialize<_i10.ObjectWrapper>(e))
+          .toList() as dynamic;
     }
     if (t == List<_i12.NitBackendFilter>) {
       return (data as List)
