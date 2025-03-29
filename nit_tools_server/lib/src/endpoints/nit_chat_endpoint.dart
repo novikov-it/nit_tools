@@ -34,11 +34,19 @@ class NitChatEndpoint extends Endpoint {
     final participantIds = participants.map((e) => e.userId).toSet();
 
     yield NitChatInitialData(
-        messages: messages,
-        participantIds: participantIds.toList(),
-        additionalEntities:
-            await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
-                session, participantIds));
+      messages: messages,
+      participantIds: participantIds.toList(),
+      additionalEntities:
+          await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
+                  session, participantIds)
+              .then(
+        (e) => e
+            .map(
+              (e) => ObjectWrapper(object: e),
+            )
+            .toList(),
+      ),
+    );
 
     await for (var update in stream) {
       yield update;

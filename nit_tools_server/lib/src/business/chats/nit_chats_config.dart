@@ -1,8 +1,7 @@
-import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class NitChatsConfig {
-  static late final Future<List<ObjectWrapper>> Function(
+  static late final Future<List<TableRow>> Function(
           Session session, Set<int> userIds)
       additionalEntitiesLoaderForInitialChatData;
 }

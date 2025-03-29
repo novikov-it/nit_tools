@@ -19,6 +19,10 @@ final defaultChatCrudConfigs = [
             models.map((e) => e.userId).toSet(),
           ),
         ),
+        ...await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
+          session,
+          models.map((e) => e.userId).toSet(),
+        ),
         ...await NitChatChannel.db.find(
           session,
           where: (t) => t.id.inSet(
