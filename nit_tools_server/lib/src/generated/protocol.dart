@@ -13,25 +13,27 @@ library protocol; // ignore_for_file: no_leading_underscores_for_library_prefixe
 import 'package:serverpod/serverpod.dart' as _i1;
 import 'package:serverpod/protocol.dart' as _i2;
 import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i3;
-import 'app_notification.dart' as _i4;
-import 'chats/chat_channel.dart' as _i5;
-import 'chats/chat_initial_data.dart' as _i6;
-import 'chats/chat_message.dart' as _i7;
-import 'chats/chat_participant.dart' as _i8;
-import 'fcm_token.dart' as _i9;
-import '/src/extra_classes/object_wrapper.dart' as _i10;
+import 'chats/chat_channel.dart' as _i4;
+import 'chats/chat_initial_data.dart' as _i5;
+import 'chats/chat_message.dart' as _i6;
+import 'chats/chat_participant.dart' as _i7;
+import 'nit_app_notification.dart' as _i8;
+import 'nit_fcm_token.dart' as _i9;
+import 'nit_media.dart' as _i10;
 import 'protocol.dart' as _i11;
+import '/src/extra_classes/object_wrapper.dart' as _i12;
 import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
-    as _i12;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i13;
-import '/src/extra_classes/api_response.dart' as _i14;
-import '/src/extra_classes/nit_backend_filter.dart' as _i15;
-export 'app_notification.dart';
+    as _i13;
+import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i14;
+import '/src/extra_classes/api_response.dart' as _i15;
+import '/src/extra_classes/nit_backend_filter.dart' as _i16;
 export 'chats/chat_channel.dart';
 export 'chats/chat_initial_data.dart';
 export 'chats/chat_message.dart';
 export 'chats/chat_participant.dart';
-export 'fcm_token.dart';
+export 'nit_app_notification.dart';
+export 'nit_fcm_token.dart';
+export 'nit_media.dart';
 
 class Protocol extends _i1.SerializationManagerServer {
   Protocol._();
@@ -384,6 +386,50 @@ class Protocol extends _i1.SerializationManagerServer {
       ],
       managed: true,
     ),
+    _i2.TableDefinition(
+      name: 'nit_media',
+      dartName: 'NitMedia',
+      schema: 'public',
+      module: 'nit_tools',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'nit_media_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _i2.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _i2.ColumnDefinition(
+          name: 'publicUrl',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'nit_media_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
     ..._i3.Protocol.targetTableDefinitions,
   ];
 
@@ -393,51 +439,47 @@ class Protocol extends _i1.SerializationManagerServer {
     Type? t,
   ]) {
     t ??= T;
-    if (t == _i4.NitAppNotification) {
-      return _i4.NitAppNotification.fromJson(data) as T;
+    if (t == _i4.NitChatChannel) {
+      return _i4.NitChatChannel.fromJson(data) as T;
     }
-    if (t == _i5.NitChatChannel) {
-      return _i5.NitChatChannel.fromJson(data) as T;
+    if (t == _i5.NitChatInitialData) {
+      return _i5.NitChatInitialData.fromJson(data) as T;
     }
-    if (t == _i6.NitChatInitialData) {
-      return _i6.NitChatInitialData.fromJson(data) as T;
+    if (t == _i6.NitChatMessage) {
+      return _i6.NitChatMessage.fromJson(data) as T;
     }
-    if (t == _i7.NitChatMessage) {
-      return _i7.NitChatMessage.fromJson(data) as T;
+    if (t == _i7.NitChatParticipant) {
+      return _i7.NitChatParticipant.fromJson(data) as T;
     }
-    if (t == _i8.NitChatParticipant) {
-      return _i8.NitChatParticipant.fromJson(data) as T;
+    if (t == _i8.NitAppNotification) {
+      return _i8.NitAppNotification.fromJson(data) as T;
     }
     if (t == _i9.NitFcmToken) {
       return _i9.NitFcmToken.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i4.NitAppNotification?>()) {
-      return (data != null ? _i4.NitAppNotification.fromJson(data) : null) as T;
+    if (t == _i10.NitMedia) {
+      return _i10.NitMedia.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i5.NitChatChannel?>()) {
-      return (data != null ? _i5.NitChatChannel.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i4.NitChatChannel?>()) {
+      return (data != null ? _i4.NitChatChannel.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i6.NitChatInitialData?>()) {
-      return (data != null ? _i6.NitChatInitialData.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i5.NitChatInitialData?>()) {
+      return (data != null ? _i5.NitChatInitialData.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i7.NitChatMessage?>()) {
-      return (data != null ? _i7.NitChatMessage.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i6.NitChatMessage?>()) {
+      return (data != null ? _i6.NitChatMessage.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i8.NitChatParticipant?>()) {
-      return (data != null ? _i8.NitChatParticipant.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i7.NitChatParticipant?>()) {
+      return (data != null ? _i7.NitChatParticipant.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i8.NitAppNotification?>()) {
+      return (data != null ? _i8.NitAppNotification.fromJson(data) : null) as T;
     }
     if (t == _i1.getType<_i9.NitFcmToken?>()) {
       return (data != null ? _i9.NitFcmToken.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<List<_i10.ObjectWrapper>?>()) {
-      return (data != null
-          ? (data as List)
-              .map((e) => deserialize<_i10.ObjectWrapper>(e))
-              .toList()
-          : null) as dynamic;
-    }
-    if (t == _i10.ObjectWrapper) {
-      return _i10.ObjectWrapper.fromJson(data) as T;
+    if (t == _i1.getType<_i10.NitMedia?>()) {
+      return (data != null ? _i10.NitMedia.fromJson(data) : null) as T;
     }
     if (t == List<_i11.NitChatMessage>) {
       return (data as List)
@@ -447,42 +489,52 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
     }
-    if (t == List<_i10.ObjectWrapper>) {
+    if (t == List<_i12.ObjectWrapper>) {
       return (data as List)
-          .map((e) => deserialize<_i10.ObjectWrapper>(e))
+          .map((e) => deserialize<_i12.ObjectWrapper>(e))
           .toList() as dynamic;
     }
-    if (t == List<_i12.NitBackendFilter>) {
-      return (data as List)
-          .map((e) => deserialize<_i12.NitBackendFilter>(e))
-          .toList() as dynamic;
+    if (t == _i12.ObjectWrapper) {
+      return _i12.ObjectWrapper.fromJson(data) as T;
     }
-    if (t == _i1.getType<List<_i12.NitBackendFilter>?>()) {
+    if (t == _i1.getType<List<_i12.ObjectWrapper>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i12.NitBackendFilter>(e))
+              .map((e) => deserialize<_i12.ObjectWrapper>(e))
               .toList()
           : null) as dynamic;
     }
-    if (t == List<_i13.ObjectWrapper>) {
+    if (t == List<_i13.NitBackendFilter>) {
       return (data as List)
-          .map((e) => deserialize<_i13.ObjectWrapper>(e))
+          .map((e) => deserialize<_i13.NitBackendFilter>(e))
           .toList() as dynamic;
     }
-    if (t == _i14.ApiResponse) {
-      return _i14.ApiResponse.fromJson(data) as T;
+    if (t == _i1.getType<List<_i13.NitBackendFilter>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i13.NitBackendFilter>(e))
+              .toList()
+          : null) as dynamic;
     }
-    if (t == _i15.NitBackendFilter) {
-      return _i15.NitBackendFilter.fromJson(data) as T;
+    if (t == List<_i14.ObjectWrapper>) {
+      return (data as List)
+          .map((e) => deserialize<_i14.ObjectWrapper>(e))
+          .toList() as dynamic;
     }
-    if (t == _i1.getType<_i10.ObjectWrapper?>()) {
-      return (data != null ? _i10.ObjectWrapper.fromJson(data) : null) as T;
+    if (t == _i15.ApiResponse) {
+      return _i15.ApiResponse.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i14.ApiResponse?>()) {
-      return (data != null ? _i14.ApiResponse.fromJson(data) : null) as T;
+    if (t == _i16.NitBackendFilter) {
+      return _i16.NitBackendFilter.fromJson(data) as T;
     }
-    if (t == _i1.getType<_i15.NitBackendFilter?>()) {
-      return (data != null ? _i15.NitBackendFilter.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i12.ObjectWrapper?>()) {
+      return (data != null ? _i12.ObjectWrapper.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i15.ApiResponse?>()) {
+      return (data != null ? _i15.ApiResponse.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i16.NitBackendFilter?>()) {
+      return (data != null ? _i16.NitBackendFilter.fromJson(data) : null) as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -497,32 +549,35 @@ class Protocol extends _i1.SerializationManagerServer {
   String? getClassNameForObject(Object? data) {
     String? className = super.getClassNameForObject(data);
     if (className != null) return className;
-    if (data is _i10.ObjectWrapper) {
+    if (data is _i12.ObjectWrapper) {
       return 'ObjectWrapper';
     }
-    if (data is _i14.ApiResponse) {
+    if (data is _i15.ApiResponse) {
       return 'ApiResponse';
     }
-    if (data is _i15.NitBackendFilter) {
+    if (data is _i16.NitBackendFilter) {
       return 'NitBackendFilter';
     }
-    if (data is _i4.NitAppNotification) {
-      return 'NitAppNotification';
-    }
-    if (data is _i5.NitChatChannel) {
+    if (data is _i4.NitChatChannel) {
       return 'NitChatChannel';
     }
-    if (data is _i6.NitChatInitialData) {
+    if (data is _i5.NitChatInitialData) {
       return 'NitChatInitialData';
     }
-    if (data is _i7.NitChatMessage) {
+    if (data is _i6.NitChatMessage) {
       return 'NitChatMessage';
     }
-    if (data is _i8.NitChatParticipant) {
+    if (data is _i7.NitChatParticipant) {
       return 'NitChatParticipant';
+    }
+    if (data is _i8.NitAppNotification) {
+      return 'NitAppNotification';
     }
     if (data is _i9.NitFcmToken) {
       return 'NitFcmToken';
+    }
+    if (data is _i10.NitMedia) {
+      return 'NitMedia';
     }
     className = _i2.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -538,31 +593,34 @@ class Protocol extends _i1.SerializationManagerServer {
   @override
   dynamic deserializeByClassName(Map<String, dynamic> data) {
     if (data['className'] == 'ObjectWrapper') {
-      return deserialize<_i10.ObjectWrapper>(data['data']);
+      return deserialize<_i12.ObjectWrapper>(data['data']);
     }
     if (data['className'] == 'ApiResponse') {
-      return deserialize<_i14.ApiResponse>(data['data']);
+      return deserialize<_i15.ApiResponse>(data['data']);
     }
     if (data['className'] == 'NitBackendFilter') {
-      return deserialize<_i15.NitBackendFilter>(data['data']);
-    }
-    if (data['className'] == 'NitAppNotification') {
-      return deserialize<_i4.NitAppNotification>(data['data']);
+      return deserialize<_i16.NitBackendFilter>(data['data']);
     }
     if (data['className'] == 'NitChatChannel') {
-      return deserialize<_i5.NitChatChannel>(data['data']);
+      return deserialize<_i4.NitChatChannel>(data['data']);
     }
     if (data['className'] == 'NitChatInitialData') {
-      return deserialize<_i6.NitChatInitialData>(data['data']);
+      return deserialize<_i5.NitChatInitialData>(data['data']);
     }
     if (data['className'] == 'NitChatMessage') {
-      return deserialize<_i7.NitChatMessage>(data['data']);
+      return deserialize<_i6.NitChatMessage>(data['data']);
     }
     if (data['className'] == 'NitChatParticipant') {
-      return deserialize<_i8.NitChatParticipant>(data['data']);
+      return deserialize<_i7.NitChatParticipant>(data['data']);
+    }
+    if (data['className'] == 'NitAppNotification') {
+      return deserialize<_i8.NitAppNotification>(data['data']);
     }
     if (data['className'] == 'NitFcmToken') {
       return deserialize<_i9.NitFcmToken>(data['data']);
+    }
+    if (data['className'] == 'NitMedia') {
+      return deserialize<_i10.NitMedia>(data['data']);
     }
     if (data['className'].startsWith('serverpod.')) {
       data['className'] = data['className'].substring(10);
@@ -590,16 +648,18 @@ class Protocol extends _i1.SerializationManagerServer {
       }
     }
     switch (t) {
-      case _i4.NitAppNotification:
-        return _i4.NitAppNotification.t;
-      case _i5.NitChatChannel:
-        return _i5.NitChatChannel.t;
-      case _i7.NitChatMessage:
-        return _i7.NitChatMessage.t;
-      case _i8.NitChatParticipant:
-        return _i8.NitChatParticipant.t;
+      case _i4.NitChatChannel:
+        return _i4.NitChatChannel.t;
+      case _i6.NitChatMessage:
+        return _i6.NitChatMessage.t;
+      case _i7.NitChatParticipant:
+        return _i7.NitChatParticipant.t;
+      case _i8.NitAppNotification:
+        return _i8.NitAppNotification.t;
       case _i9.NitFcmToken:
         return _i9.NitFcmToken.t;
+      case _i10.NitMedia:
+        return _i10.NitMedia.t;
     }
     return null;
   }

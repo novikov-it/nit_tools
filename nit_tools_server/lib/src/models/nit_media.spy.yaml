@@ -1,0 +1,5 @@
+class: NitMedia
+table: nit_media
+fields:
+  createdAt: DateTime
+  publicUrl: String

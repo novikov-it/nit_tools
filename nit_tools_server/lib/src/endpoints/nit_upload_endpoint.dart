@@ -1,3 +1,4 @@
+import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class NitUploadEndpoint extends Endpoint {
@@ -11,7 +12,7 @@ class NitUploadEndpoint extends Endpoint {
     );
   }
 
-  Future<String?> verifyUpload(
+  Future<NitMedia?> verifyUpload(
     Session session, {
     required String path,
   }) async {
@@ -25,10 +26,15 @@ class NitUploadEndpoint extends Endpoint {
       );
 
       print(
-        uri?.toString(),
+        uri.toString(),
       );
-
-      return uri?.toString();
+      if (uri == null) return null;
+      return await session.db.insertRow(
+        NitMedia(
+          createdAt: DateTime.now(),
+          publicUrl: uri.toString(),
+        ),
+      );
     }
 
     return null;

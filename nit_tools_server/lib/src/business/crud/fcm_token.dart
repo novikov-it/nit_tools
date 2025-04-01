@@ -1,7 +1,4 @@
-import 'package:nit_tools_server/src/generated/fcm_token.dart';
-
-import 'configuration/crud_config.dart';
-import 'configuration/post_config.dart';
+import 'package:nit_tools_server/nit_tools_server.dart';
 
 final fcmTokenConfig = CrudConfig<NitFcmToken>(
   table: NitFcmToken.t,

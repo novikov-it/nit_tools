@@ -16,6 +16,7 @@ import 'package:nit_tools_client/src/extra_classes/api_response.dart' as _i4;
 import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
     as _i5;
 import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i6;
+import 'package:nit_tools_client/src/protocol/nit_media.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointNitChat extends _i1.EndpointRef {
@@ -136,8 +137,8 @@ class EndpointNitUpload extends _i1.EndpointRef {
         {'path': path},
       );
 
-  _i2.Future<String?> verifyUpload({required String path}) =>
-      caller.callServerEndpoint<String?>(
+  _i2.Future<_i7.NitMedia?> verifyUpload({required String path}) =>
+      caller.callServerEndpoint<_i7.NitMedia?>(
         'nit_tools.nitUpload',
         'verifyUpload',
         {'path': path},
