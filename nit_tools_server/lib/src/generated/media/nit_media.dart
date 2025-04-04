@@ -12,26 +12,33 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../protocol.dart' as _i2;
 
 abstract class NitMedia implements _i1.TableRow, _i1.ProtocolSerialization {
   NitMedia._({
     this.id,
+    required this.type,
     required this.createdAt,
     required this.publicUrl,
+    this.duration,
   });
 
   factory NitMedia({
     int? id,
+    required _i2.MediaType type,
     required DateTime createdAt,
     required String publicUrl,
+    int? duration,
   }) = _NitMediaImpl;
 
   factory NitMedia.fromJson(Map<String, dynamic> jsonSerialization) {
     return NitMedia(
       id: jsonSerialization['id'] as int?,
+      type: _i2.MediaType.fromJson((jsonSerialization['type'] as int)),
       createdAt:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       publicUrl: jsonSerialization['publicUrl'] as String,
+      duration: jsonSerialization['duration'] as int?,
     );
   }
 
@@ -42,24 +49,32 @@ abstract class NitMedia implements _i1.TableRow, _i1.ProtocolSerialization {
   @override
   int? id;
 
+  _i2.MediaType type;
+
   DateTime createdAt;
 
   String publicUrl;
+
+  int? duration;
 
   @override
   _i1.Table get table => t;
 
   NitMedia copyWith({
     int? id,
+    _i2.MediaType? type,
     DateTime? createdAt,
     String? publicUrl,
+    int? duration,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'type': type.toJson(),
       'createdAt': createdAt.toJson(),
       'publicUrl': publicUrl,
+      if (duration != null) 'duration': duration,
     };
   }
 
@@ -67,8 +82,10 @@ abstract class NitMedia implements _i1.TableRow, _i1.ProtocolSerialization {
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
+      'type': type.toJson(),
       'createdAt': createdAt.toJson(),
       'publicUrl': publicUrl,
+      if (duration != null) 'duration': duration,
     };
   }
 
@@ -107,30 +124,43 @@ class _Undefined {}
 class _NitMediaImpl extends NitMedia {
   _NitMediaImpl({
     int? id,
+    required _i2.MediaType type,
     required DateTime createdAt,
     required String publicUrl,
+    int? duration,
   }) : super._(
           id: id,
+          type: type,
           createdAt: createdAt,
           publicUrl: publicUrl,
+          duration: duration,
         );
 
   @override
   NitMedia copyWith({
     Object? id = _Undefined,
+    _i2.MediaType? type,
     DateTime? createdAt,
     String? publicUrl,
+    Object? duration = _Undefined,
   }) {
     return NitMedia(
       id: id is int? ? id : this.id,
+      type: type ?? this.type,
       createdAt: createdAt ?? this.createdAt,
       publicUrl: publicUrl ?? this.publicUrl,
+      duration: duration is int? ? duration : this.duration,
     );
   }
 }
 
 class NitMediaTable extends _i1.Table {
   NitMediaTable({super.tableRelation}) : super(tableName: 'nit_media') {
+    type = _i1.ColumnEnum(
+      'type',
+      this,
+      _i1.EnumSerialization.byIndex,
+    );
     createdAt = _i1.ColumnDateTime(
       'createdAt',
       this,
@@ -139,17 +169,27 @@ class NitMediaTable extends _i1.Table {
       'publicUrl',
       this,
     );
+    duration = _i1.ColumnInt(
+      'duration',
+      this,
+    );
   }
+
+  late final _i1.ColumnEnum<_i2.MediaType> type;
 
   late final _i1.ColumnDateTime createdAt;
 
   late final _i1.ColumnString publicUrl;
 
+  late final _i1.ColumnInt duration;
+
   @override
   List<_i1.Column> get columns => [
         id,
+        type,
         createdAt,
         publicUrl,
+        duration,
       ];
 }
 

@@ -16,7 +16,7 @@ import 'package:nit_tools_client/src/extra_classes/api_response.dart' as _i4;
 import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
     as _i5;
 import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i6;
-import 'package:nit_tools_client/src/protocol/nit_media.dart' as _i7;
+import 'package:nit_tools_client/src/protocol/media/nit_media.dart' as _i7;
 
 /// {@category Endpoint}
 class EndpointNitChat extends _i1.EndpointRef {
