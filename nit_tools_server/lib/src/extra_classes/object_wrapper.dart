@@ -9,10 +9,17 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
 
   ObjectWrapper({
     required this.object,
-  }) : className = _protocol.getClassNameForObject(object) ?? 'unknown';
+  })  : className = _protocol.getClassNameForObject(object) ?? 'unknown',
+        isDeleted = false;
+
+  ObjectWrapper.deleted({
+    required this.object,
+  })  : className = _protocol.getClassNameForObject(object) ?? 'unknown',
+        isDeleted = true;
 
   final String className;
   final TableRow object;
+  final bool isDeleted;
 
   String get nitMappingClassname => className.split('.').last;
 
@@ -29,6 +36,7 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
     return {
       'className': className,
       'data': object.toJson(),
+      'isDeleted': isDeleted,
     };
   }
 

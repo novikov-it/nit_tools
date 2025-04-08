@@ -127,12 +127,17 @@ class NitCrudEndpoint extends Endpoint {
     required int modelId,
     // required ObjectWrapper wrappedModel,
   }) async {
+    // final className = wrappedModel.nitMappingClassname;
+
     final caller = CrudConfig.getCaller(className)?.post;
 
     if (caller == null) {
       return ApiResponse.notConfigured(source: 'удаление $className');
     }
 
-    return await caller.delete(session, modelId);
+    return await caller.delete(
+      session,
+      modelId,
+    );
   }
 }

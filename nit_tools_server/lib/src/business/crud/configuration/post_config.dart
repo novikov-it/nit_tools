@@ -118,12 +118,22 @@ class PostConfig<T extends TableRow> {
       return ApiResponse.forbidden();
     }
 
-    await session.db.deleteRow(model);
+    try {
+      await session.db.deleteRow(model);
+    } on DatabaseException {
+      return ApiResponse(
+        isOk: false,
+        value: false,
+        error:
+            'Невозможно удалить объект, к которому привязаны другие сущности',
+      );
+    }
 
     return ApiResponse(
       isOk: true,
       value: true,
       updatedEntities: [
+        ObjectWrapper.deleted(object: model),
         if (afterDelete != null)
           ...(await (afterDelete!(session, model))).map(
             (e) => ObjectWrapper(object: e),

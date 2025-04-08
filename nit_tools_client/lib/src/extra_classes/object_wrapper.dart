@@ -3,17 +3,23 @@ import 'package:serverpod_client/serverpod_client.dart';
 import 'static.dart';
 
 class ObjectWrapper implements SerializableModel, ProtocolSerialization {
+  static String getClassNameForObject(SerializableModel model) {
+    return NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
+  }
+
   ObjectWrapper.wrap({
     required this.model,
   })  : modelId = null,
         this.foreignKeys = {},
         className =
-            NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
+            NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown',
+        isDeleted = false;
 
   ObjectWrapper._({
     required this.model,
     required this.modelId,
     required this.foreignKeys,
+    required this.isDeleted,
   }) : className =
             NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
 
@@ -21,6 +27,7 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
   final SerializableModel model;
   final Map<String, int> foreignKeys;
   final int? modelId;
+  final bool isDeleted;
   // final List<SerializableModel>? entities;
 
   String get nitMappingClassname => className.split('.').last;
@@ -41,6 +48,7 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
       modelId: jsonSerialization['data']['id'],
       foreignKeys: foreignKeys,
       model: NitToolsClient.protocol.deserializeByClassName(jsonSerialization),
+      isDeleted: jsonSerialization['isDeleted'] ?? false,
     );
   }
 
@@ -60,6 +68,7 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
     };
   }
 
+  /// Необходим для работы методов copyWith в ChatInitialData и NitAppNotification
   ObjectWrapper copyWith({
     SerializableModel? model,
   }) {
