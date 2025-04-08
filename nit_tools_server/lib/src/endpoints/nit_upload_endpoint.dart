@@ -33,6 +33,7 @@ class NitUploadEndpoint extends Endpoint {
         NitMedia(
           createdAt: DateTime.now(),
           publicUrl: uri.toString(),
+          type: MediaType.image, //TODO: Change this to the correct type
         ),
       );
     }
