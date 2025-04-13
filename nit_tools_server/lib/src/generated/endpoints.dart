@@ -170,6 +170,42 @@ class Endpoints extends _i1.EndpointDispatch {
             offset: params['offset'],
           ),
         ),
+        'getEntityList': _i1.MethodConnector(
+          name: 'getEntityList',
+          params: {
+            'className': _i1.ParameterDescription(
+              name: 'className',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'filters': _i1.ParameterDescription(
+              name: 'filters',
+              type: _i1.getType<List<_i7.NitBackendFilter>?>(),
+              nullable: true,
+            ),
+            'limit': _i1.ParameterDescription(
+              name: 'limit',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _i1.ParameterDescription(
+              name: 'offset',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getEntityList(
+            session,
+            className: params['className'],
+            filters: params['filters'],
+            limit: params['limit'],
+            offset: params['offset'],
+          ),
+        ),
         'saveModels': _i1.MethodConnector(
           name: 'saveModels',
           params: {

@@ -4,6 +4,7 @@ nitCrud:
   - getOneById:
   - getOneCustom:
   - getAll:
+  - getEntityList:
   - saveModels:
   - saveModel:
   - delete:

@@ -85,6 +85,23 @@ class EndpointNitCrud extends _i1.EndpointRef {
         },
       );
 
+  _i2.Future<_i4.ApiResponse<List<_i6.ObjectWrapper>>> getEntityList({
+    required String className,
+    List<_i5.NitBackendFilter>? filters,
+    int? limit,
+    int? offset,
+  }) =>
+      caller.callServerEndpoint<_i4.ApiResponse<List<_i6.ObjectWrapper>>>(
+        'nit_tools.nitCrud',
+        'getEntityList',
+        {
+          'className': className,
+          'filters': filters,
+          'limit': limit,
+          'offset': offset,
+        },
+      );
+
   _i2.Future<_i4.ApiResponse<List<int>>> saveModels(
           {required List<_i6.ObjectWrapper> wrappedModels}) =>
       caller.callServerEndpoint<_i4.ApiResponse<List<int>>>(

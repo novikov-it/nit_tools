@@ -63,8 +63,33 @@ class NitCrudEndpoint extends Endpoint {
       return ApiResponse.notConfigured(source: 'получение списка $className');
     }
 
-    return await caller!.getAll!
-        .call(session, whereClause: caller.prepareWhere(filters));
+    return await caller!.getAll!.getIds(
+      session,
+      whereClause: caller.prepareWhere(filters),
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  Future<ApiResponse<List<ObjectWrapper>>> getEntityList(
+    Session session, {
+    required String className,
+    List<NitBackendFilter>? filters,
+    int? limit,
+    int? offset,
+  }) async {
+    final caller = CrudConfig.getCaller(className);
+
+    if (caller?.getAll == null) {
+      return ApiResponse.notConfigured(source: 'получение списка $className');
+    }
+
+    return await caller!.getAll!.getEntityList(
+      session,
+      whereClause: caller.prepareWhere(filters),
+      limit: limit,
+      offset: offset,
+    );
   }
 
   Future<ApiResponse<List<int>>> saveModels(

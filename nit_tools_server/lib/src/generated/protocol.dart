@@ -537,6 +537,13 @@ class Protocol extends _i1.SerializationManagerServer {
               .toList()
           : null) as dynamic;
     }
+    if (t == _i1.getType<List<_i14.NitBackendFilter>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i14.NitBackendFilter>(e))
+              .toList()
+          : null) as dynamic;
+    }
     if (t == List<_i15.ObjectWrapper>) {
       return (data as List)
           .map((e) => deserialize<_i15.ObjectWrapper>(e))

@@ -11,7 +11,7 @@ class GetAllConfig<T extends TableRow> {
   final Future<List<TableRow>> Function(Session session, List<T> models)?
       additionalEntitiesFetchFunction;
 
-  Future<ApiResponse<List<int>>> call(
+  Future<ApiResponse<List<int>>> getIds(
     Session session, {
     Expression? whereClause,
     int? limit,
@@ -31,6 +31,40 @@ class GetAllConfig<T extends TableRow> {
       ],
       updatedEntities: [
         ...resultItems,
+        if (additionalEntitiesFetchFunction != null)
+          ...(await additionalEntitiesFetchFunction!(
+            session,
+            resultItems,
+          ))
+      ]
+          .map(
+            (e) => ObjectWrapper(object: e),
+          )
+          .toList(),
+    );
+  }
+
+  Future<ApiResponse<List<ObjectWrapper>>> getEntityList(
+    Session session, {
+    Expression? whereClause,
+    int? limit,
+    int? offset,
+  }) async {
+    final resultItems = await session.db.find<T>(
+      where: whereClause,
+      orderByList: defaultOrderByList,
+      limit: limit,
+      offset: offset,
+    );
+
+    return ApiResponse<List<ObjectWrapper>>(
+      isOk: true,
+      value: resultItems
+          .map(
+            (e) => ObjectWrapper(object: e),
+          )
+          .toList(),
+      updatedEntities: [
         if (additionalEntitiesFetchFunction != null)
           ...(await additionalEntitiesFetchFunction!(
             session,
