@@ -1,0 +1,3 @@
+class: NitUpdatesTransport
+fields:
+    updatedEntities: List<ObjectWrapper>
