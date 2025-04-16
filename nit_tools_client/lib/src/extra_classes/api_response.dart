@@ -58,6 +58,8 @@ class ApiResponse<T> implements SerializableModel {
       return ApiResponse<List<int>>.fromJson(jsonSerialization) as K;
     } else if (K == ApiResponse<int>) {
       return ApiResponse<int>.fromJson(jsonSerialization) as K;
+    } else if (K == ApiResponse<String>) {
+      return ApiResponse<String>.fromJson(jsonSerialization) as K;
     } else if (K == ApiResponse<bool>) {
       return ApiResponse<bool>.fromJson(jsonSerialization) as K;
     }
