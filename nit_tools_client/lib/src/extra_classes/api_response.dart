@@ -17,7 +17,7 @@ import 'static.dart';
 
 // if (data is Map<String, dynamic>) {
 //       final manualDeserialization =
-//           _i13.ApiResponse.manualDeserialization<T>(data);
+//           _i16.ApiResponse.manualDeserialization<T>(data);
 //       if (manualDeserialization != null) return manualDeserialization;
 //     }
 
@@ -62,6 +62,8 @@ class ApiResponse<T> implements SerializableModel {
       return ApiResponse<String>.fromJson(jsonSerialization) as K;
     } else if (K == ApiResponse<bool>) {
       return ApiResponse<bool>.fromJson(jsonSerialization) as K;
+    } else if (K == ApiResponse<List<ObjectWrapper>>) {
+      return ApiResponse<List<ObjectWrapper>>.fromJson(jsonSerialization) as K;
     }
 
     return null;

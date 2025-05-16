@@ -6,7 +6,4 @@ fields:
     title: String
     body: String?
     goToPath: String?
-    # type: String
-    # relatedEntityId: int?
     isRead: bool, default = false
-    updatedEntities: List<ObjectWrapper>?, !persist

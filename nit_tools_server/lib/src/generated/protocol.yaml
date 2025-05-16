@@ -1,7 +1,6 @@
 nitChat:
   - updatesStream:
 nitCrud:
-  - getOneById:
   - getOneCustom:
   - getAll:
   - getEntityList:

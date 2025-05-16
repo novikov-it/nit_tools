@@ -3,26 +3,29 @@ import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class NitCrudEndpoint extends Endpoint {
-  Future<ApiResponse<int>> getOneById(
-    Session session, {
-    required String className,
-    required int id,
-  }) async {
-    final caller = CrudConfig.getCaller(className);
+  // Future<ApiResponse<int>> getOneById(
+  //   Session session, {
+  //   required String className,
+  //   required int id,
+  // }) async {
+  //   final caller = CrudConfig.getCaller(className);
 
-    if (caller?.getOneById == null) {
-      return ApiResponse.notConfigured(source: 'получение $className по id');
-    }
-    return await caller!.getOneById!.call(
-      session,
-      id,
-    );
-  }
+  //   if (caller?.getOneById == null) {
+  //     return ApiResponse.notConfigured(source: 'получение $className по id');
+  //   }
+  //   return await caller!.getOneById!.call(
+  //     session,
+  //     id,
+  //   );
+  // }
+
+  final _deepEquality = const DeepCollectionEquality();
+  // final MapEquality _mapEquality = const MapEquality();
 
   Future<ApiResponse<int>> getOneCustom(
     Session session, {
     required String className,
-    required List<NitBackendFilter> filters,
+    required NitBackendFilter filter,
   }) async {
     final caller = CrudConfig.getCaller(className);
 
@@ -31,11 +34,20 @@ class NitCrudEndpoint extends Endpoint {
       return ApiResponse.notConfigured(source: 'получение $className');
     }
 
-    final filteredAttrs = filters.map((e) => e.fieldName);
+    // for (var t in caller.getOneCustomConfigs ?? []) {
+    //   final k = t.filterPrototype.attributeMap;
+    //   print(k);
+    // }
 
-    final config = caller.getOneCustomConfigs!.firstWhereOrNull((e) =>
-        e.attributeNames.where((a) => filteredAttrs.contains(a)).length ==
-        e.attributeNames.length);
+    // final d = filter.attributeMap;
+    // print(d);
+
+    final config = caller.getOneCustomConfigs!.firstWhereOrNull(
+      (e) => _deepEquality.equals(
+        e.filterPrototype.attributeMap,
+        filter.attributeMap,
+      ),
+    );
 
     if (config == null) {
       return ApiResponse.notConfigured(source: 'получение $className');
@@ -43,17 +55,15 @@ class NitCrudEndpoint extends Endpoint {
 
     return await config.call(
       session,
-      filters,
-      caller.prepareWhere(
-        filters,
-      ),
+      caller.table,
+      filter,
     );
   }
 
   Future<ApiResponse<List<int>>> getAll(
     Session session, {
     required String className,
-    List<NitBackendFilter>? filters,
+    NitBackendFilter? filter,
     int? limit,
     int? offset,
   }) async {
@@ -65,7 +75,9 @@ class NitCrudEndpoint extends Endpoint {
 
     return await caller!.getAll!.getIds(
       session,
-      whereClause: caller.prepareWhere(filters),
+      whereClause: filter?.prepareWhere(
+        caller.table,
+      ),
       limit: limit,
       offset: offset,
     );
@@ -74,7 +86,7 @@ class NitCrudEndpoint extends Endpoint {
   Future<ApiResponse<List<ObjectWrapper>>> getEntityList(
     Session session, {
     required String className,
-    List<NitBackendFilter>? filters,
+    NitBackendFilter? filter,
     int? limit,
     int? offset,
   }) async {
@@ -86,7 +98,9 @@ class NitCrudEndpoint extends Endpoint {
 
     return await caller!.getAll!.getEntityList(
       session,
-      whereClause: caller.prepareWhere(filters),
+      whereClause: filter?.prepareWhere(
+        caller.table,
+      ),
       limit: limit,
       offset: offset,
     );

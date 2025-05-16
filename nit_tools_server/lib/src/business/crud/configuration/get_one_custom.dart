@@ -3,22 +3,24 @@ import 'package:serverpod/serverpod.dart';
 
 class GetOneCustomConfig<T extends TableRow> {
   const GetOneCustomConfig({
-    required this.attributeNames,
+    required this.filterPrototype,
     this.createIfMissing,
     this.additionalEntitiesFetchFunction,
   });
 
-  final List<String> attributeNames;
-  final Future<T?> Function(Session session, List<String> values)?
-      createIfMissing;
+  final NitBackendFilter filterPrototype;
+  final Future<T?> Function(
+    Session session,
+    NitBackendFilter filter,
+  )? createIfMissing;
 
   final Future<List<TableRow>> Function(Session session, T model)?
       additionalEntitiesFetchFunction;
 
   Future<T?> _getObject(
     Session session,
-    List<NitBackendFilter> filters,
-    Expression? whereClause,
+    Table table,
+    NitBackendFilter filter,
   ) async {
     // T? t = await session.db.findFirstRow(where: whereClause);
 
@@ -35,21 +37,19 @@ class GetOneCustomConfig<T extends TableRow> {
     //   }
     // }
 
-    return await session.db.findFirstRow(where: whereClause) ??
+    return await session.db.findFirstRow(where: filter.prepareWhere(table)) ??
         await createIfMissing?.call(
           session,
-          attributeNames
-              .map((e) => filters.firstWhere((f) => f.fieldName == e).equalsTo)
-              .toList(),
+          filter,
         );
   }
 
   Future<ApiResponse<int>> call(
     Session session,
-    List<NitBackendFilter> filters,
-    Expression? whereClause,
+    Table table,
+    NitBackendFilter filter,
   ) async {
-    final t = await _getObject(session, filters, whereClause).then(
+    final t = await _getObject(session, table, filter).then(
       (result) async => ApiResponse<int>(
         isOk: true,
         value: result?.id,

@@ -13,6 +13,7 @@ final defaultChatCrudConfigs = [
         ),
       ],
       additionalEntitiesFetchFunction: (session, models) async => [
+        // TODO: убрать
         ...await UserInfo.db.find(
           session,
           where: (t) => t.id.inSet(
@@ -23,6 +24,7 @@ final defaultChatCrudConfigs = [
           session,
           models.map((e) => e.userId).toSet(),
         ),
+        // TODO: непонятно
         ...await NitChatChannel.db.find(
           session,
           where: (t) => t.id.inSet(

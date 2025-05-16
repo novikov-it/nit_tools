@@ -1,0 +1,11 @@
+enum: NitBackendFilterType
+serialized: byName
+values:
+  - equals
+  # - greaterThan
+  # - greaterThanOrEquals
+  # - lessThan
+  # - lessThanOrEquals
+  # - contains
+  - and
+  - or

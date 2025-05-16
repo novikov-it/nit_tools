@@ -42,35 +42,22 @@ class EndpointNitCrud extends _i1.EndpointRef {
   @override
   String get name => 'nit_tools.nitCrud';
 
-  _i2.Future<_i4.ApiResponse<int>> getOneById({
-    required String className,
-    required int id,
-  }) =>
-      caller.callServerEndpoint<_i4.ApiResponse<int>>(
-        'nit_tools.nitCrud',
-        'getOneById',
-        {
-          'className': className,
-          'id': id,
-        },
-      );
-
   _i2.Future<_i4.ApiResponse<int>> getOneCustom({
     required String className,
-    required List<_i5.NitBackendFilter> filters,
+    required _i5.NitBackendFilter filter,
   }) =>
       caller.callServerEndpoint<_i4.ApiResponse<int>>(
         'nit_tools.nitCrud',
         'getOneCustom',
         {
           'className': className,
-          'filters': filters,
+          'filter': filter,
         },
       );
 
   _i2.Future<_i4.ApiResponse<List<int>>> getAll({
     required String className,
-    List<_i5.NitBackendFilter>? filters,
+    _i5.NitBackendFilter? filter,
     int? limit,
     int? offset,
   }) =>
@@ -79,7 +66,7 @@ class EndpointNitCrud extends _i1.EndpointRef {
         'getAll',
         {
           'className': className,
-          'filters': filters,
+          'filter': filter,
           'limit': limit,
           'offset': offset,
         },
@@ -87,7 +74,7 @@ class EndpointNitCrud extends _i1.EndpointRef {
 
   _i2.Future<_i4.ApiResponse<List<_i6.ObjectWrapper>>> getEntityList({
     required String className,
-    List<_i5.NitBackendFilter>? filters,
+    _i5.NitBackendFilter? filter,
     int? limit,
     int? offset,
   }) =>
@@ -96,7 +83,7 @@ class EndpointNitCrud extends _i1.EndpointRef {
         'getEntityList',
         {
           'className': className,
-          'filters': filters,
+          'filter': filter,
           'limit': limit,
           'offset': offset,
         },

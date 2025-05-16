@@ -7,6 +7,11 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
   static ObjectWrapper? wrap(TableRow? object) =>
       object != null ? ObjectWrapper(object: object) : null;
 
+  static List<ObjectWrapper> wrapMany(List<TableRow?> objects) => objects
+      .where((e) => e != null)
+      .map((object) => ObjectWrapper(object: object!))
+      .toList();
+
   ObjectWrapper({
     required this.object,
   })  : className = _protocol.getClassNameForObject(object) ?? 'unknown',

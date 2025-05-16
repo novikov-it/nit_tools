@@ -86,30 +86,6 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'nitCrud',
       endpoint: endpoints['nitCrud']!,
       methodConnectors: {
-        'getOneById': _i1.MethodConnector(
-          name: 'getOneById',
-          params: {
-            'className': _i1.ParameterDescription(
-              name: 'className',
-              type: _i1.getType<String>(),
-              nullable: false,
-            ),
-            'id': _i1.ParameterDescription(
-              name: 'id',
-              type: _i1.getType<int>(),
-              nullable: false,
-            ),
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getOneById(
-            session,
-            className: params['className'],
-            id: params['id'],
-          ),
-        ),
         'getOneCustom': _i1.MethodConnector(
           name: 'getOneCustom',
           params: {
@@ -118,9 +94,9 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
-            'filters': _i1.ParameterDescription(
-              name: 'filters',
-              type: _i1.getType<List<_i7.NitBackendFilter>>(),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<_i7.NitBackendFilter>(),
               nullable: false,
             ),
           },
@@ -131,7 +107,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getOneCustom(
             session,
             className: params['className'],
-            filters: params['filters'],
+            filter: params['filter'],
           ),
         ),
         'getAll': _i1.MethodConnector(
@@ -142,9 +118,9 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
-            'filters': _i1.ParameterDescription(
-              name: 'filters',
-              type: _i1.getType<List<_i7.NitBackendFilter>?>(),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<_i7.NitBackendFilter?>(),
               nullable: true,
             ),
             'limit': _i1.ParameterDescription(
@@ -165,7 +141,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getAll(
             session,
             className: params['className'],
-            filters: params['filters'],
+            filter: params['filter'],
             limit: params['limit'],
             offset: params['offset'],
           ),
@@ -178,9 +154,9 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
-            'filters': _i1.ParameterDescription(
-              name: 'filters',
-              type: _i1.getType<List<_i7.NitBackendFilter>?>(),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<_i7.NitBackendFilter?>(),
               nullable: true,
             ),
             'limit': _i1.ParameterDescription(
@@ -201,7 +177,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getEntityList(
             session,
             className: params['className'],
-            filters: params['filters'],
+            filter: params['filter'],
             limit: params['limit'],
             offset: params['offset'],
           ),
