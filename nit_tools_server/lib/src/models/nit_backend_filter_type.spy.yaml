@@ -2,10 +2,12 @@ enum: NitBackendFilterType
 serialized: byName
 values:
   - equals
-  # - greaterThan
-  # - greaterThanOrEquals
-  # - lessThan
-  # - lessThanOrEquals
-  # - contains
+  - greaterThan
+  - greaterThanOrEquals
+  - lessThan
+  - lessThanOrEquals
+  - like
+  - ilike
+  - inSet
   - and
   - or
