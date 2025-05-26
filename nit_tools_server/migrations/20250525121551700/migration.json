@@ -1,0 +1,70 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "nit_chat_message",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "nit_chat_message_fk_0",
+            "columns": [
+              "chatChannelId"
+            ],
+            "referenceTable": "nit_chat_channel",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "nit_chat_message_fk_1",
+          "nit_chat_message_fk_0"
+        ],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "nit_chat_participant",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "nit_chat_participant_fk_0",
+            "columns": [
+              "chatChannelId"
+            ],
+            "referenceTable": "nit_chat_channel",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "nit_chat_participant_fk_1",
+          "nit_chat_participant_fk_0"
+        ],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

@@ -29,12 +29,12 @@ extension ChatChannelExtension on Session {
     // bool sendUpdatesToOtherUsers = true,
   }) async {
     final chatChannel = await db.insertRow(NitChatChannel(channel: channel));
-    final currentUserId = await authenticated.then((res) => res?.userId);
+    final userId = await currentUserId;
 
-    if (withCurrentUser && currentUserId != null) {
+    if (withCurrentUser && userId != null) {
       await _joinChatChannel(
         chatChannelId: chatChannel.id!,
-        userId: currentUserId,
+        userId: userId,
       );
     }
 
