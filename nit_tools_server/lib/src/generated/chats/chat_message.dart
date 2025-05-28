@@ -12,6 +12,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../protocol.dart' as _i2;
 
 abstract class NitChatMessage
     implements _i1.TableRow, _i1.ProtocolSerialization {
@@ -21,6 +22,8 @@ abstract class NitChatMessage
     required this.chatChannelId,
     required this.sentAt,
     this.text,
+    this.attachmentIds,
+    this.customMessageType,
   });
 
   factory NitChatMessage({
@@ -29,6 +32,8 @@ abstract class NitChatMessage
     required int chatChannelId,
     required DateTime sentAt,
     String? text,
+    List<int>? attachmentIds,
+    _i2.CustomMessageType? customMessageType,
   }) = _NitChatMessageImpl;
 
   factory NitChatMessage.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +43,13 @@ abstract class NitChatMessage
       chatChannelId: jsonSerialization['chatChannelId'] as int,
       sentAt: _i1.DateTimeJsonExtension.fromJson(jsonSerialization['sentAt']),
       text: jsonSerialization['text'] as String?,
+      attachmentIds: (jsonSerialization['attachmentIds'] as List?)
+          ?.map((e) => e as int)
+          .toList(),
+      customMessageType: jsonSerialization['customMessageType'] == null
+          ? null
+          : _i2.CustomMessageType.fromJson(
+              (jsonSerialization['customMessageType'] as Map<String, dynamic>)),
     );
   }
 
@@ -56,6 +68,10 @@ abstract class NitChatMessage
 
   String? text;
 
+  List<int>? attachmentIds;
+
+  _i2.CustomMessageType? customMessageType;
+
   @override
   _i1.Table get table => t;
 
@@ -65,6 +81,8 @@ abstract class NitChatMessage
     int? chatChannelId,
     DateTime? sentAt,
     String? text,
+    List<int>? attachmentIds,
+    _i2.CustomMessageType? customMessageType,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -74,6 +92,9 @@ abstract class NitChatMessage
       'chatChannelId': chatChannelId,
       'sentAt': sentAt.toJson(),
       if (text != null) 'text': text,
+      if (attachmentIds != null) 'attachmentIds': attachmentIds?.toJson(),
+      if (customMessageType != null)
+        'customMessageType': customMessageType?.toJson(),
     };
   }
 
@@ -85,6 +106,9 @@ abstract class NitChatMessage
       'chatChannelId': chatChannelId,
       'sentAt': sentAt.toJson(),
       if (text != null) 'text': text,
+      if (attachmentIds != null) 'attachmentIds': attachmentIds?.toJson(),
+      if (customMessageType != null)
+        'customMessageType': customMessageType?.toJsonForProtocol(),
     };
   }
 
@@ -127,12 +151,16 @@ class _NitChatMessageImpl extends NitChatMessage {
     required int chatChannelId,
     required DateTime sentAt,
     String? text,
+    List<int>? attachmentIds,
+    _i2.CustomMessageType? customMessageType,
   }) : super._(
           id: id,
           userId: userId,
           chatChannelId: chatChannelId,
           sentAt: sentAt,
           text: text,
+          attachmentIds: attachmentIds,
+          customMessageType: customMessageType,
         );
 
   @override
@@ -142,6 +170,8 @@ class _NitChatMessageImpl extends NitChatMessage {
     int? chatChannelId,
     DateTime? sentAt,
     Object? text = _Undefined,
+    Object? attachmentIds = _Undefined,
+    Object? customMessageType = _Undefined,
   }) {
     return NitChatMessage(
       id: id is int? ? id : this.id,
@@ -149,6 +179,12 @@ class _NitChatMessageImpl extends NitChatMessage {
       chatChannelId: chatChannelId ?? this.chatChannelId,
       sentAt: sentAt ?? this.sentAt,
       text: text is String? ? text : this.text,
+      attachmentIds: attachmentIds is List<int>?
+          ? attachmentIds
+          : this.attachmentIds?.map((e0) => e0).toList(),
+      customMessageType: customMessageType is _i2.CustomMessageType?
+          ? customMessageType
+          : this.customMessageType?.copyWith(),
     );
   }
 }
@@ -172,6 +208,14 @@ class NitChatMessageTable extends _i1.Table {
       'text',
       this,
     );
+    attachmentIds = _i1.ColumnSerializable(
+      'attachmentIds',
+      this,
+    );
+    customMessageType = _i1.ColumnSerializable(
+      'customMessageType',
+      this,
+    );
   }
 
   late final _i1.ColumnInt userId;
@@ -182,6 +226,10 @@ class NitChatMessageTable extends _i1.Table {
 
   late final _i1.ColumnString text;
 
+  late final _i1.ColumnSerializable attachmentIds;
+
+  late final _i1.ColumnSerializable customMessageType;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -189,6 +237,8 @@ class NitChatMessageTable extends _i1.Table {
         chatChannelId,
         sentAt,
         text,
+        attachmentIds,
+        customMessageType,
       ];
 }
 

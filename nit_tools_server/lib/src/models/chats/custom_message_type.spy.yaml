@@ -1,0 +1,4 @@
+class: CustomMessageType
+fields:
+  type: String
+  additionalModelId: int?

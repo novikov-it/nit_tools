@@ -59,6 +59,54 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'nitChat',
       endpoint: endpoints['nitChat']!,
       methodConnectors: {
+        'readChatMessage': _i1.MethodConnector(
+          name: 'readChatMessage',
+          params: {
+            'messageId': _i1.ParameterDescription(
+              name: 'messageId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'chatId': _i1.ParameterDescription(
+              name: 'chatId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['nitChat'] as _i2.NitChatEndpoint).readChatMessage(
+            session,
+            params['messageId'],
+            params['chatId'],
+          ),
+        ),
+        'typingToggle': _i1.MethodConnector(
+          name: 'typingToggle',
+          params: {
+            'channelId': _i1.ParameterDescription(
+              name: 'channelId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'isTyping': _i1.ParameterDescription(
+              name: 'isTyping',
+              type: _i1.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['nitChat'] as _i2.NitChatEndpoint).typingToggle(
+            session,
+            params['channelId'],
+            params['isTyping'],
+          ),
+        ),
         'updatesStream': _i1.MethodStreamConnector(
           name: 'updatesStream',
           params: {
@@ -79,7 +127,7 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             chatId: params['chatId'],
           ),
-        )
+        ),
       },
     );
     connectors['nitCrud'] = _i1.EndpointConnector(

@@ -1,0 +1,4 @@
+class: NitTypingMessageEvent
+fields:
+  userId: int
+  isTyping: bool

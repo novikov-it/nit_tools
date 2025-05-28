@@ -5,6 +5,14 @@ import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 final defaultChatCrudConfigs = [
   CrudConfig<NitChatParticipant>(
     table: NitChatParticipant.t,
+    post: PostConfig(
+      allowInsert: (session, model) async {
+        return model.userId == (await session.authenticated)?.userId;
+      },
+      allowUpdate: (session, model) async {
+        return model.userId == (await session.authenticated)?.userId;
+      },
+    ),
     getAll: GetAllConfig(
       defaultOrderByList: [
         Order(
@@ -37,12 +45,21 @@ final defaultChatCrudConfigs = [
   CrudConfig<NitChatMessage>(
     table: NitChatMessage.t,
     getAll: GetAllConfig(
-      defaultOrderByList: [
-        Order(
-          column: NitChatMessage.t.sentAt,
-        ),
-      ],
-    ),
+        defaultOrderByList: [
+          Order(
+            column: NitChatMessage.t.sentAt,
+          ),
+        ],
+        additionalEntitiesFetchFunction: (session, models) async {
+          return [
+            ...await NitMedia.db.find(
+              session,
+              where: (t) => t.id.inSet(
+                models.expand((m) => (m.attachmentIds ?? <int>[])).toSet(),
+              ),
+            ),
+          ];
+        }),
     post: PostConfig(
       allowInsert: (session, model) async {
         return model.userId == (await session.authenticated)?.userId;
@@ -90,5 +107,14 @@ final defaultChatCrudConfigs = [
         return [];
       },
     ),
+  ),
+  CrudConfig<NitMedia>(
+    table: NitMedia.t,
+    getOneById: GetOneByIdConfig(),
+    getOneCustomConfigs: [
+      GetOneCustomConfig(
+        filterPrototype: NitBackendFilter.equalsPrototype(fieldName: 'id'),
+      ),
+    ],
   ),
 ];

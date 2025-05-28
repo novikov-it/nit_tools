@@ -1,5 +1,7 @@
 nitChat:
   - updatesStream:
+  - readChatMessage:
+  - typingToggle:
 nitCrud:
   - getOneCustom:
   - getAll:

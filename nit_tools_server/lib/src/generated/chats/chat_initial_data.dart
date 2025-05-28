@@ -19,12 +19,14 @@ abstract class NitChatInitialData
     required this.messages,
     required this.participantIds,
     required this.additionalEntities,
+    this.lastReadMessageId,
   });
 
   factory NitChatInitialData({
     required List<_i2.NitChatMessage> messages,
     required List<int> participantIds,
     required List<_i3.ObjectWrapper> additionalEntities,
+    int? lastReadMessageId,
   }) = _NitChatInitialDataImpl;
 
   factory NitChatInitialData.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +40,7 @@ abstract class NitChatInitialData
       additionalEntities: (jsonSerialization['additionalEntities'] as List)
           .map((e) => _i3.ObjectWrapper.fromJson(e))
           .toList(),
+      lastReadMessageId: jsonSerialization['lastReadMessageId'] as int?,
     );
   }
 
@@ -47,10 +50,13 @@ abstract class NitChatInitialData
 
   List<_i3.ObjectWrapper> additionalEntities;
 
+  int? lastReadMessageId;
+
   NitChatInitialData copyWith({
     List<_i2.NitChatMessage>? messages,
     List<int>? participantIds,
     List<_i3.ObjectWrapper>? additionalEntities,
+    int? lastReadMessageId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -59,6 +65,7 @@ abstract class NitChatInitialData
       'participantIds': participantIds.toJson(),
       'additionalEntities':
           additionalEntities.toJson(valueToJson: (v) => v.toJson()),
+      if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
     };
   }
 
@@ -69,6 +76,7 @@ abstract class NitChatInitialData
       'participantIds': participantIds.toJson(),
       'additionalEntities':
           additionalEntities.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
     };
   }
 
@@ -78,15 +86,19 @@ abstract class NitChatInitialData
   }
 }
 
+class _Undefined {}
+
 class _NitChatInitialDataImpl extends NitChatInitialData {
   _NitChatInitialDataImpl({
     required List<_i2.NitChatMessage> messages,
     required List<int> participantIds,
     required List<_i3.ObjectWrapper> additionalEntities,
+    int? lastReadMessageId,
   }) : super._(
           messages: messages,
           participantIds: participantIds,
           additionalEntities: additionalEntities,
+          lastReadMessageId: lastReadMessageId,
         );
 
   @override
@@ -94,6 +106,7 @@ class _NitChatInitialDataImpl extends NitChatInitialData {
     List<_i2.NitChatMessage>? messages,
     List<int>? participantIds,
     List<_i3.ObjectWrapper>? additionalEntities,
+    Object? lastReadMessageId = _Undefined,
   }) {
     return NitChatInitialData(
       messages: messages ?? this.messages.map((e0) => e0.copyWith()).toList(),
@@ -101,6 +114,9 @@ class _NitChatInitialDataImpl extends NitChatInitialData {
           participantIds ?? this.participantIds.map((e0) => e0).toList(),
       additionalEntities: additionalEntities ??
           this.additionalEntities.map((e0) => e0.copyWith()).toList(),
+      lastReadMessageId: lastReadMessageId is int?
+          ? lastReadMessageId
+          : this.lastReadMessageId,
     );
   }
 }

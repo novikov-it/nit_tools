@@ -33,6 +33,32 @@ class EndpointNitChat extends _i1.EndpointRef {
         {'chatId': chatId},
         {},
       );
+
+  _i2.Future<void> readChatMessage(
+    int messageId,
+    int chatId,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'nit_tools.nitChat',
+        'readChatMessage',
+        {
+          'messageId': messageId,
+          'chatId': chatId,
+        },
+      );
+
+  _i2.Future<void> typingToggle(
+    int channelId,
+    bool isTyping,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'nit_tools.nitChat',
+        'typingToggle',
+        {
+          'channelId': channelId,
+          'isTyping': isTyping,
+        },
+      );
 }
 
 /// {@category Endpoint}

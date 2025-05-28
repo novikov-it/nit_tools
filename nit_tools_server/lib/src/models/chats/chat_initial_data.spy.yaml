@@ -3,3 +3,4 @@ fields:
   messages: List<NitChatMessage>
   participantIds: List<int>
   additionalEntities: List<ObjectWrapper>
+  lastReadMessageId: int?
