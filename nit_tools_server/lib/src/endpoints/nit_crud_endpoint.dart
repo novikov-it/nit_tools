@@ -27,37 +27,48 @@ class NitCrudEndpoint extends Endpoint {
     required String className,
     required NitBackendFilter filter,
   }) async {
-    final caller = CrudConfig.getCaller(className);
+    try {
+      final caller = CrudConfig.getCaller(className);
 
-    if (caller?.getOneCustomConfigs == null ||
-        caller!.getOneCustomConfigs!.isEmpty) {
-      return ApiResponse.notConfigured(source: 'получение $className');
+      if (caller?.getOneCustomConfigs == null ||
+          caller!.getOneCustomConfigs!.isEmpty) {
+        return ApiResponse.notConfigured(source: 'получение $className');
+      }
+
+      // for (var t in caller.getOneCustomConfigs ?? []) {
+      //   final k = t.filterPrototype.attributeMap;
+      //   print(k);
+      // }
+
+      // final d = filter.attributeMap;
+      // print(d);
+
+      final config = caller.getOneCustomConfigs!.firstWhereOrNull(
+        (e) => _deepEquality.equals(
+          e.filterPrototype.attributeMap,
+          filter.attributeMap,
+        ),
+      );
+
+      if (config == null) {
+        return ApiResponse.notConfigured(source: 'получение $className');
+      }
+
+      return await config.call(
+        session,
+        caller.table,
+        filter,
+      );
+    } catch (ex) {
+      print(ex);
+      print(StackTrace.current);
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error:
+            'Непредвиденная ошибка при обработке запроса на получение $className',
+      );
     }
-
-    // for (var t in caller.getOneCustomConfigs ?? []) {
-    //   final k = t.filterPrototype.attributeMap;
-    //   print(k);
-    // }
-
-    // final d = filter.attributeMap;
-    // print(d);
-
-    final config = caller.getOneCustomConfigs!.firstWhereOrNull(
-      (e) => _deepEquality.equals(
-        e.filterPrototype.attributeMap,
-        filter.attributeMap,
-      ),
-    );
-
-    if (config == null) {
-      return ApiResponse.notConfigured(source: 'получение $className');
-    }
-
-    return await config.call(
-      session,
-      caller.table,
-      filter,
-    );
   }
 
   Future<ApiResponse<List<int>>> getAll(

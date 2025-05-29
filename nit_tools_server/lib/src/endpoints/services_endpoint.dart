@@ -11,16 +11,16 @@ class ServicesEndpoint extends Endpoint {
       where: (t) => t.fcmToken.equals(fcmToken),
     );
 
-    await session.authenticated.then(
-      (auth) async => auth != null
-          ? await session.db.insertRow(
-              NitFcmToken(
-                userId: auth.userId,
-                fcmToken: fcmToken,
-              ),
-            )
-          : {},
-    );
+    final userId = await session.currentUserId;
+
+    if (userId != null) {
+      await session.db.insertRow(
+        NitFcmToken(
+          userId: userId,
+          fcmToken: fcmToken,
+        ),
+      );
+    }
 
     return ApiResponse(isOk: true, value: true);
   }

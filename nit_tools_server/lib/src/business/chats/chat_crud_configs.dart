@@ -61,9 +61,7 @@ final defaultChatCrudConfigs = [
           ];
         }),
     post: PostConfig(
-      allowInsert: (session, model) async {
-        return model.userId == (await session.authenticated)?.userId;
-      },
+      allowInsert: (session, model) async => session.isUser(model.userId),
       afterInsert: (session, model) async {
         final participants = await NitChatParticipant.db.find(
           session,

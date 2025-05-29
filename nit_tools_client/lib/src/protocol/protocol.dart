@@ -58,15 +58,6 @@ class Protocol extends _i1.SerializationManager {
     Type? t,
   ]) {
     t ??= T;
-    if (t == List<int>) {
-      return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
-    }
-
-    if (data is Map<String, dynamic>) {
-      final manualDeserialization =
-          _i18.ApiResponse.manualDeserialization<T>(data);
-      if (manualDeserialization != null) return manualDeserialization;
-    }
     if (t == _i2.NitChatChannel) {
       return _i2.NitChatChannel.fromJson(data) as T;
     }

@@ -8,7 +8,7 @@ class NitChatEndpoint extends Endpoint {
     Session session, {
     required int chatId,
   }) async* {
-    final userId = await session.authenticated.then((auth) => auth?.userId);
+    final userId = await session.currentUserId;
 
     if (userId == null) {
       return;

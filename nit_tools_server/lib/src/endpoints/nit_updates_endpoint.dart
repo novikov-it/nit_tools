@@ -4,50 +4,9 @@ import 'package:serverpod/serverpod.dart';
 class NitUpdatesEndpoint extends Endpoint {
   static userUpdatesChannel(int userId) => 'userUpdates$userId';
 
-  // Stream<SerializableModel> updatesStream(
-  //     Session session, Stream<SerializableModel> instream) async* {
-  //   final userId = await session.authenticated.then((auth) => auth?.userId);
-
-  //   if (userId == null) {
-  //     return;
-  //   }
-
-  //   final t = instream.listen(
-  //     (update) {
-  //       print("received $update from $userId");
-  //       // yield update is TableRow ? ObjectWrapper.wrap(update)! : update;
-  //     },
-  //     onError: (Object error, StackTrace stack) =>
-  //         print('Instream $error\n$stack'),
-  //     cancelOnError: true,
-  //   );
-
-  //   final channel = userUpdatesChannel(userId);
-
-  //   final stream = session.messages.createStream<SerializableModel>(channel);
-
-  //   // session.messages.addListener(channelName, listener)
-  //   // final t2 = session.messages.createStream<SerializableModel>(channel).listen(
-  //   //   (update) async* {
-  //   //     print("sending $update to $userId");
-  //   //     yield update is TableRow ? ObjectWrapper.wrap(update)! : update;
-  //   //   },
-  //   //   onError: (Object error, StackTrace stack) => print('$error\n$stack'),
-  //   //   cancelOnError: true,
-  //   // );
-
-  //   await for (var update in stream) {
-  //     print("sending $update to $userId");
-  //     yield update is TableRow ? ObjectWrapper.wrap(update)! : update;
-  //   }
-  //   // .map(
-  //   //       (update) => update is TableRow ? ObjectWrapper.wrap(update)! : update,
-  //   //     );
-  // }
-
   @override
   Future<void> streamOpened(StreamingSession session) async {
-    final userId = await session.authenticated.then((auth) => auth?.userId);
+    final userId = await session.currentUserId;
 
     if (userId == null) {
       return;

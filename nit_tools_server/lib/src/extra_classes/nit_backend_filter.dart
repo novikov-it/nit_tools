@@ -1,41 +1,52 @@
+import 'package:collection/collection.dart';
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
 class NitBackendFilter implements SerializableModel {
+  static final _listEquality = DeepCollectionEquality();
+  static SerializationManagerServer get _protocol =>
+      Serverpod.instance.serializationManager;
+
   const NitBackendFilter._({
-    required this.fieldName,
     required this.type,
+    required this.fieldName,
+    required this.valueClassName,
     required this.fieldValue,
     required this.children,
     required this.negate,
-    // required this.child,
   });
 
   final NitBackendFilterType type;
   final String? fieldName;
-  final String? fieldValue;
+  final String valueClassName;
+  final dynamic fieldValue;
   final List<NitBackendFilter>? children;
   final bool negate;
   // final NitBackendFilter? child;
 
-  const NitBackendFilter.andPrototype({
+  NitBackendFilter.andPrototype({
     required this.children,
     this.negate = false,
-  })  : fieldName = null,
-        type = NitBackendFilterType.and,
+  })  : type = NitBackendFilterType.and,
+        fieldName = null,
+        valueClassName = 'List',
         fieldValue = null;
 
-  const NitBackendFilter.orPrototype({
+  NitBackendFilter.orPrototype({
     required this.children,
     this.negate = false,
-  })  : fieldName = null,
-        type = NitBackendFilterType.or,
+  })  : type = NitBackendFilterType.or,
+        fieldName = null,
+        valueClassName = 'List',
         fieldValue = null;
 
-  const NitBackendFilter.equalsPrototype({
+  NitBackendFilter.equalsPrototype({
     required this.fieldName,
     this.negate = false,
   })  : type = NitBackendFilterType.equals,
+        valueClassName = Serverpod.instance.serializationManager
+                .getClassNameForObject(null) ??
+            'unknown',
         fieldValue = null,
         children = null;
 
@@ -46,13 +57,22 @@ class NitBackendFilter implements SerializableModel {
       fieldName: jsonSerialization['fieldName'] as String?,
       type:
           NitBackendFilterType.fromJson((jsonSerialization['type'] as String)),
-      fieldValue: jsonSerialization['fieldValue'] as String?,
+      valueClassName: jsonSerialization['valueClassName'],
+      fieldValue: jsonSerialization['fieldValue'] == null
+          ? null
+          : _protocol.deserializeByClassName(
+              {
+                'className': jsonSerialization['valueClassName'],
+                'data': jsonSerialization['fieldValue'],
+              },
+            ),
       children: jsonSerialization['children'] == null
           ? null
           : (jsonSerialization['children'] as List)
               .map((e) => NitBackendFilter.fromJson(e))
               .toList() as dynamic,
       negate: jsonSerialization['negate'] as bool,
+
       // child: jsonSerialization['child'] == null
       //     ? null
       //     : NitBackendFilter.fromJson(
@@ -65,6 +85,7 @@ class NitBackendFilter implements SerializableModel {
   toJson() {
     return {
       'type': type.toJson(),
+      'valueClassName': valueClassName,
       if (fieldName != null) 'fieldName': fieldName,
       if (fieldValue != null) 'fieldValue': fieldValue.toString(),
       if (children != null) 'children': [...children!.map((e) => e.toJson())],
@@ -77,20 +98,28 @@ class NitBackendFilter implements SerializableModel {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-                other is NitBackendFilter &&
-                (identical(other.fieldName, fieldName) ||
-                    other.fieldName == fieldName) &&
-                (identical(other.type, type) || other.type == type)) &&
+            other is NitBackendFilter &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.valueClassName, valueClassName) ||
+                other.valueClassName == valueClassName) &&
+            (identical(other.fieldName, fieldName) ||
+                other.fieldName == fieldName) &&
             (identical(other.fieldValue, fieldValue) ||
                 other.fieldValue == fieldValue) &&
-            (identical(other.children, children) ||
-                other.children == children) &&
-            (identical(other.negate, negate) || other.negate == negate);
+            _listEquality.equals(other.children, children) &&
+            (identical(other.negate, negate) || other.negate == negate));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, fieldName, type, fieldValue, children, negate);
+  int get hashCode => Object.hash(
+        runtimeType,
+        type,
+        valueClassName,
+        fieldName,
+        fieldValue,
+        _listEquality.hash(children),
+        negate,
+      );
 
   Map<String, dynamic> get attributeMap => {
         '${negate ? 'not ' : ''}${type.name}': switch (type) {
@@ -134,48 +163,118 @@ class NitBackendFilter implements SerializableModel {
     final column =
         table.columns.firstWhere((col) => col.columnName == fieldName);
 
-    if (column is ColumnInt) {
-      return (switch (type) {
+    if (column is ColumnInt && fieldValue is int?) {
+      // if (type == NitBackendFilterType.inSet) {
+      //   if (fieldValue == null || fieldValue!.isEmpty) {
+      //     return Constant.bool(true);
+      //   }
+
+      //   return (negate ? column.notInSet : column.inSet).call(
+      //     Set.from(
+      //       fieldValue!.split(',').map((e) => int.tryParse(e)).where(
+      //             (e) => e != null,
+      //           ),
+      //     ),
+      //   );
+      // }
+
+      // final t = fieldValue as int?;
+
+      // fieldValue == null
+      //     ? null
+      //     : int.tryParse(
+      //         fieldValue!,
+      //       );
+
+      return switch (type) {
+        NitBackendFilterType.equals =>
+          (negate ? column.notEquals : column.equals).call(fieldValue),
+        NitBackendFilterType.greaterThan =>
+          negate ? column <= fieldValue : column > fieldValue,
+        NitBackendFilterType.greaterThanOrEquals =>
+          negate ? column < fieldValue : column >= fieldValue,
+        NitBackendFilterType.lessThan =>
+          negate ? column >= fieldValue : column < fieldValue,
+        NitBackendFilterType.lessThanOrEquals =>
+          negate ? column > fieldValue : column <= fieldValue,
+        _ => throw Exception('Unsupported filter type'),
+      };
+    } else if (column is ColumnString && fieldValue is String?) {
+      // if (type == NitBackendFilterType.inSet) {
+      //   if (fieldValue == null || fieldValue!.isEmpty) {
+      //     return Constant.bool(true);
+      //   }
+
+      //   return (negate ? column.notInSet : column.inSet).call(
+      //     Set.from(
+      //       fieldValue!.split(','),
+      //     ),
+      //   );
+      // }
+
+      return switch (type) {
+        NitBackendFilterType.equals =>
+          (negate ? column.notEquals : column.equals).call(fieldValue),
+        NitBackendFilterType.ilike =>
+          (negate ? column.notIlike : column.ilike).call(fieldValue),
+        _ => throw Exception('Unsupported filter type'),
+      };
+    } else if (column is ColumnBool && fieldValue is bool?) {
+      // if (type == NitBackendFilterType.inSet) {
+      //   if (fieldValue == null) {
+      //     return Constant.bool(true);
+      //   }
+
+      //   return (negate ? column.notInSet : column.inSet).call(
+      //     Set.from(
+      //       fieldValue!.split(',').map((e) => bool.tryParse(e)).where(
+      //             (e) => e != null,
+      //           ),
+      //     ),
+      //   );
+      // }
+
+      return switch (type) {
+        NitBackendFilterType.equals =>
+          (negate ? column.notEquals : column.equals).call(fieldValue),
+        _ => throw Exception('Unsupported filter type'),
+      };
+    } else if (column is ColumnEnum) {
+      // if (type == NitBackendFilterType.inSet) {
+      //   if (fieldValue == null || fieldValue!.isEmpty) {
+      //     return Constant.bool(true);
+      //   }
+
+      //   return (negate ? column.notInSet : column.inSet).call(
+      //     Set.from(
+      //       fieldValue!.split(',').map((e) => int.tryParse(e)).where(
+      //             (e) => e != null,
+      //           ),
+      //     ),
+      //   );
+      // }
+
+      // final t = fieldValue == null
+      //     ? null
+      //     : int.tryParse(
+      //         fieldValue!,
+      //       );
+
+      return switch (type) {
         NitBackendFilterType.equals =>
           negate ? column.notEquals : column.equals,
         _ => throw Exception('Unsupported filter type'),
-      })
-          .call(
-        fieldValue == null
-            ? null
-            : int.tryParse(
-                fieldValue!,
-              ),
-      );
-    } else if (column is ColumnString) {
-      return (switch (type) {
-        NitBackendFilterType.equals =>
-          negate ? column.notEquals : column.equals,
-        _ => throw Exception('Unsupported filter type'),
-      })
+      }
           .call(
         fieldValue,
       );
-    } else if (column is ColumnBool) {
-      return (switch (type) {
-        NitBackendFilterType.equals =>
-          negate ? column.notEquals : column.equals,
-        _ => throw Exception('Unsupported filter type'),
-      })
-          .call(
-        fieldValue == null ? null : bool.tryParse(fieldValue!),
-      );
     }
-    // else if (column is ColumnEnum) {
-    //   return (switch (type) {
-    //     NitBackendFilterType.equals => column.,
-    //     NitBackendFilterType.notEquals => column.notEquals,
-    //     _ => throw Exception('Unsupported filter type'),
-    //   })
-    //       .call(
-    //     fieldValue == null ? null : bool.tryParse(fieldValue!),
-    //   );
-    // }
-    return null;
+    throw Exception('Unsupported filter type');
   }
 }
+
+// extension Ext<T extends Enum> on ColumnEnum<T> {
+
+//   T valueFromString(String value) =>
+
+// }

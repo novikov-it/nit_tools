@@ -1,7 +1,7 @@
 class: NitChatMessage
 table: nit_chat_message
 fields:
-    userId: int, relation(parent=serverpod_user_info)
+    userId: int
     chatChannelId: int, relation(parent=nit_chat_channel)
     sentAt: DateTime,
     text: String?

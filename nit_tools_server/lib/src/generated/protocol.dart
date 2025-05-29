@@ -227,16 +227,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'nit_chat_message_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_user_info',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'nit_chat_message_fk_1',
           columns: ['chatChannelId'],
           referenceTable: 'nit_chat_channel',
           referenceTableSchema: 'public',
@@ -244,7 +234,7 @@ class Protocol extends _i1.SerializationManagerServer {
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        ),
+        )
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -317,16 +307,6 @@ class Protocol extends _i1.SerializationManagerServer {
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'nit_chat_participant_fk_0',
-          columns: ['userId'],
-          referenceTable: 'serverpod_user_info',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _i2.ForeignKeyAction.noAction,
-          onDelete: _i2.ForeignKeyAction.noAction,
-          matchType: null,
-        ),
-        _i2.ForeignKeyDefinition(
-          constraintName: 'nit_chat_participant_fk_1',
           columns: ['chatChannelId'],
           referenceTable: 'nit_chat_channel',
           referenceTableSchema: 'public',
@@ -336,7 +316,7 @@ class Protocol extends _i1.SerializationManagerServer {
           matchType: null,
         ),
         _i2.ForeignKeyDefinition(
-          constraintName: 'nit_chat_participant_fk_2',
+          constraintName: 'nit_chat_participant_fk_1',
           columns: ['lastReadMessageId'],
           referenceTable: 'nit_chat_message',
           referenceTableSchema: 'public',

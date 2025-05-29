@@ -1,0 +1,70 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "nit_chat_message",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "attachmentIds",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "List<int>?"
+          },
+          {
+            "name": "customMessageType",
+            "columnType": 8,
+            "isNullable": true,
+            "dartType": "protocol:CustomMessageType?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    },
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "nit_chat_participant",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "lastReadMessageId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "nit_chat_participant_fk_1",
+            "columns": [
+              "lastReadMessageId"
+            ],
+            "referenceTable": "nit_chat_message",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

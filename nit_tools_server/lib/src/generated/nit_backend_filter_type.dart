@@ -13,6 +13,13 @@ import 'package:serverpod/serverpod.dart' as _i1;
 
 enum NitBackendFilterType implements _i1.SerializableModel {
   equals,
+  greaterThan,
+  greaterThanOrEquals,
+  lessThan,
+  lessThanOrEquals,
+  like,
+  ilike,
+  inSet,
   and,
   or;
 
@@ -20,6 +27,20 @@ enum NitBackendFilterType implements _i1.SerializableModel {
     switch (name) {
       case 'equals':
         return equals;
+      case 'greaterThan':
+        return greaterThan;
+      case 'greaterThanOrEquals':
+        return greaterThanOrEquals;
+      case 'lessThan':
+        return lessThan;
+      case 'lessThanOrEquals':
+        return lessThanOrEquals;
+      case 'like':
+        return like;
+      case 'ilike':
+        return ilike;
+      case 'inSet':
+        return inSet;
       case 'and':
         return and;
       case 'or':
