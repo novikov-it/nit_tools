@@ -11,7 +11,8 @@ import '../endpoints/nit_updates_endpoint.dart';
 extension NitSessionExtension on Session {
   // static UserIdMode userIdMode = UserIdMode.userInfoId;
 
-  static Future<int> Function(int userInfoId)? userIdCustomGetter;
+  static Future<int> Function(Session session, int userInfoId)?
+      userIdCustomGetter;
 
   // Future<UserInfo?> get currentUser async => await authenticated.then(
   //       (auth) async => auth == null
@@ -27,7 +28,7 @@ extension NitSessionExtension on Session {
             ? null
             : userIdCustomGetter == null
                 ? auth!.userId
-                : await userIdCustomGetter!.call(auth!.userId),
+                : await userIdCustomGetter!.call(this, auth!.userId),
       );
 
   Future<int> get requireUserId async => (await currentUserId)!;
