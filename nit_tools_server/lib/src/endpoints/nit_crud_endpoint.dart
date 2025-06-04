@@ -30,6 +30,10 @@ class NitCrudEndpoint extends Endpoint {
     try {
       final caller = CrudConfig.getCaller(className);
 
+      print(
+        "Received getOneCustom request for $className with filter: ${filter.attributeMap}",
+      );
+
       if (caller?.getOneCustomConfigs == null ||
           caller!.getOneCustomConfigs!.isEmpty) {
         return ApiResponse.notConfigured(source: 'получение $className');
@@ -79,6 +83,10 @@ class NitCrudEndpoint extends Endpoint {
     int? offset,
   }) async {
     final caller = CrudConfig.getCaller(className);
+
+    print(
+      "Received getAll request for $className ${filter != null ? 'with filter: ${filter.attributeMap}' : ''}",
+    );
 
     if (caller?.getAll == null) {
       return ApiResponse.notConfigured(source: 'получение списка $className');
