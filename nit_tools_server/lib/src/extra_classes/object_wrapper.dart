@@ -50,6 +50,7 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
     return {
       'className': className,
       'data': object.toJson(),
+      'isDeleted': isDeleted,
     };
   }
 
