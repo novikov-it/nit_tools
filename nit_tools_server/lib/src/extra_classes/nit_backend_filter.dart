@@ -199,6 +199,42 @@ class NitBackendFilter implements SerializableModel {
           negate ? column > fieldValue : column <= fieldValue,
         _ => throw Exception('Unsupported filter type'),
       };
+    } else if (column is ColumnDouble && fieldValue is double?) {
+      // if (type == NitBackendFilterType.inSet) {
+      //   if (fieldValue == null || fieldValue!.isEmpty) {
+      //     return Constant.bool(true);
+      //   }
+
+      //   return (negate ? column.notInSet : column.inSet).call(
+      //     Set.from(
+      //       fieldValue!.split(',').map((e) => int.tryParse(e)).where(
+      //             (e) => e != null,
+      //           ),
+      //     ),
+      //   );
+      // }
+
+      // final t = fieldValue as int?;
+
+      // fieldValue == null
+      //     ? null
+      //     : int.tryParse(
+      //         fieldValue!,
+      //       );
+
+      return switch (type) {
+        NitBackendFilterType.equals =>
+          (negate ? column.notEquals : column.equals).call(fieldValue),
+        NitBackendFilterType.greaterThan =>
+          negate ? column <= fieldValue : column > fieldValue,
+        NitBackendFilterType.greaterThanOrEquals =>
+          negate ? column < fieldValue : column >= fieldValue,
+        NitBackendFilterType.lessThan =>
+          negate ? column >= fieldValue : column < fieldValue,
+        NitBackendFilterType.lessThanOrEquals =>
+          negate ? column > fieldValue : column <= fieldValue,
+        _ => throw Exception('Unsupported filter type'),
+      };
     } else if (column is ColumnString && fieldValue is String?) {
       // if (type == NitBackendFilterType.inSet) {
       //   if (fieldValue == null || fieldValue!.isEmpty) {
