@@ -15,6 +15,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
   NitAppNotification._({
     this.id,
     required this.toUserId,
+    this.identifier,
     DateTime? timestamp,
     required this.title,
     this.body,
@@ -26,6 +27,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
   factory NitAppNotification({
     int? id,
     required int toUserId,
+    String? identifier,
     DateTime? timestamp,
     required String title,
     String? body,
@@ -37,6 +39,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
     return NitAppNotification(
       id: jsonSerialization['id'] as int?,
       toUserId: jsonSerialization['toUserId'] as int,
+      identifier: jsonSerialization['identifier'] as String?,
       timestamp:
           _i1.DateTimeJsonExtension.fromJson(jsonSerialization['timestamp']),
       title: jsonSerialization['title'] as String,
@@ -53,6 +56,8 @@ abstract class NitAppNotification implements _i1.SerializableModel {
 
   int toUserId;
 
+  String? identifier;
+
   DateTime timestamp;
 
   String title;
@@ -66,6 +71,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
   NitAppNotification copyWith({
     int? id,
     int? toUserId,
+    String? identifier,
     DateTime? timestamp,
     String? title,
     String? body,
@@ -77,6 +83,7 @@ abstract class NitAppNotification implements _i1.SerializableModel {
     return {
       if (id != null) 'id': id,
       'toUserId': toUserId,
+      if (identifier != null) 'identifier': identifier,
       'timestamp': timestamp.toJson(),
       'title': title,
       if (body != null) 'body': body,
@@ -97,6 +104,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
   _NitAppNotificationImpl({
     int? id,
     required int toUserId,
+    String? identifier,
     DateTime? timestamp,
     required String title,
     String? body,
@@ -105,6 +113,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
   }) : super._(
           id: id,
           toUserId: toUserId,
+          identifier: identifier,
           timestamp: timestamp,
           title: title,
           body: body,
@@ -116,6 +125,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
   NitAppNotification copyWith({
     Object? id = _Undefined,
     int? toUserId,
+    Object? identifier = _Undefined,
     DateTime? timestamp,
     String? title,
     Object? body = _Undefined,
@@ -125,6 +135,7 @@ class _NitAppNotificationImpl extends NitAppNotification {
     return NitAppNotification(
       id: id is int? ? id : this.id,
       toUserId: toUserId ?? this.toUserId,
+      identifier: identifier is String? ? identifier : this.identifier,
       timestamp: timestamp ?? this.timestamp,
       title: title ?? this.title,
       body: body is String? ? body : this.body,
