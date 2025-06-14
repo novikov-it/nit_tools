@@ -327,7 +327,12 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'path',
               type: _i1.getType<String>(),
               nullable: false,
-            )
+            ),
+            'duration': _i1.ParameterDescription(
+              name: 'duration',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
           },
           call: (
             _i1.Session session,
@@ -336,6 +341,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['nitUpload'] as _i5.NitUploadEndpoint).verifyUpload(
             session,
             path: params['path'],
+            duration: params['duration'],
           ),
         ),
       },

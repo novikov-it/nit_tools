@@ -167,11 +167,17 @@ class EndpointNitUpload extends _i1.EndpointRef {
         {'path': path},
       );
 
-  _i2.Future<_i7.NitMedia?> verifyUpload({required String path}) =>
+  _i2.Future<_i7.NitMedia?> verifyUpload({
+    required String path,
+    int? duration,
+  }) =>
       caller.callServerEndpoint<_i7.NitMedia?>(
         'nit_tools.nitUpload',
         'verifyUpload',
-        {'path': path},
+        {
+          'path': path,
+          'duration': duration,
+        },
       );
 }
 
