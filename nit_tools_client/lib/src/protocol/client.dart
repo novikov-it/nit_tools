@@ -194,6 +194,13 @@ class EndpointServices extends _i1.EndpointRef {
         'setFcmToken',
         {'fcmToken': fcmToken},
       );
+
+  _i2.Future<_i4.ApiResponse<bool>> deleteFcmToken({required int userId}) =>
+      caller.callServerEndpoint<_i4.ApiResponse<bool>>(
+        'nit_tools.services',
+        'deleteFcmToken',
+        {'userId': userId},
+      );
 }
 
 class Caller extends _i1.ModuleEndpointCaller {

@@ -90,9 +90,17 @@ final defaultChatCrudConfigs = [
               .map((e) => e.userId)
               .where((e) => e != model.userId)
               .toList(),
-          title: model.text!,
-          body: '',
-          // 'Поздравляем с покупкой, робот теперь доступен в разделе Мои Роботы',
+          title: NitChatsConfig.pushNotificationConfig.title ?? '${model.text}',
+          body: NitChatsConfig.pushNotificationConfig.body ?? '',
+          goToPath: NitChatsConfig.pushNotificationConfig.goToPath != null
+              ? NitChatsConfig
+                  .pushNotificationConfig.goToPath!(model.chatChannelId)
+              : null,
+          pathQueryParams:
+              NitChatsConfig.pushNotificationConfig.pathQueryParams != null
+                  ? NitChatsConfig.pushNotificationConfig
+                      .pathQueryParams!(model.chatChannelId)
+                  : null,
         );
 
         // for (var p in participants) {

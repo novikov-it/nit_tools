@@ -367,7 +367,25 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             fcmToken: params['fcmToken'],
           ),
-        )
+        ),
+        'deleteFcmToken': _i1.MethodConnector(
+          name: 'deleteFcmToken',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['services'] as _i6.ServicesEndpoint).deleteFcmToken(
+            session,
+            userId: params['userId'],
+          ),
+        ),
       },
     );
     modules['serverpod_auth'] = _i9.Endpoints()..initializeEndpoints(server);

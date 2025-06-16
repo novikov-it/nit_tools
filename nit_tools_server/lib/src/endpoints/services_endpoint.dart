@@ -24,4 +24,16 @@ class ServicesEndpoint extends Endpoint {
 
     return ApiResponse(isOk: true, value: true);
   }
+
+  Future<ApiResponse<bool>> deleteFcmToken(
+    Session session, {
+    required int userId,
+  }) async {
+    await NitFcmToken.db.deleteWhere(
+      session,
+      where: (t) => t.userId.equals(userId),
+    );
+
+    return ApiResponse(isOk: true, value: true);
+  }
 }
