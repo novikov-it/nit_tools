@@ -23,6 +23,6 @@ class NitChatsPushNotificationConfig {
     this.pathQueryParams = _nullOneArg,
   });
 
-  static String? _nullTwoArgs(int _, String? __) => null;
-  static String? _nullOneArg(int _) => null;
+  static String? _nullTwoArgs(int userFromId, String? messageText) => null;
+  static String? _nullOneArg(int channel) => null;
 }
