@@ -90,10 +90,10 @@ final defaultChatCrudConfigs = [
               .map((e) => e.userId)
               .where((e) => e != model.userId)
               .toList(),
-          title: NitChatsConfig.pushNotificationConfig
+          title: await NitChatsConfig.pushNotificationConfig
                   .title(model.userId, model.text) ??
               '${model.text}',
-          body: NitChatsConfig.pushNotificationConfig
+          body: await NitChatsConfig.pushNotificationConfig
                   .body(model.userId, model.text) ??
               '',
           goToPath: NitChatsConfig.pushNotificationConfig
