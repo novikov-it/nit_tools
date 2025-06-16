@@ -11,15 +11,18 @@ class NitChatsConfig {
 }
 
 class NitChatsPushNotificationConfig {
-  final String? title;
-  final String? body;
-  final String Function(int channel)? goToPath;
-  final String Function(int channel)? pathQueryParams;
+  final String? Function(int userFromId, String? messageText) title;
+  final String? Function(int userFromId, String? messageText) body;
+  final String? Function(int channel) goToPath;
+  final String? Function(int channel) pathQueryParams;
 
   NitChatsPushNotificationConfig({
-    this.title,
-    this.body,
-    this.goToPath,
-    this.pathQueryParams,
+    this.title = _nullTwoArgs,
+    this.body = _nullTwoArgs,
+    this.goToPath = _nullOneArg,
+    this.pathQueryParams = _nullOneArg,
   });
+
+  static String? _nullTwoArgs(int _, String? __) => null;
+  static String? _nullOneArg(int _) => null;
 }
