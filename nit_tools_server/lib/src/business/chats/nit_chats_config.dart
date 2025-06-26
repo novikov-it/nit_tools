@@ -7,9 +7,9 @@ class NitChatsConfig {
           Session session, Set<int> userIds)
       additionalEntitiesLoaderForInitialChatData;
 
-  static late final Function additionalOnMessageSentAction;
+  static Function? additionalOnMessageSentAction;
 
-  static late final NitChatsPushNotificationConfig pushNotificationConfig;
+  static NitChatsPushNotificationConfig? pushNotificationConfig;
 }
 
 class NitChatsPushNotificationConfig {

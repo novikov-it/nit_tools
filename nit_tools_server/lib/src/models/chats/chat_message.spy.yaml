@@ -7,3 +7,4 @@ fields:
     text: String?
     attachmentIds: List<int>? # List of NitMedia IDs
     customMessageType: CustomMessageType?
+    replyMessageId: int?

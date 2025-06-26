@@ -41,6 +41,24 @@ final defaultChatCrudConfigs = [
         ),
       ],
     ),
+    getOneCustomConfigs: [
+      GetOneCustomConfig(
+        filterPrototype: NitBackendFilter.andPrototype(
+          children: [
+            NitBackendFilter.equalsPrototype(fieldName: 'chatChannelId'),
+            NitBackendFilter.equalsPrototype(fieldName: 'userId'),
+          ],
+        ),
+        createIfMissing: (session, filter) async {
+          final chatChannelId = filter.children!.first.fieldValue;
+          final userId = filter.children!.last.fieldValue;
+          return await session.joinChatChannel(
+            chatChannelId: chatChannelId,
+            userId: userId,
+          );
+        },
+      ),
+    ],
   ),
   CrudConfig<NitChatMessage>(
     table: NitChatMessage.t,
@@ -60,6 +78,12 @@ final defaultChatCrudConfigs = [
             ),
           ];
         }),
+    getOneById: GetOneByIdConfig(),
+    getOneCustomConfigs: [
+      GetOneCustomConfig(
+        filterPrototype: NitBackendFilter.equalsPrototype(fieldName: 'id'),
+      ),
+    ],
     post: PostConfig(
       allowInsert: (session, model) async => session.isUser(model.userId),
       afterInsert: (session, model) async {
@@ -84,23 +108,25 @@ final defaultChatCrudConfigs = [
           );
         }
 
-        NitPushNotifications.sendPushToUsers(
-          session,
-          userIds: participants
-              .map((e) => e.userId)
-              .where((e) => e != model.userId)
-              .toList(),
-          title: await NitChatsConfig.pushNotificationConfig
-                  .title(session, model.userId, model.text) ??
-              '${model.text}',
-          body: await NitChatsConfig.pushNotificationConfig
-                  .body(session, model.userId, model.text) ??
-              '',
-          goToPath: NitChatsConfig.pushNotificationConfig
-              .goToPath(model.chatChannelId),
-          pathQueryParams: NitChatsConfig.pushNotificationConfig
-              .pathQueryParams(model.chatChannelId),
-        );
+        if (NitChatsConfig.pushNotificationConfig != null) {
+          NitPushNotifications.sendPushToUsers(
+            session,
+            userIds: participants
+                .map((e) => e.userId)
+                .where((e) => e != model.userId)
+                .toList(),
+            title: await NitChatsConfig.pushNotificationConfig!
+                    .title(session, model.userId, model.text) ??
+                '${model.text}',
+            body: await NitChatsConfig.pushNotificationConfig!
+                    .body(session, model.userId, model.text) ??
+                '',
+            goToPath: NitChatsConfig.pushNotificationConfig!
+                .goToPath(model.chatChannelId),
+            pathQueryParams: NitChatsConfig.pushNotificationConfig!
+                .pathQueryParams(model.chatChannelId),
+          );
+        }
 
         // for (var p in participants) {
         session.nitSendToChat(

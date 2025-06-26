@@ -235,6 +235,12 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'protocol:CustomMessageType?',
         ),
+        _i2.ColumnDefinition(
+          name: 'replyMessageId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(

@@ -21,6 +21,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
     this.text,
     this.attachmentIds,
     this.customMessageType,
+    this.replyMessageId,
   });
 
   factory NitChatMessage({
@@ -31,6 +32,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
     String? text,
     List<int>? attachmentIds,
     _i2.CustomMessageType? customMessageType,
+    int? replyMessageId,
   }) = _NitChatMessageImpl;
 
   factory NitChatMessage.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -47,6 +49,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
           ? null
           : _i2.CustomMessageType.fromJson(
               (jsonSerialization['customMessageType'] as Map<String, dynamic>)),
+      replyMessageId: jsonSerialization['replyMessageId'] as int?,
     );
   }
 
@@ -67,6 +70,8 @@ abstract class NitChatMessage implements _i1.SerializableModel {
 
   _i2.CustomMessageType? customMessageType;
 
+  int? replyMessageId;
+
   NitChatMessage copyWith({
     int? id,
     int? userId,
@@ -75,6 +80,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
     String? text,
     List<int>? attachmentIds,
     _i2.CustomMessageType? customMessageType,
+    int? replyMessageId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -87,6 +93,7 @@ abstract class NitChatMessage implements _i1.SerializableModel {
       if (attachmentIds != null) 'attachmentIds': attachmentIds?.toJson(),
       if (customMessageType != null)
         'customMessageType': customMessageType?.toJson(),
+      if (replyMessageId != null) 'replyMessageId': replyMessageId,
     };
   }
 
@@ -107,6 +114,7 @@ class _NitChatMessageImpl extends NitChatMessage {
     String? text,
     List<int>? attachmentIds,
     _i2.CustomMessageType? customMessageType,
+    int? replyMessageId,
   }) : super._(
           id: id,
           userId: userId,
@@ -115,6 +123,7 @@ class _NitChatMessageImpl extends NitChatMessage {
           text: text,
           attachmentIds: attachmentIds,
           customMessageType: customMessageType,
+          replyMessageId: replyMessageId,
         );
 
   @override
@@ -126,6 +135,7 @@ class _NitChatMessageImpl extends NitChatMessage {
     Object? text = _Undefined,
     Object? attachmentIds = _Undefined,
     Object? customMessageType = _Undefined,
+    Object? replyMessageId = _Undefined,
   }) {
     return NitChatMessage(
       id: id is int? ? id : this.id,
@@ -139,6 +149,8 @@ class _NitChatMessageImpl extends NitChatMessage {
       customMessageType: customMessageType is _i2.CustomMessageType?
           ? customMessageType
           : this.customMessageType?.copyWith(),
+      replyMessageId:
+          replyMessageId is int? ? replyMessageId : this.replyMessageId,
     );
   }
 }

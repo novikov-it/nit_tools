@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -33,7 +34,7 @@ class NitChatEndpoint extends Endpoint {
 
     final participantIds = participants.map((e) => e.userId).toSet();
 
-    final currentParticipant = participants.firstWhere(
+    final currentParticipant = participants.firstWhereOrNull(
         (e) => e.userId != userId); //TODO: отследить для груповых чатов
 
     final initMedias = await NitMedia.db.find(
@@ -46,7 +47,7 @@ class NitChatEndpoint extends Endpoint {
     yield NitChatInitialData(
         messages: messages,
         participantIds: participantIds.toList(),
-        lastReadMessageId: currentParticipant.lastReadMessageId,
+        lastReadMessageId: currentParticipant?.lastReadMessageId,
         additionalEntities: [
           ...initMedias.map((e) => ObjectWrapper(object: e)),
           ...await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
