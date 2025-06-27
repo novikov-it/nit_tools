@@ -235,6 +235,20 @@ class NitBackendFilter implements SerializableModel {
           negate ? column > fieldValue : column <= fieldValue,
         _ => throw Exception('Unsupported filter type'),
       };
+    } else if (column is ColumnDateTime && fieldValue is DateTime?) {
+      return switch (type) {
+        NitBackendFilterType.equals =>
+          (negate ? column.notEquals : column.equals).call(fieldValue),
+        NitBackendFilterType.greaterThan =>
+          negate ? column <= fieldValue : column > fieldValue,
+        NitBackendFilterType.greaterThanOrEquals =>
+          negate ? column < fieldValue : column >= fieldValue,
+        NitBackendFilterType.lessThan =>
+          negate ? column >= fieldValue : column < fieldValue,
+        NitBackendFilterType.lessThanOrEquals =>
+          negate ? column > fieldValue : column <= fieldValue,
+        _ => throw Exception('Unsupported filter type'),
+      };
     } else if (column is ColumnString && fieldValue is String?) {
       // if (type == NitBackendFilterType.inSet) {
       //   if (fieldValue == null || fieldValue!.isEmpty) {
