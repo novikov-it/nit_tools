@@ -2,6 +2,7 @@ class: NitAppNotification
 table: nit_app_notification
 fields:
     toUserId: int
+    identifier: String?
     timestamp: DateTime, default = now
     title: String
     body: String?

@@ -194,6 +194,30 @@ class Endpoints extends _i1.EndpointDispatch {
             offset: params['offset'],
           ),
         ),
+        'getCount': _i1.MethodConnector(
+          name: 'getCount',
+          params: {
+            'className': _i1.ParameterDescription(
+              name: 'className',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'filter': _i1.ParameterDescription(
+              name: 'filter',
+              type: _i1.getType<_i7.NitBackendFilter?>(),
+              nullable: true,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['nitCrud'] as _i3.NitCrudEndpoint).getCount(
+            session,
+            className: params['className'],
+            filter: params['filter'],
+          ),
+        ),
         'getEntityList': _i1.MethodConnector(
           name: 'getEntityList',
           params: {

@@ -44,6 +44,20 @@ class GetAllConfig<T extends TableRow> {
     );
   }
 
+  Future<ApiResponse<int>> getCount(
+    Session session, {
+    Expression? whereClause,
+  }) async {
+    final result = await session.db.count<T>(
+      where: whereClause,
+    );
+
+    return ApiResponse<int>(
+      isOk: true,
+      value: result,
+    );
+  }
+
   Future<ApiResponse<List<ObjectWrapper>>> getEntityList(
     Session session, {
     Expression? whereClause,
