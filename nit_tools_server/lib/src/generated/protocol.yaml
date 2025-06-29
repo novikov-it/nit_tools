@@ -3,6 +3,7 @@ nitChat:
 nitCrud:
   - getOneCustom:
   - getAll:
+  - getCount:
   - getEntityList:
   - saveModels:
   - saveModel:

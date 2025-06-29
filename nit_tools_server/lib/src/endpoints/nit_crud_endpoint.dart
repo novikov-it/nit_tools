@@ -102,6 +102,30 @@ class NitCrudEndpoint extends Endpoint {
     );
   }
 
+  Future<ApiResponse<int>> getCount(
+    Session session, {
+    required String className,
+    NitBackendFilter? filter,
+  }) async {
+    final caller = CrudConfig.getCaller(className);
+
+    print(
+      "CRUD: getCount for $className with filter: $filter",
+    );
+
+    if (caller?.getAll == null) {
+      return ApiResponse.notConfigured(
+          source: 'получение количества $className');
+    }
+
+    return await caller!.getAll!.getCount(
+      session,
+      whereClause: filter?.prepareWhere(
+        caller.table,
+      ),
+    );
+  }
+
   Future<ApiResponse<List<ObjectWrapper>>> getEntityList(
     Session session, {
     required String className,
@@ -110,6 +134,10 @@ class NitCrudEndpoint extends Endpoint {
     int? offset,
   }) async {
     final caller = CrudConfig.getCaller(className);
+
+    print(
+      "CRUD: getEntityList for $className with filter: $filter limit: $limit offset: $offset",
+    );
 
     if (caller?.getAll == null) {
       return ApiResponse.notConfigured(source: 'получение списка $className');

@@ -72,6 +72,19 @@ class EndpointNitCrud extends _i1.EndpointRef {
         },
       );
 
+  _i2.Future<_i4.ApiResponse<int>> getCount({
+    required String className,
+    _i5.NitBackendFilter? filter,
+  }) =>
+      caller.callServerEndpoint<_i4.ApiResponse<int>>(
+        'nit_tools.nitCrud',
+        'getCount',
+        {
+          'className': className,
+          'filter': filter,
+        },
+      );
+
   _i2.Future<_i4.ApiResponse<List<_i6.ObjectWrapper>>> getEntityList({
     required String className,
     _i5.NitBackendFilter? filter,
