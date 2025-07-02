@@ -13,13 +13,18 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
         this.foreignKeys = {},
         className =
             NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown',
-        isDeleted = false;
+        isDeleted = false,
+        jsonSerialization = {
+          'className': NitToolsClient.protocol.getClassNameForObject(model),
+          'data': model.toJson(),
+        };
 
   ObjectWrapper._({
     required this.model,
     required this.modelId,
     required this.foreignKeys,
     required this.isDeleted,
+    required this.jsonSerialization,
   }) : className =
             NitToolsClient.protocol.getClassNameForObject(model) ?? 'unknown';
 
@@ -28,6 +33,8 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
   final Map<String, int> foreignKeys;
   final int? modelId;
   final bool isDeleted;
+  final Map<String, dynamic> jsonSerialization;
+
   // final List<SerializableModel>? entities;
 
   String get nitMappingClassname => className.split('.').last;
@@ -49,6 +56,7 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
       foreignKeys: foreignKeys,
       model: NitToolsClient.protocol.deserializeByClassName(jsonSerialization),
       isDeleted: jsonSerialization['isDeleted'] ?? false,
+      jsonSerialization: jsonSerialization,
     );
   }
 
