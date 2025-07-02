@@ -6,12 +6,12 @@ class ServicesEndpoint extends Endpoint {
     Session session, {
     required String fcmToken,
   }) async {
+    final userId = await session.currentUserId;
+
     await NitFcmToken.db.deleteWhere(
       session,
-      where: (t) => t.fcmToken.equals(fcmToken),
+      where: (t) => t.fcmToken.equals(fcmToken) | t.userId.equals(userId),
     );
-
-    final userId = await session.currentUserId;
 
     if (userId != null) {
       await session.db.insertRow(
@@ -21,6 +21,18 @@ class ServicesEndpoint extends Endpoint {
         ),
       );
     }
+
+    return ApiResponse(isOk: true, value: true);
+  }
+
+  Future<ApiResponse<bool>> deleteFcmToken(
+    Session session, {
+    required int userId,
+  }) async {
+    await NitFcmToken.db.deleteWhere(
+      session,
+      where: (t) => t.userId.equals(userId),
+    );
 
     return ApiResponse(isOk: true, value: true);
   }

@@ -1,0 +1,4 @@
+class: NitChatReadMessageEvent
+fields:
+  userId: int
+  messageId: int

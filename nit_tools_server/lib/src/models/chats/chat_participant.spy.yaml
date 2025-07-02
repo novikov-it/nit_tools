@@ -6,6 +6,7 @@ fields:
     lastMessage: String?
     lastMessageSentAt: DateTime?
     unreadCount: int, default=0
+    lastReadMessageId: int?, relation(parent=nit_chat_message)
 
 indexes:
   chat_participants_idx:

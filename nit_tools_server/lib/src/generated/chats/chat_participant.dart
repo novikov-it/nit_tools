@@ -22,6 +22,7 @@ abstract class NitChatParticipant
     this.lastMessage,
     this.lastMessageSentAt,
     int? unreadCount,
+    this.lastReadMessageId,
   }) : unreadCount = unreadCount ?? 0;
 
   factory NitChatParticipant({
@@ -31,6 +32,7 @@ abstract class NitChatParticipant
     String? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
+    int? lastReadMessageId,
   }) = _NitChatParticipantImpl;
 
   factory NitChatParticipant.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -44,6 +46,7 @@ abstract class NitChatParticipant
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['lastMessageSentAt']),
       unreadCount: jsonSerialization['unreadCount'] as int,
+      lastReadMessageId: jsonSerialization['lastReadMessageId'] as int?,
     );
   }
 
@@ -64,6 +67,8 @@ abstract class NitChatParticipant
 
   int unreadCount;
 
+  int? lastReadMessageId;
+
   @override
   _i1.Table get table => t;
 
@@ -74,6 +79,7 @@ abstract class NitChatParticipant
     String? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
+    int? lastReadMessageId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -85,6 +91,7 @@ abstract class NitChatParticipant
       if (lastMessageSentAt != null)
         'lastMessageSentAt': lastMessageSentAt?.toJson(),
       'unreadCount': unreadCount,
+      if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
     };
   }
 
@@ -98,6 +105,7 @@ abstract class NitChatParticipant
       if (lastMessageSentAt != null)
         'lastMessageSentAt': lastMessageSentAt?.toJson(),
       'unreadCount': unreadCount,
+      if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
     };
   }
 
@@ -141,6 +149,7 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     String? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
+    int? lastReadMessageId,
   }) : super._(
           id: id,
           userId: userId,
@@ -148,6 +157,7 @@ class _NitChatParticipantImpl extends NitChatParticipant {
           lastMessage: lastMessage,
           lastMessageSentAt: lastMessageSentAt,
           unreadCount: unreadCount,
+          lastReadMessageId: lastReadMessageId,
         );
 
   @override
@@ -158,6 +168,7 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     Object? lastMessage = _Undefined,
     Object? lastMessageSentAt = _Undefined,
     int? unreadCount,
+    Object? lastReadMessageId = _Undefined,
   }) {
     return NitChatParticipant(
       id: id is int? ? id : this.id,
@@ -168,6 +179,9 @@ class _NitChatParticipantImpl extends NitChatParticipant {
           ? lastMessageSentAt
           : this.lastMessageSentAt,
       unreadCount: unreadCount ?? this.unreadCount,
+      lastReadMessageId: lastReadMessageId is int?
+          ? lastReadMessageId
+          : this.lastReadMessageId,
     );
   }
 }
@@ -196,6 +210,10 @@ class NitChatParticipantTable extends _i1.Table {
       this,
       hasDefault: true,
     );
+    lastReadMessageId = _i1.ColumnInt(
+      'lastReadMessageId',
+      this,
+    );
   }
 
   late final _i1.ColumnInt userId;
@@ -208,6 +226,8 @@ class NitChatParticipantTable extends _i1.Table {
 
   late final _i1.ColumnInt unreadCount;
 
+  late final _i1.ColumnInt lastReadMessageId;
+
   @override
   List<_i1.Column> get columns => [
         id,
@@ -216,6 +236,7 @@ class NitChatParticipantTable extends _i1.Table {
         lastMessage,
         lastMessageSentAt,
         unreadCount,
+        lastReadMessageId,
       ];
 }
 

@@ -1,3 +1,4 @@
+import 'package:mime/mime.dart';
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -15,6 +16,7 @@ class NitUploadEndpoint extends Endpoint {
   Future<NitMedia?> verifyUpload(
     Session session, {
     required String path,
+    int? duration,
   }) async {
     if (await session.storage.verifyDirectFileUpload(
       storageId: 'public',
@@ -33,7 +35,11 @@ class NitUploadEndpoint extends Endpoint {
         NitMedia(
           createdAt: DateTime.now(),
           publicUrl: uri.toString(),
-          type: MediaType.image, //TODO: Change this to the correct type
+          type: MediaType.values.firstWhere(
+            (e) => e.name == lookupMimeType(path)?.split('/').first,
+            orElse: () => MediaType.image,
+          ),
+          duration: duration,
         ),
       );
     }

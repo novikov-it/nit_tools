@@ -5,6 +5,14 @@ import 'package:serverpod_auth_server/serverpod_auth_server.dart';
 final defaultChatCrudConfigs = [
   CrudConfig<NitChatParticipant>(
     table: NitChatParticipant.t,
+    post: PostConfig(
+      allowInsert: (session, model) async {
+        return model.userId == (await session.authenticated)?.userId;
+      },
+      allowUpdate: (session, model) async {
+        return model.userId == (await session.authenticated)?.userId;
+      },
+    ),
     getAll: GetAllConfig(
       defaultOrderByList: [
         Order(
@@ -33,16 +41,49 @@ final defaultChatCrudConfigs = [
         ),
       ],
     ),
+    getOneCustomConfigs: [
+      GetOneCustomConfig(
+        filterPrototype: NitBackendFilter.andPrototype(
+          children: [
+            NitBackendFilter.equalsPrototype(fieldName: 'chatChannelId'),
+            NitBackendFilter.equalsPrototype(fieldName: 'userId'),
+          ],
+        ),
+        createIfMissing: (session, filter) async {
+          final chatChannelId = filter.children!.first.fieldValue;
+          final userId = filter.children!.last.fieldValue;
+          return await session.joinChatChannel(
+            chatChannelId: chatChannelId,
+            userId: userId,
+          );
+        },
+      ),
+    ],
   ),
   CrudConfig<NitChatMessage>(
     table: NitChatMessage.t,
     getAll: GetAllConfig(
-      defaultOrderByList: [
-        Order(
-          column: NitChatMessage.t.sentAt,
-        ),
-      ],
-    ),
+        defaultOrderByList: [
+          Order(
+            column: NitChatMessage.t.sentAt,
+          ),
+        ],
+        additionalEntitiesFetchFunction: (session, models) async {
+          return [
+            ...await NitMedia.db.find(
+              session,
+              where: (t) => t.id.inSet(
+                models.expand((m) => (m.attachmentIds ?? <int>[])).toSet(),
+              ),
+            ),
+          ];
+        }),
+    getOneById: GetOneByIdConfig(),
+    getOneCustomConfigs: [
+      GetOneCustomConfig(
+        filterPrototype: NitBackendFilter.equalsPrototype(fieldName: 'id'),
+      ),
+    ],
     post: PostConfig(
       allowInsert: (session, model) async => session.isUser(model.userId),
       afterInsert: (session, model) async {
@@ -67,16 +108,25 @@ final defaultChatCrudConfigs = [
           );
         }
 
-        NitPushNotifications.sendPushToUsers(
-          session,
-          userIds: participants
-              .map((e) => e.userId)
-              .where((e) => e != model.userId)
-              .toList(),
-          title: model.text!,
-          body: '',
-          // 'Поздравляем с покупкой, робот теперь доступен в разделе Мои Роботы',
-        );
+        if (NitChatsConfig.pushNotificationConfig != null) {
+          await NitPushNotifications.sendPushToUsers(
+            session,
+            userIds: participants
+                .map((e) => e.userId)
+                .where((e) => e != model.userId)
+                .toList(),
+            title: await NitChatsConfig.pushNotificationConfig!
+                    .title(session, model.userId, model.text) ??
+                '${model.text}',
+            body: await NitChatsConfig.pushNotificationConfig!
+                    .body(session, model.userId, model.text) ??
+                '',
+            goToPath: NitChatsConfig.pushNotificationConfig!
+                .goToPath(model.chatChannelId),
+            pathQueryParams: NitChatsConfig.pushNotificationConfig!
+                .pathQueryParams(model.chatChannelId),
+          );
+        }
 
         // for (var p in participants) {
         session.nitSendToChat(
@@ -88,5 +138,14 @@ final defaultChatCrudConfigs = [
         return [];
       },
     ),
+  ),
+  CrudConfig<NitMedia>(
+    table: NitMedia.t,
+    getOneById: GetOneByIdConfig(),
+    getOneCustomConfigs: [
+      GetOneCustomConfig(
+        filterPrototype: NitBackendFilter.equalsPrototype(fieldName: 'id'),
+      ),
+    ],
   ),
 ];

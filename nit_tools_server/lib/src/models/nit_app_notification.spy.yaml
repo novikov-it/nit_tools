@@ -7,4 +7,6 @@ fields:
     title: String
     body: String?
     goToPath: String?
+    pathQueryParams: String?
+    fromUserId: int?
     isRead: bool, default = false

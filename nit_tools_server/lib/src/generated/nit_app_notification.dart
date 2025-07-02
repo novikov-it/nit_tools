@@ -23,6 +23,8 @@ abstract class NitAppNotification
     required this.title,
     this.body,
     this.goToPath,
+    this.pathQueryParams,
+    this.fromUserId,
     bool? isRead,
   })  : timestamp = timestamp ?? DateTime.now(),
         isRead = isRead ?? false;
@@ -35,6 +37,8 @@ abstract class NitAppNotification
     required String title,
     String? body,
     String? goToPath,
+    String? pathQueryParams,
+    int? fromUserId,
     bool? isRead,
   }) = _NitAppNotificationImpl;
 
@@ -48,6 +52,8 @@ abstract class NitAppNotification
       title: jsonSerialization['title'] as String,
       body: jsonSerialization['body'] as String?,
       goToPath: jsonSerialization['goToPath'] as String?,
+      pathQueryParams: jsonSerialization['pathQueryParams'] as String?,
+      fromUserId: jsonSerialization['fromUserId'] as int?,
       isRead: jsonSerialization['isRead'] as bool,
     );
   }
@@ -71,6 +77,10 @@ abstract class NitAppNotification
 
   String? goToPath;
 
+  String? pathQueryParams;
+
+  int? fromUserId;
+
   bool isRead;
 
   @override
@@ -84,6 +94,8 @@ abstract class NitAppNotification
     String? title,
     String? body,
     String? goToPath,
+    String? pathQueryParams,
+    int? fromUserId,
     bool? isRead,
   });
   @override
@@ -96,6 +108,8 @@ abstract class NitAppNotification
       'title': title,
       if (body != null) 'body': body,
       if (goToPath != null) 'goToPath': goToPath,
+      if (pathQueryParams != null) 'pathQueryParams': pathQueryParams,
+      if (fromUserId != null) 'fromUserId': fromUserId,
       'isRead': isRead,
     };
   }
@@ -110,6 +124,8 @@ abstract class NitAppNotification
       'title': title,
       if (body != null) 'body': body,
       if (goToPath != null) 'goToPath': goToPath,
+      if (pathQueryParams != null) 'pathQueryParams': pathQueryParams,
+      if (fromUserId != null) 'fromUserId': fromUserId,
       'isRead': isRead,
     };
   }
@@ -155,6 +171,8 @@ class _NitAppNotificationImpl extends NitAppNotification {
     required String title,
     String? body,
     String? goToPath,
+    String? pathQueryParams,
+    int? fromUserId,
     bool? isRead,
   }) : super._(
           id: id,
@@ -164,6 +182,8 @@ class _NitAppNotificationImpl extends NitAppNotification {
           title: title,
           body: body,
           goToPath: goToPath,
+          pathQueryParams: pathQueryParams,
+          fromUserId: fromUserId,
           isRead: isRead,
         );
 
@@ -176,6 +196,8 @@ class _NitAppNotificationImpl extends NitAppNotification {
     String? title,
     Object? body = _Undefined,
     Object? goToPath = _Undefined,
+    Object? pathQueryParams = _Undefined,
+    Object? fromUserId = _Undefined,
     bool? isRead,
   }) {
     return NitAppNotification(
@@ -186,6 +208,9 @@ class _NitAppNotificationImpl extends NitAppNotification {
       title: title ?? this.title,
       body: body is String? ? body : this.body,
       goToPath: goToPath is String? ? goToPath : this.goToPath,
+      pathQueryParams:
+          pathQueryParams is String? ? pathQueryParams : this.pathQueryParams,
+      fromUserId: fromUserId is int? ? fromUserId : this.fromUserId,
       isRead: isRead ?? this.isRead,
     );
   }
@@ -219,6 +244,14 @@ class NitAppNotificationTable extends _i1.Table {
       'goToPath',
       this,
     );
+    pathQueryParams = _i1.ColumnString(
+      'pathQueryParams',
+      this,
+    );
+    fromUserId = _i1.ColumnInt(
+      'fromUserId',
+      this,
+    );
     isRead = _i1.ColumnBool(
       'isRead',
       this,
@@ -238,6 +271,10 @@ class NitAppNotificationTable extends _i1.Table {
 
   late final _i1.ColumnString goToPath;
 
+  late final _i1.ColumnString pathQueryParams;
+
+  late final _i1.ColumnInt fromUserId;
+
   late final _i1.ColumnBool isRead;
 
   @override
@@ -249,6 +286,8 @@ class NitAppNotificationTable extends _i1.Table {
         title,
         body,
         goToPath,
+        pathQueryParams,
+        fromUserId,
         isRead,
       ];
 }

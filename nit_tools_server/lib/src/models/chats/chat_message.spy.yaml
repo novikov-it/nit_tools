@@ -5,3 +5,6 @@ fields:
     chatChannelId: int, relation(parent=nit_chat_channel)
     sentAt: DateTime,
     text: String?
+    attachmentIds: List<int>? # List of NitMedia IDs
+    customMessageType: CustomMessageType?
+    replyMessageId: int?

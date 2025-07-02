@@ -33,6 +33,32 @@ class EndpointNitChat extends _i1.EndpointRef {
         {'chatId': chatId},
         {},
       );
+
+  _i2.Future<void> readChatMessage(
+    int messageId,
+    int chatId,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'nit_tools.nitChat',
+        'readChatMessage',
+        {
+          'messageId': messageId,
+          'chatId': chatId,
+        },
+      );
+
+  _i2.Future<void> typingToggle(
+    int channelId,
+    bool isTyping,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'nit_tools.nitChat',
+        'typingToggle',
+        {
+          'channelId': channelId,
+          'isTyping': isTyping,
+        },
+      );
 }
 
 /// {@category Endpoint}
@@ -154,11 +180,17 @@ class EndpointNitUpload extends _i1.EndpointRef {
         {'path': path},
       );
 
-  _i2.Future<_i7.NitMedia?> verifyUpload({required String path}) =>
+  _i2.Future<_i7.NitMedia?> verifyUpload({
+    required String path,
+    int? duration,
+  }) =>
       caller.callServerEndpoint<_i7.NitMedia?>(
         'nit_tools.nitUpload',
         'verifyUpload',
-        {'path': path},
+        {
+          'path': path,
+          'duration': duration,
+        },
       );
 }
 
@@ -174,6 +206,13 @@ class EndpointServices extends _i1.EndpointRef {
         'nit_tools.services',
         'setFcmToken',
         {'fcmToken': fcmToken},
+      );
+
+  _i2.Future<_i4.ApiResponse<bool>> deleteFcmToken({required int userId}) =>
+      caller.callServerEndpoint<_i4.ApiResponse<bool>>(
+        'nit_tools.services',
+        'deleteFcmToken',
+        {'userId': userId},
       );
 }
 

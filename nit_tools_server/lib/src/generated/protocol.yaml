@@ -1,5 +1,7 @@
 nitChat:
   - updatesStream:
+  - readChatMessage:
+  - typingToggle:
 nitCrud:
   - getOneCustom:
   - getAll:
@@ -14,3 +16,4 @@ nitUpload:
   - verifyUpload:
 services:
   - setFcmToken:
+  - deleteFcmToken:

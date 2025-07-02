@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer' as devtools show log;
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:googleapis_auth/auth_io.dart' as google_auth;
@@ -34,6 +34,9 @@ class NitPushNotifications {
     required List<int> userIds,
     required String title,
     required String body,
+    bool includeBadgeCount = false,
+    String? goToPath,
+    String? pathQueryParams,
   }) async {
     final fcmTokens = await NitFcmToken.db.find(
       session,
@@ -43,22 +46,29 @@ class NitPushNotifications {
     );
 
     return await sendPushToTokens(
-      tokens: fcmTokens.map((e) => e.fcmToken).toList(),
+      session,
+      tokens: fcmTokens.map((e) => (e.fcmToken, e.userId)).toSet(),
       title: title,
       body: body,
+      includeBadgeCount: includeBadgeCount,
+      goToPath: goToPath,
+      pathQueryParams: pathQueryParams,
     );
   }
 
-  static Future<bool> sendPushToTokens({
-    required List<String> tokens,
+  static Future<bool> sendPushToTokens(
+    Session session, {
+    required Set<(String token, int userId)> tokens,
     required String title,
     required String body,
+    bool includeBadgeCount = false,
+    String? goToPath,
+    String? pathQueryParams,
   }) async {
-    for (var token in tokens.toSet()) {
+    for (var token in tokens) {
       final notificationData = {
         'message': {
-          'token': token,
-          // 'e0l4epBfLXDATjJheApVMv:APA91bFrWTcuylHjkpViZaEfGrnFVf_FAHveyhwmWKCyhtiaLbfrIMQO1vxdGIH2SMPgQEZKMjrSUmdSZYQEvP0hPasq9sx8XgSNcKh_vHmDNbD8stIaFNqF1EPkLcjZUiYd_2JQfsS5', // recipientToken,
+          'token': token.$1,
           'notification': {
             'title': title,
             'body': body,
@@ -67,8 +77,17 @@ class NitPushNotifications {
             'title': title,
             'body': body,
             'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-            'goToPath': 'robots',
+            if (goToPath != null) 'goToPath': goToPath,
+            if (pathQueryParams != null) 'pathQueryParams': pathQueryParams,
           },
+          if (includeBadgeCount)
+            'apns': {
+              'payload': {
+                'aps': {
+                  'badge': await getUnreadNotificationCount(session, token.$2),
+                }
+              }
+            },
         },
       };
 
@@ -82,17 +101,19 @@ class NitPushNotifications {
         body: jsonEncode(notificationData),
       );
 
-      devtools.log(
-          'Notification Sending Error Response status: ${response.statusCode}');
-      devtools.log('Notification Response body: ${response.body}');
+      log('Push Notification Response body: ${response.body}');
     }
 
-    // _client.close();
-    // if (response.statusCode == 200) {
-    //   return true; // Success!
-    // }
-    // "{  "error": {    "code": 403,    "message": "Permission 'cloudmessaging.messages.create' denied on resource '//cloudresourcemanager.googleapis.com/projects/736705283357' (or it may not exist).",    "status": "PERMISSION_DENIED",    "details": [      {        "@type": "type.googleapis.com/google.rpc.ErrorInfo",        "reason": "IAM_PERMISSION_DENIED",        "domain": "cloudresourcemanager.googleapis.com",        "metadata": {          "resource": "projects/736705283357",          "permission": "cloudmessaging.messages.create"        }      }    ]  }}"
-
     return true;
+  }
+
+  static Future<int> getUnreadNotificationCount(
+    Session session,
+    int userId,
+  ) async {
+    return await NitAppNotification.db.count(
+      session,
+      where: (t) => t.toUserId.equals(userId) & t.isRead.equals(false),
+    );
   }
 }
