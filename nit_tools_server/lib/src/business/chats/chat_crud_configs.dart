@@ -109,7 +109,7 @@ final defaultChatCrudConfigs = [
         }
 
         if (NitChatsConfig.pushNotificationConfig != null) {
-          NitPushNotifications.sendPushToUsers(
+          await NitPushNotifications.sendPushToUsers(
             session,
             userIds: participants
                 .map((e) => e.userId)

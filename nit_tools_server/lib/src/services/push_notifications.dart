@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:googleapis_auth/auth_io.dart' as google_auth;
@@ -100,7 +101,7 @@ class NitPushNotifications {
         body: jsonEncode(notificationData),
       );
 
-      session.log('Push Notification Response body: ${response.body}');
+      log('Push Notification Response body: ${response.body}');
     }
 
     return true;
