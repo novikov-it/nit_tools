@@ -8,3 +8,4 @@ fields:
     attachmentIds: List<int>? # List of NitMedia IDs
     customMessageType: CustomMessageType?
     replyMessageId: int?
+    isDeleted: bool, default=false

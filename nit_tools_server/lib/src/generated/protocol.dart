@@ -247,6 +247,13 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'int?',
         ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -309,6 +316,12 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'String?',
         ),
         _i2.ColumnDefinition(
+          name: 'lastMessageId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _i2.ColumnDefinition(
           name: 'lastMessageSentAt',
           columnType: _i2.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
@@ -327,6 +340,13 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'int?',
         ),
+        _i2.ColumnDefinition(
+          name: 'isDeleted',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
@@ -341,6 +361,16 @@ class Protocol extends _i1.SerializationManagerServer {
         ),
         _i2.ForeignKeyDefinition(
           constraintName: 'nit_chat_participant_fk_1',
+          columns: ['lastMessageId'],
+          referenceTable: 'nit_chat_message',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'nit_chat_participant_fk_2',
           columns: ['lastReadMessageId'],
           referenceTable: 'nit_chat_message',
           referenceTableSchema: 'public',

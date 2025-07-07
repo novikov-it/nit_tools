@@ -21,7 +21,7 @@ class NitChatEndpoint extends Endpoint {
 
     final messages = await NitChatMessage.db.find(
       session,
-      where: (t) => t.chatChannelId.equals(chatId),
+      where: (t) => t.chatChannelId.equals(chatId) & t.isDeleted.equals(false),
       orderByList: (t) => [
         Order(
           column: t.sentAt,

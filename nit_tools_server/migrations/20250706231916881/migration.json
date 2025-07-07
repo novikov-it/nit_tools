@@ -1,0 +1,57 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "nit_chat_participant",
+        "schema": "public",
+        "addColumns": [
+          {
+            "name": "lastMessageId",
+            "columnType": 6,
+            "isNullable": true,
+            "dartType": "int?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [
+          {
+            "constraintName": "nit_chat_participant_fk_2",
+            "columns": [
+              "lastReadMessageId"
+            ],
+            "referenceTable": "nit_chat_message",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          },
+          {
+            "constraintName": "nit_chat_participant_fk_1",
+            "columns": [
+              "lastMessageId"
+            ],
+            "referenceTable": "nit_chat_message",
+            "referenceTableSchema": "public",
+            "referenceColumns": [
+              "id"
+            ],
+            "onUpdate": 3,
+            "onDelete": 3
+          }
+        ],
+        "deleteForeignKeys": [
+          "nit_chat_participant_fk_1"
+        ],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

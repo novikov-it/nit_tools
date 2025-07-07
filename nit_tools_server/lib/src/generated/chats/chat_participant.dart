@@ -20,19 +20,24 @@ abstract class NitChatParticipant
     required this.userId,
     required this.chatChannelId,
     this.lastMessage,
+    this.lastMessageId,
     this.lastMessageSentAt,
     int? unreadCount,
     this.lastReadMessageId,
-  }) : unreadCount = unreadCount ?? 0;
+    bool? isDeleted,
+  })  : unreadCount = unreadCount ?? 0,
+        isDeleted = isDeleted ?? false;
 
   factory NitChatParticipant({
     int? id,
     required int userId,
     required int chatChannelId,
     String? lastMessage,
+    int? lastMessageId,
     DateTime? lastMessageSentAt,
     int? unreadCount,
     int? lastReadMessageId,
+    bool? isDeleted,
   }) = _NitChatParticipantImpl;
 
   factory NitChatParticipant.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -41,12 +46,14 @@ abstract class NitChatParticipant
       userId: jsonSerialization['userId'] as int,
       chatChannelId: jsonSerialization['chatChannelId'] as int,
       lastMessage: jsonSerialization['lastMessage'] as String?,
+      lastMessageId: jsonSerialization['lastMessageId'] as int?,
       lastMessageSentAt: jsonSerialization['lastMessageSentAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['lastMessageSentAt']),
       unreadCount: jsonSerialization['unreadCount'] as int,
       lastReadMessageId: jsonSerialization['lastReadMessageId'] as int?,
+      isDeleted: jsonSerialization['isDeleted'] as bool,
     );
   }
 
@@ -63,11 +70,15 @@ abstract class NitChatParticipant
 
   String? lastMessage;
 
+  int? lastMessageId;
+
   DateTime? lastMessageSentAt;
 
   int unreadCount;
 
   int? lastReadMessageId;
+
+  bool isDeleted;
 
   @override
   _i1.Table get table => t;
@@ -77,9 +88,11 @@ abstract class NitChatParticipant
     int? userId,
     int? chatChannelId,
     String? lastMessage,
+    int? lastMessageId,
     DateTime? lastMessageSentAt,
     int? unreadCount,
     int? lastReadMessageId,
+    bool? isDeleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -88,10 +101,12 @@ abstract class NitChatParticipant
       'userId': userId,
       'chatChannelId': chatChannelId,
       if (lastMessage != null) 'lastMessage': lastMessage,
+      if (lastMessageId != null) 'lastMessageId': lastMessageId,
       if (lastMessageSentAt != null)
         'lastMessageSentAt': lastMessageSentAt?.toJson(),
       'unreadCount': unreadCount,
       if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -102,10 +117,12 @@ abstract class NitChatParticipant
       'userId': userId,
       'chatChannelId': chatChannelId,
       if (lastMessage != null) 'lastMessage': lastMessage,
+      if (lastMessageId != null) 'lastMessageId': lastMessageId,
       if (lastMessageSentAt != null)
         'lastMessageSentAt': lastMessageSentAt?.toJson(),
       'unreadCount': unreadCount,
       if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
+      'isDeleted': isDeleted,
     };
   }
 
@@ -147,17 +164,21 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     required int userId,
     required int chatChannelId,
     String? lastMessage,
+    int? lastMessageId,
     DateTime? lastMessageSentAt,
     int? unreadCount,
     int? lastReadMessageId,
+    bool? isDeleted,
   }) : super._(
           id: id,
           userId: userId,
           chatChannelId: chatChannelId,
           lastMessage: lastMessage,
+          lastMessageId: lastMessageId,
           lastMessageSentAt: lastMessageSentAt,
           unreadCount: unreadCount,
           lastReadMessageId: lastReadMessageId,
+          isDeleted: isDeleted,
         );
 
   @override
@@ -166,15 +187,18 @@ class _NitChatParticipantImpl extends NitChatParticipant {
     int? userId,
     int? chatChannelId,
     Object? lastMessage = _Undefined,
+    Object? lastMessageId = _Undefined,
     Object? lastMessageSentAt = _Undefined,
     int? unreadCount,
     Object? lastReadMessageId = _Undefined,
+    bool? isDeleted,
   }) {
     return NitChatParticipant(
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
       chatChannelId: chatChannelId ?? this.chatChannelId,
       lastMessage: lastMessage is String? ? lastMessage : this.lastMessage,
+      lastMessageId: lastMessageId is int? ? lastMessageId : this.lastMessageId,
       lastMessageSentAt: lastMessageSentAt is DateTime?
           ? lastMessageSentAt
           : this.lastMessageSentAt,
@@ -182,6 +206,7 @@ class _NitChatParticipantImpl extends NitChatParticipant {
       lastReadMessageId: lastReadMessageId is int?
           ? lastReadMessageId
           : this.lastReadMessageId,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 }
@@ -201,6 +226,10 @@ class NitChatParticipantTable extends _i1.Table {
       'lastMessage',
       this,
     );
+    lastMessageId = _i1.ColumnInt(
+      'lastMessageId',
+      this,
+    );
     lastMessageSentAt = _i1.ColumnDateTime(
       'lastMessageSentAt',
       this,
@@ -214,6 +243,11 @@ class NitChatParticipantTable extends _i1.Table {
       'lastReadMessageId',
       this,
     );
+    isDeleted = _i1.ColumnBool(
+      'isDeleted',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final _i1.ColumnInt userId;
@@ -222,11 +256,15 @@ class NitChatParticipantTable extends _i1.Table {
 
   late final _i1.ColumnString lastMessage;
 
+  late final _i1.ColumnInt lastMessageId;
+
   late final _i1.ColumnDateTime lastMessageSentAt;
 
   late final _i1.ColumnInt unreadCount;
 
   late final _i1.ColumnInt lastReadMessageId;
+
+  late final _i1.ColumnBool isDeleted;
 
   @override
   List<_i1.Column> get columns => [
@@ -234,9 +272,11 @@ class NitChatParticipantTable extends _i1.Table {
         userId,
         chatChannelId,
         lastMessage,
+        lastMessageId,
         lastMessageSentAt,
         unreadCount,
         lastReadMessageId,
+        isDeleted,
       ];
 }
 

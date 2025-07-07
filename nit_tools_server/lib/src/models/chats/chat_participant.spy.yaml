@@ -4,9 +4,11 @@ fields:
     userId: int
     chatChannelId: int, relation(parent=nit_chat_channel)
     lastMessage: String?
+    lastMessageId: int?, relation(parent=nit_chat_message)
     lastMessageSentAt: DateTime?
     unreadCount: int, default=0
     lastReadMessageId: int?, relation(parent=nit_chat_message)
+    isDeleted: bool, default=false
 
 indexes:
   chat_participants_idx:

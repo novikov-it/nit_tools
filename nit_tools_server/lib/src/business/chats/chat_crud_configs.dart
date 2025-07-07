@@ -86,6 +86,40 @@ final defaultChatCrudConfigs = [
     ],
     post: PostConfig(
       allowInsert: (session, model) async => session.isUser(model.userId),
+      allowUpdate: (session, model) async => session.isUser(model.userId),
+      allowDelete: (session, model) async => session.isUser(model.userId),
+      afterUpdate: (session, initialModel, updatedModel) async {
+        if (!updatedModel.isDeleted) {
+          final participants = await NitChatParticipant.db.find(
+            session,
+            where: (t) => t.chatChannelId.equals(initialModel.chatChannelId),
+          );
+          for (var p in participants) {
+            final isLastMessage = p.lastMessageId == updatedModel.id;
+
+            session.nitSendToUser(
+              p.userId,
+              await NitChatParticipant.db.updateRow(
+                session,
+                p.copyWith(
+                  lastMessage:
+                      isLastMessage ? updatedModel.text : p.lastMessage,
+                  lastMessageId:
+                      isLastMessage ? updatedModel.id : p.lastMessageId,
+                  lastMessageSentAt:
+                      isLastMessage ? updatedModel.sentAt : p.lastMessageSentAt,
+                ),
+              ),
+            );
+          }
+        }
+
+        session.nitSendToChat(
+          initialModel.chatChannelId,
+          updatedModel,
+        );
+        return [];
+      },
       afterInsert: (session, model) async {
         final participants = await NitChatParticipant.db.find(
           session,
@@ -99,8 +133,10 @@ final defaultChatCrudConfigs = [
               session,
               p.copyWith(
                 lastMessage: model.text,
+                lastMessageId:
+                    model.userId == p.userId ? model.id : p.lastMessageId,
                 lastMessageSentAt: model.sentAt,
-                unreadCount: await session.isUser(model.userId)
+                unreadCount: await session.isUser(p.userId)
                     ? p.unreadCount
                     : p.unreadCount + 1,
               ),
