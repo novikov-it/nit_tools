@@ -62,6 +62,16 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
     }
 
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
+    }
+
+    if (data is Map<String, dynamic>) {
+      final manualDeserialization =
+          _i18.ApiResponse.manualDeserialization<T>(data);
+      if (manualDeserialization != null) return manualDeserialization;
+    }
+
     if (data is Map<String, dynamic>) {
       final manualDeserialization =
           _i18.ApiResponse.manualDeserialization<T>(data);
