@@ -78,7 +78,7 @@ final defaultChatCrudConfigs = [
             ),
           ];
         }),
-    getOneById: GetOneByIdConfig(),
+    // getOneById: GetOneByIdConfig(),
     getOneCustomConfigs: [
       GetOneCustomConfig(
         filterPrototype: NitBackendFilter.equalsPrototype(fieldName: 'id'),
@@ -177,7 +177,7 @@ final defaultChatCrudConfigs = [
   ),
   CrudConfig<NitMedia>(
     table: NitMedia.t,
-    getOneById: GetOneByIdConfig(),
+    // getOneById: GetOneByIdConfig(),
     getOneCustomConfigs: [
       GetOneCustomConfig(
         filterPrototype: NitBackendFilter.equalsPrototype(fieldName: 'id'),

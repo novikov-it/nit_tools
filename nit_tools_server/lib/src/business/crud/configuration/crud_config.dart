@@ -26,14 +26,14 @@ class CrudConfig<T extends TableRow> {
 
   const CrudConfig({
     required this.table,
-    this.getOneById,
+    // this.getOneById,
     this.getOneCustomConfigs,
     this.getAll,
     this.post,
   });
 
   final Table table;
-  final GetOneByIdConfig<T>? getOneById;
+  // final GetOneByIdConfig<T>? getOneById;
   final List<GetOneCustomConfig<T>>? getOneCustomConfigs;
 
   final GetAllConfig<T>? getAll;
