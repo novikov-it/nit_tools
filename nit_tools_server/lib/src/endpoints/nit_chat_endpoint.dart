@@ -84,6 +84,9 @@ class NitChatEndpoint extends Endpoint {
         messageId < (participant.lastReadMessageId ?? 0)) {
       return;
     }
+    participant.unreadCount = participant.unreadCount > 0
+        ? participant.unreadCount - 1
+        : 0; //TODO: look for this
     participant.lastReadMessageId = messageId;
 
     await NitChatParticipant.db.updateRow(session, participant);
