@@ -3,10 +3,12 @@ import 'package:serverpod/serverpod.dart';
 
 class GetAllConfig<T extends TableRow> {
   const GetAllConfig({
+    this.include,
     this.additionalEntitiesFetchFunction,
     this.defaultOrderByList,
   });
 
+  final Include? include;
   final List<Order>? defaultOrderByList;
   final Future<List<TableRow>> Function(Session session, List<T> models)?
       additionalEntitiesFetchFunction;
@@ -19,6 +21,7 @@ class GetAllConfig<T extends TableRow> {
   }) async {
     final resultItems = await session.db.find<T>(
       where: whereClause,
+      include: include,
       orderByList: defaultOrderByList,
       limit: limit,
       offset: offset,
@@ -66,6 +69,7 @@ class GetAllConfig<T extends TableRow> {
   }) async {
     final resultItems = await session.db.find<T>(
       where: whereClause,
+      include: include,
       orderByList: defaultOrderByList,
       limit: limit,
       offset: offset,

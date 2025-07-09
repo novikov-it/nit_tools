@@ -4,11 +4,13 @@ import 'package:serverpod/serverpod.dart';
 class GetOneCustomConfig<T extends TableRow> {
   const GetOneCustomConfig({
     required this.filterPrototype,
+    this.include,
     this.createIfMissing,
     this.additionalEntitiesFetchFunction,
   });
 
   final NitBackendFilter filterPrototype;
+  final Include? include;
   final Future<T?> Function(
     Session session,
     NitBackendFilter filter,
@@ -37,7 +39,10 @@ class GetOneCustomConfig<T extends TableRow> {
     //   }
     // }
 
-    return await session.db.findFirstRow(where: filter.prepareWhere(table)) ??
+    return await session.db.findFirstRow(
+          where: filter.prepareWhere(table),
+          include: include,
+        ) ??
         await createIfMissing?.call(
           session,
           filter,
