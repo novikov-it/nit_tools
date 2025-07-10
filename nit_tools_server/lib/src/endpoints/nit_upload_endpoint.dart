@@ -7,9 +7,14 @@ class NitUploadEndpoint extends Endpoint {
     Session session, {
     required String path,
   }) async {
-    return await session.storage.createDirectFileUploadDescription(
-      storageId: 'public',
+    var storage = session.server.serverpod.storage['public'];
+    if (storage == null) {
+      throw CloudStorageException('Storage public is not registered');
+    }
+    return await storage.createDirectFileUploadDescription(
+      session: session,
       path: path,
+      maxFileSize: 50 * 1024 * 1024,
     );
   }
 
