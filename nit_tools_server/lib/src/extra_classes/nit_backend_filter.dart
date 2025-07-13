@@ -161,7 +161,13 @@ class NitBackendFilter implements SerializableModel {
     bool negate = false,
   }) {
     final column =
-        table.columns.firstWhere((col) => col.columnName == fieldName);
+        table.columns.firstWhereOrNull((col) => col.columnName == fieldName);
+
+    if (column == null) {
+      print("Column $fieldName not found for ${table.toString()}");
+
+      return Constant.bool(true);
+    }
 
     if (column is ColumnInt && fieldValue is int?) {
       // if (type == NitBackendFilterType.inSet) {
