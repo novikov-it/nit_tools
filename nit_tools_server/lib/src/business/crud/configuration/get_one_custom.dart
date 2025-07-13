@@ -7,6 +7,7 @@ class GetOneCustomConfig<T extends TableRow> {
     this.include,
     this.createIfMissing,
     this.additionalEntitiesFetchFunction,
+    this.populateNonPersistFieldsCallback,
   });
 
   final NitBackendFilter filterPrototype;
@@ -15,6 +16,9 @@ class GetOneCustomConfig<T extends TableRow> {
     Session session,
     NitBackendFilter filter,
   )? createIfMissing;
+
+  final Future<T> Function(Session session, T model)?
+      populateNonPersistFieldsCallback;
 
   final Future<List<TableRow>> Function(Session session, T model)?
       additionalEntitiesFetchFunction;
@@ -54,23 +58,29 @@ class GetOneCustomConfig<T extends TableRow> {
     Table table,
     NitBackendFilter filter,
   ) async {
-    final t = await _getObject(session, table, filter).then(
-      (result) async => ApiResponse<int>(
-        isOk: true,
-        value: result?.id,
-        // error: result == null ? 'Объект не найден' : null,
-        updatedEntities: result != null
-            ? [
-                ObjectWrapper(object: result),
-                if (additionalEntitiesFetchFunction != null)
-                  ...(await (additionalEntitiesFetchFunction!(session, result)))
-                      .map(
-                    (e) => ObjectWrapper(object: e),
-                  )
-              ]
-            : null,
-      ),
-    );
+    final t = await _getObject(session, table, filter)
+        .then((model) async =>
+            populateNonPersistFieldsCallback != null && model != null
+                ? await populateNonPersistFieldsCallback!(session, model)
+                : model)
+        .then(
+          (result) async => ApiResponse<int>(
+            isOk: true,
+            value: result?.id,
+            // error: result == null ? 'Объект не найден' : null,
+            updatedEntities: result != null
+                ? [
+                    ObjectWrapper(object: result),
+                    if (additionalEntitiesFetchFunction != null)
+                      ...(await (additionalEntitiesFetchFunction!(
+                              session, result)))
+                          .map(
+                        (e) => ObjectWrapper(object: e),
+                      )
+                  ]
+                : null,
+          ),
+        );
 
     return t;
   }
