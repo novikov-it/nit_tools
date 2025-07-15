@@ -20,7 +20,7 @@ class NitChatsPushNotificationConfig {
   final String? Function(int channel) goToPath;
   final String? Function(int channel) pathQueryParams;
   // Filter userIds that would be allowed to get message
-  final List<int> Function(List<int> userIds) filterMessagePermission;
+  final FutureOr<List<int>> Function(List<int> userIds) filterMessagePermission;
 
   NitChatsPushNotificationConfig({
     this.title = _nullThreeArgs,

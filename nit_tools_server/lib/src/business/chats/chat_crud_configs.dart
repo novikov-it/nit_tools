@@ -147,8 +147,8 @@ final defaultChatCrudConfigs = [
         if (NitChatsConfig.pushNotificationConfig != null) {
           await NitPushNotifications.sendPushToUsers(
             session,
-            userIds:
-                NitChatsConfig.pushNotificationConfig!.filterMessagePermission(
+            userIds: await NitChatsConfig.pushNotificationConfig!
+                .filterMessagePermission(
               participants
                   .map((e) => e.userId)
                   .where((e) => e != model.userId)
