@@ -11,6 +11,9 @@ class PostConfig<T extends TableRow> {
     this.afterInsert,
     this.afterUpdate,
     this.afterDelete,
+    this.afterInsertSideEffects,
+    this.afterUpdateSideEffects,
+    this.afterDeleteSideEffects,
   });
 
   const PostConfig.simple({
@@ -20,6 +23,9 @@ class PostConfig<T extends TableRow> {
     this.afterInsert,
     this.afterUpdate,
     this.afterDelete,
+    this.afterInsertSideEffects,
+    this.afterUpdateSideEffects,
+    this.afterDeleteSideEffects,
   })  : allowInsert = allowAllActions,
         allowUpdate = allowAllActions,
         allowDelete = allowAllActions;
@@ -38,6 +44,12 @@ class PostConfig<T extends TableRow> {
       Session session, T initialModel, T updatedModel)? afterUpdate;
   final Future<List<TableRow>> Function(Session session, T model)? afterDelete;
 
+  final Future<void> Function(Session session, T insertedModel)?
+      afterInsertSideEffects;
+  final Future<void> Function(Session session, T initialModel, T updatedModel)?
+      afterUpdateSideEffects;
+  final Future<void> Function(Session session, T model)? afterDeleteSideEffects;
+
   Future<ApiResponse<int>> upsert(Session session, T model) async {
     final isInsert = model.id == null;
     if (null == (isInsert ? allowInsert : allowUpdate)) {
@@ -46,6 +58,9 @@ class PostConfig<T extends TableRow> {
 
     if (true !=
         await (isInsert ? allowInsert : allowUpdate)?.call(session, model)) {
+      print(
+        "${isInsert ? 'Создание' : 'Обновление'} $T с ${model.id} не прошло проверку разрешений",
+      );
       return ApiResponse.forbidden();
     }
 
@@ -88,6 +103,30 @@ class PostConfig<T extends TableRow> {
       );
     }
 
+    if ((isInsert && afterInsertSideEffects != null) ||
+        (!isInsert && afterUpdateSideEffects != null)) {
+      Future(() async {
+        // 3. Create a new session for background work
+        final newSession = await Serverpod.instance.createSession();
+        try {
+          if (isInsert) {
+            await afterInsertSideEffects!(
+              newSession,
+              updatedModel,
+            );
+          } else {
+            await afterUpdateSideEffects!(
+              newSession,
+              initialModel!,
+              updatedModel,
+            );
+          }
+        } finally {
+          await newSession.close();
+        }
+      });
+    }
+
     return ApiResponse(
       isOk: true,
       value: updatedModel.id,
@@ -115,6 +154,9 @@ class PostConfig<T extends TableRow> {
     }
 
     if (true != await allowDelete?.call(session, model)) {
+      print(
+        "Удаление $T с ${model.id} не прошло проверку разрешений",
+      );
       return ApiResponse.forbidden();
     }
 
@@ -129,15 +171,33 @@ class PostConfig<T extends TableRow> {
       );
     }
 
+    final additionalResults = (afterDelete != null)
+        ? (await afterDelete!(session, model)).map(
+            (e) => ObjectWrapper(object: e),
+          )
+        : null;
+
+    if (afterDeleteSideEffects != null) {
+      Future(() async {
+        // 3. Create a new session for background work
+        final newSession = await Serverpod.instance.createSession();
+        try {
+          await afterDeleteSideEffects!(
+            newSession,
+            model,
+          );
+        } finally {
+          await newSession.close();
+        }
+      });
+    }
+
     return ApiResponse(
       isOk: true,
       value: true,
       updatedEntities: [
         ObjectWrapper.deleted(object: model),
-        if (afterDelete != null)
-          ...(await (afterDelete!(session, model))).map(
-            (e) => ObjectWrapper(object: e),
-          ),
+        if (additionalResults != null) ...additionalResults,
       ],
     );
   }
