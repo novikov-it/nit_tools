@@ -161,18 +161,16 @@ class NitBackendFilter<T> implements SerializableModel {
                         .isAfter((fieldValue as DateTime)))),
             NitBackendFilterType.greaterThanOrEquals => fieldValue == null ||
                 (modelValue != null &&
-                    (modelValue == fieldValue ||
-                        ((modelValue as DateTime)
-                            .isAfter((fieldValue as DateTime))))),
+                    !(modelValue as DateTime)
+                        .isBefore((fieldValue as DateTime))),
             NitBackendFilterType.lessThan => fieldValue == null ||
                 (modelValue != null &&
                     ((modelValue as DateTime)
                         .isBefore((fieldValue as DateTime)))),
             NitBackendFilterType.lessThanOrEquals => fieldValue == null ||
                 (modelValue != null &&
-                    (modelValue == fieldValue ||
-                        ((modelValue as DateTime)
-                            .isBefore((fieldValue as DateTime))))),
+                    !(modelValue as DateTime)
+                        .isAfter((fieldValue as DateTime))),
             _ => throw Exception('Unsupported filter type'),
           };
     } else if (_isNullableType(String)) {
