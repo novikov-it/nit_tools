@@ -2,7 +2,7 @@ class: NitChatParticipant
 table: nit_chat_participant
 fields:
     userId: int
-    chatChannelId: int, relation(parent=nit_chat_channel)
+    chatChannelId: int, relation(parent=nit_chat_channel, onDelete=Cascade)
     lastMessage: String?
     lastMessageId: int?, relation(parent=nit_chat_message)
     lastMessageSentAt: DateTime?

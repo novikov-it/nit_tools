@@ -12,6 +12,7 @@ final defaultChatCrudConfigs = [
       allowUpdate: (session, model) async {
         return model.userId == (await session.authenticated)?.userId;
       },
+      allowDelete: (session, model) async => session.isUser(model.userId),
     ),
     getAll: GetAllConfig(
       defaultOrderByList: [
@@ -89,28 +90,66 @@ final defaultChatCrudConfigs = [
       allowUpdate: (session, model) async => session.isUser(model.userId),
       allowDelete: (session, model) async => session.isUser(model.userId),
       afterUpdate: (session, initialModel, updatedModel) async {
+        final participants = await NitChatParticipant.db.find(
+          session,
+          where: (t) => t.chatChannelId.equals(updatedModel
+              .chatChannelId), // Используем updatedModel для consistency
+        );
+
         if (!updatedModel.isDeleted) {
-          final participants = await NitChatParticipant.db.find(
-            session,
-            where: (t) => t.chatChannelId.equals(initialModel.chatChannelId),
-          );
+          // Логика редактирования (оставляем как есть, но унифицировали fetch participants)
           for (var p in participants) {
             final isLastMessage = p.lastMessageId == updatedModel.id;
-
-            session.nitSendToUser(
-              p.userId,
-              await NitChatParticipant.db.updateRow(
-                session,
-                p.copyWith(
-                  lastMessage:
-                      isLastMessage ? updatedModel.text : p.lastMessage,
-                  lastMessageId:
-                      isLastMessage ? updatedModel.id : p.lastMessageId,
-                  lastMessageSentAt:
-                      isLastMessage ? updatedModel.sentAt : p.lastMessageSentAt,
+            if (isLastMessage) {
+              session.nitSendToUser(
+                p.userId,
+                await NitChatParticipant.db.updateRow(
+                  session,
+                  p.copyWith(
+                    lastMessage:
+                        isLastMessage ? updatedModel.text : p.lastMessage,
+                    lastMessageId:
+                        isLastMessage ? updatedModel.id : p.lastMessageId,
+                    lastMessageSentAt: isLastMessage
+                        ? updatedModel.sentAt
+                        : p.lastMessageSentAt,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
+          }
+        } else {
+          // Логика удаления: находим новое последнее НЕУДАЛЁННОЕ сообщение
+          final newLastMessage = await NitChatMessage.db.findFirstRow(
+            session,
+            where: (t) =>
+                t.chatChannelId.equals(updatedModel.chatChannelId) &
+                t.isDeleted.equals(false),
+            orderDescending: true,
+            orderBy: (t) => t.id,
+          );
+          if (newLastMessage == null) {
+            return [];
+          }
+
+          for (var p in participants) {
+            final isLastMessage = p.lastMessageId == updatedModel.id;
+            if (isLastMessage) {
+              session.nitSendToUser(
+                p.userId,
+                await NitChatParticipant.db.updateRow(
+                  session,
+                  p.copyWith(
+                    lastMessage: newLastMessage.text,
+                    lastMessageId: newLastMessage.id,
+                    lastMessageSentAt: newLastMessage.sentAt,
+                    unreadCount: p.unreadCount > 0
+                        ? p.unreadCount - 1
+                        : 0, //TODO: можно сделать лучше
+                  ),
+                ),
+              );
+            }
           }
         }
 
@@ -120,6 +159,40 @@ final defaultChatCrudConfigs = [
         );
         return [];
       },
+
+      // afterDelete: (session, deletedModel) async {
+      //   final participants = await NitChatParticipant.db.find(
+      //     session,
+      //     where: (t) => t.chatChannelId.equals(deletedModel.chatChannelId),
+      //   );
+      //   final newLastMessage = await NitChatMessage.db.findFirstRow(
+      //     session,
+      //     where: (t) => t.chatChannelId.equals(deletedModel.chatChannelId),
+      //     orderDescending: true,
+      //   );
+      //   if (newLastMessage == null) {
+      //     // значит сообщений в чате больше нет
+      //     return [];
+      //   }
+      //   // значит удаленное сообщение было последним
+      //   if (deletedModel.id! > newLastMessage.id!) {
+      //     for (var p in participants) {
+      //       session.nitSendToUser(
+      //         p.userId,
+      //         await NitChatParticipant.db.updateRow(
+      //           session,
+      //           p.copyWith(
+      //             lastMessage: newLastMessage.text,
+      //             lastMessageId: newLastMessage.id,
+      //             lastMessageSentAt: newLastMessage.sentAt,
+      //           ),
+      //         ),
+      //       );
+      //     }
+      //   }
+
+      //   return [];
+      // },
       afterInsert: (session, model) async {
         final participants = await NitChatParticipant.db.find(
           session,
@@ -133,8 +206,7 @@ final defaultChatCrudConfigs = [
               session,
               p.copyWith(
                 lastMessage: model.text,
-                lastMessageId:
-                    model.userId == p.userId ? model.id : p.lastMessageId,
+                lastMessageId: model.id,
                 lastMessageSentAt: model.sentAt,
                 unreadCount: await session.isUser(p.userId)
                     ? p.unreadCount
@@ -168,12 +240,10 @@ final defaultChatCrudConfigs = [
           );
         }
 
-        // for (var p in participants) {
         session.nitSendToChat(
           model.chatChannelId,
           model,
         );
-        // }
 
         return [];
       },

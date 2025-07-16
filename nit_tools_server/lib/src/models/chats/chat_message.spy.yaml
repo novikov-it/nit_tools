@@ -2,7 +2,7 @@ class: NitChatMessage
 table: nit_chat_message
 fields:
     userId: int
-    chatChannelId: int, relation(parent=nit_chat_channel)
+    chatChannelId: int, relation(parent=nit_chat_channel, onDelete=Cascade)
     sentAt: DateTime,
     text: String?
     attachmentIds: List<int>? # List of NitMedia IDs
