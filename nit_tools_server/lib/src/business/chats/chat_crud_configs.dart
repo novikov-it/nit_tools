@@ -89,11 +89,11 @@ final defaultChatCrudConfigs = [
       allowInsert: (session, model) async => session.isUser(model.userId),
       allowUpdate: (session, model) async => session.isUser(model.userId),
       allowDelete: (session, model) async => session.isUser(model.userId),
-      afterUpdate: (session, initialModel, updatedModel) async {
+      afterUpdateSideEffects:
+          (session, currentUserId, initialModel, updatedModel) async {
         final participants = await NitChatParticipant.db.find(
           session,
-          where: (t) => t.chatChannelId.equals(updatedModel
-              .chatChannelId), // Используем updatedModel для consistency
+          where: (t) => t.chatChannelId.equals(updatedModel.chatChannelId),
         );
 
         if (!updatedModel.isDeleted) {
@@ -129,7 +129,7 @@ final defaultChatCrudConfigs = [
             orderBy: (t) => t.id,
           );
           if (newLastMessage == null) {
-            return [];
+            return;
           }
 
           for (var p in participants) {
@@ -157,7 +157,7 @@ final defaultChatCrudConfigs = [
           initialModel.chatChannelId,
           updatedModel,
         );
-        return [];
+        return;
       },
 
       // afterDelete: (session, deletedModel) async {
@@ -194,6 +194,13 @@ final defaultChatCrudConfigs = [
       //   return [];
       // },
       afterInsert: (session, model) async {
+        session.nitSendToChat(
+          model.chatChannelId,
+          model,
+        );
+        return [];
+      },
+      afterInsertSideEffects: (session, currentUserId, model) async {
         final participants = await NitChatParticipant.db.find(
           session,
           where: (t) => t.chatChannelId.equals(model.chatChannelId),
@@ -208,7 +215,7 @@ final defaultChatCrudConfigs = [
                 lastMessage: model.text,
                 lastMessageId: model.id,
                 lastMessageSentAt: model.sentAt,
-                unreadCount: await session.isUser(p.userId)
+                unreadCount: currentUserId == p.userId
                     ? p.unreadCount
                     : p.unreadCount + 1,
               ),
@@ -237,15 +244,9 @@ final defaultChatCrudConfigs = [
                 .goToPath(model.chatChannelId),
             pathQueryParams: NitChatsConfig.pushNotificationConfig!
                 .pathQueryParams(model.chatChannelId),
+            // includeBadgeCount: true,
           );
         }
-
-        session.nitSendToChat(
-          model.chatChannelId,
-          model,
-        );
-
-        return [];
       },
     ),
   ),

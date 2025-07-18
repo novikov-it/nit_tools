@@ -44,11 +44,14 @@ class PostConfig<T extends TableRow> {
       Session session, T initialModel, T updatedModel)? afterUpdate;
   final Future<List<TableRow>> Function(Session session, T model)? afterDelete;
 
-  final Future<void> Function(Session session, T insertedModel)?
+  final Future<void> Function(
+          Session session, int? currentUserId, T insertedModel)?
       afterInsertSideEffects;
-  final Future<void> Function(Session session, T initialModel, T updatedModel)?
+  final Future<void> Function(
+          Session session, int? currentUserId, T initialModel, T updatedModel)?
       afterUpdateSideEffects;
-  final Future<void> Function(Session session, T model)? afterDeleteSideEffects;
+  final Future<void> Function(Session session, int? currentUserId, T model)?
+      afterDeleteSideEffects;
 
   Future<ApiResponse<int>> upsert(Session session, T model) async {
     final isInsert = model.id == null;
@@ -105,6 +108,7 @@ class PostConfig<T extends TableRow> {
 
     if ((isInsert && afterInsertSideEffects != null) ||
         (!isInsert && afterUpdateSideEffects != null)) {
+      final currentUserId = await session.currentUserId;
       Future(() async {
         // 3. Create a new session for background work
         final newSession = await Serverpod.instance.createSession();
@@ -112,11 +116,13 @@ class PostConfig<T extends TableRow> {
           if (isInsert) {
             await afterInsertSideEffects!(
               newSession,
+              currentUserId,
               updatedModel,
             );
           } else {
             await afterUpdateSideEffects!(
               newSession,
+              currentUserId,
               initialModel!,
               updatedModel,
             );
@@ -178,12 +184,14 @@ class PostConfig<T extends TableRow> {
         : null;
 
     if (afterDeleteSideEffects != null) {
+      final currentUserId = await session.currentUserId;
       Future(() async {
         // 3. Create a new session for background work
         final newSession = await Serverpod.instance.createSession();
         try {
           await afterDeleteSideEffects!(
             newSession,
+            currentUserId,
             model,
           );
         } finally {

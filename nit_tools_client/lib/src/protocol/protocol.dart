@@ -181,6 +181,9 @@ class Protocol extends _i1.SerializationManager {
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as dynamic;
     }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
+    }
     if (t == List<_i17.ObjectWrapper>) {
       return (data as List)
           .map((e) => deserialize<_i17.ObjectWrapper>(e))
