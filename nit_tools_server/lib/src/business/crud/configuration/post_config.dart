@@ -68,7 +68,7 @@ class PostConfig<T extends TableRow> {
     }
 
     final initialModel =
-        (isInsert || (afterUpdate == null && beforeUpdate == null))
+        (isInsert || (afterUpdate == null && beforeUpdate == null && afterUpdateSideEffects == null))
             ? null
             : await session.db.findById<T>(model.id!);
 
