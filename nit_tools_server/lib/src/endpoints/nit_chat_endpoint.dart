@@ -46,7 +46,9 @@ class NitChatEndpoint extends Endpoint {
         participantIds: participantIds.toList(),
         lastReadMessageId: participants
             .reduce(
-              (a, b) => (a.lastMessageId ?? 0) > (b.lastMessageId ?? 0) ? a : b,
+              (a, b) => (a.lastReadMessageId ?? 0) > (b.lastReadMessageId ?? 0)
+                  ? a
+                  : b,
             )
             .lastReadMessageId, //TODO: для групповых чатов не будет работать эффект прочтения
         additionalEntities: [
