@@ -153,11 +153,14 @@ final defaultChatCrudConfigs = [
           }
         }
 
+        return;
+      },
+      afterUpdate: (session, initialModel, updatedModel) async {
         session.nitSendToChat(
           initialModel.chatChannelId,
           updatedModel,
         );
-        return;
+        return [];
       },
 
       // afterDelete: (session, deletedModel) async {

@@ -110,16 +110,17 @@ class NitChatEndpoint extends Endpoint {
     }
 
     // Уменьшаем unreadCount на количество новых прочитанных сообщений. //TODO: возможно излишне и стоит ставить просто unreadCount = 0
-    if (participant.unreadCount > 0) {
-      if (newReadIds.last == participant.lastMessageId) {
-        participant.unreadCount = 0;
-      } else {
-        participant.unreadCount =
-            max(0, participant.unreadCount - newReadIds.length);
-      }
-    } else {
-      participant.unreadCount = 0;
-    }
+    // if (participant.unreadCount > 0) {
+    //   if (newReadIds.last == participant.lastMessageId) {
+    //     participant.unreadCount = 0;
+    //   } else {
+    //     participant.unreadCount =
+    //         max(0, participant.unreadCount - newReadIds.length);
+    //   }
+    // } else {
+    //   participant.unreadCount = 0;
+    // }
+    participant.unreadCount = 0;
 
     participant.lastReadMessageId = newReadIds.last;
 
