@@ -128,9 +128,10 @@ final defaultChatCrudConfigs = [
             orderDescending: true,
             orderBy: (t) => t.id,
           );
-          if (newLastMessage == null) {
-            return;
-          }
+
+          // if (newLastMessage == null) {
+          //   return;
+          // }
 
           for (var p in participants) {
             final isLastMessage = p.lastMessageId == updatedModel.id;
@@ -140,9 +141,9 @@ final defaultChatCrudConfigs = [
                 await NitChatParticipant.db.updateRow(
                   session,
                   p.copyWith(
-                    lastMessage: newLastMessage.text,
-                    lastMessageId: newLastMessage.id,
-                    lastMessageSentAt: newLastMessage.sentAt,
+                    lastMessage: newLastMessage?.text,
+                    lastMessageId: newLastMessage?.id,
+                    lastMessageSentAt: newLastMessage?.sentAt,
                     unreadCount: p.unreadCount > 0
                         ? p.unreadCount - 1
                         : 0, //TODO: можно сделать лучше
