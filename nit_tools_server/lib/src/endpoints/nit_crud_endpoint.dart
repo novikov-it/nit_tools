@@ -185,6 +185,29 @@ class NitCrudEndpoint extends Endpoint {
     required ObjectWrapper wrappedModel,
   }) async {
     final className = wrappedModel.nitMappingClassname;
+
+    if (wrappedModel.object.id == null) {
+      final insertSpecificCaller =
+          CrudConfig.getCaller(className)?.insertConfig;
+
+      if (insertSpecificCaller != null) {
+        return await insertSpecificCaller.insert(
+          session,
+          wrappedModel.object,
+        );
+      }
+    } else {
+      final updateSpecificCaller =
+          CrudConfig.getCaller(className)?.updateConfig;
+
+      if (updateSpecificCaller != null) {
+        return await updateSpecificCaller.update(
+          session,
+          wrappedModel.object,
+        );
+      }
+    }
+
     final caller = CrudConfig.getCaller(className)?.post;
 
     // if (caller == null ||
@@ -214,6 +237,15 @@ class NitCrudEndpoint extends Endpoint {
     // required ObjectWrapper wrappedModel,
   }) async {
     // final className = wrappedModel.nitMappingClassname;
+
+    final deleteSpecificCaller = CrudConfig.getCaller(className)?.deleteConfig;
+
+    if (deleteSpecificCaller != null) {
+      return await deleteSpecificCaller.delete(
+        session,
+        modelId,
+      );
+    }
 
     final caller = CrudConfig.getCaller(className)?.post;
 
