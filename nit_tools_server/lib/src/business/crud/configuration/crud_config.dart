@@ -1,5 +1,6 @@
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:nit_tools_server/src/business/crud/base_configs/user_info_config.dart';
+import 'package:nit_tools_server/src/business/crud/configuration/delete_config.dart';
 import 'package:serverpod/serverpod.dart';
 
 import '../../chats/chat_crud_configs.dart';
@@ -30,6 +31,7 @@ class CrudConfig<T extends TableRow> {
     this.getOneCustomConfigs,
     this.getAll,
     this.post,
+    this.deleteConfig,
   });
 
   final Table table;
@@ -38,6 +40,8 @@ class CrudConfig<T extends TableRow> {
 
   final GetAllConfig<T>? getAll;
   final PostConfig<T>? post;
+
+  final DeleteConfig<T>? deleteConfig;
 
   String get className => T.toString();
 }

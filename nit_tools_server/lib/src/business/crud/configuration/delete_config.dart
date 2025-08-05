@@ -1,91 +1,137 @@
-// import 'package:nit_tools_server/nit_tools_server.dart';
-// import 'package:serverpod/serverpod.dart';
+import 'dart:async';
 
-// class DeleteConfig<T extends TableRow> {
-//   const DeleteConfig({
-//     this.allowDelete,
-//     this.beforeDeleteTransactionActions,
-//     this.afterDeleteTransactionActions,
-//     this.afterDeleteTriggers,
-//   });
+import 'package:nit_tools_server/nit_tools_server.dart';
+import 'package:serverpod/serverpod.dart';
 
-//   final Future<bool> Function(Session session, T model)? allowDelete;
+class DeleteConfig<T extends TableRow> {
+  const DeleteConfig({
+    this.allowDelete,
+    this.deleteValidation,
+    this.beforeDeleteTransactionActions,
+    this.afterDeleteTransactionActions,
+    this.afterDeleteSideEffects,
+  });
 
-//   final Future<List<ObjectWrapper>> Function(
-//           Session session, Transaction transaction, T model)?
-//       beforeDeleteTransactionActions;
-//   final Future<List<ObjectWrapper>> Function(
-//     Session session,
-//     Transaction transaction,
-//     T model, {
-//     List<ObjectWrapper>? wrappedUpdatesFromBeforeDeleteTransactionActions,
-//   })? afterDeleteTransactionActions;
+  /// Срабатывает самой первой, проверяет полномочия на удаление объекта
+  /// Если проверка не пройдена, на возвращается стандартное сообщение о недостаточности полномочий
+  final Future<bool> Function(Session session, T model)? allowDelete;
 
-//   final Future<List<TableRow>> Function(
-//     Session session,
-//     T model, {
-//     List<ObjectWrapper>? wrappedUpdatesFromBeforeDeleteTransactionActions,
-//     List<ObjectWrapper>? wrappedUpdatesFromAfterDeleteTransactionActions,
-//   })? afterDeleteTriggers;
+  /// Используется для проверки, что конкретно этот объект можно удалять
+  /// Например, проверяется отсутствие критичных связей или иных блокеров для удаления
+  /// Возвращается текст ошибки как при валидации
+  final Future<String?> Function(Session session, T model)? deleteValidation;
 
-//   Future<ApiResponse<bool>> delete(Session session, int modelId) async {
-//     final T? model = await session.db.findById<T>(modelId);
+  final Future<List<ObjectWrapper>> Function(
+          Session session, Transaction transaction, T model)?
+      beforeDeleteTransactionActions;
+  final Future<List<ObjectWrapper>> Function(
+    Session session,
+    Transaction transaction,
+    T model, {
+    List<ObjectWrapper>? beforeDeleteUpdates,
+  })? afterDeleteTransactionActions;
 
-//     if (model == null) {
-//       return ApiResponse(
-//         isOk: true,
-//         value: true,
-//         warning: 'Объект не найден, возможно, удален ранее',
-//       );
-//     }
+  final Future<List<TableRow>> Function(
+    Session session,
+    T deletedModel, {
+    List<ObjectWrapper>? beforeDeleteUpdates,
+    List<ObjectWrapper>? afterDeleteUpdates,
+  })? afterDeleteSideEffects;
 
-//     if (true != await allowDelete?.call(session, model)) {
-//       return ApiResponse.forbidden();
-//     }
+  Future<ApiResponse<bool>> delete(Session session, int modelId) async {
+    final T? model = await session.db.findById<T>(modelId);
 
-//     List<ObjectWrapper>? beforeUpdates;
-//     List<ObjectWrapper>? afterUpdates;
+    if (model == null) {
+      return ApiResponse(
+        isOk: true,
+        value: true,
+        warning: 'Объект не найден, возможно, удален ранее',
+      );
+    }
 
-//     try {
-//       await session.db.transaction((transaction) async {
-//         final beforeUpdates = await beforeDeleteTransactionActions?.call(
-//             session, transaction, model);
+    if (true != await allowDelete?.call(session, model)) {
+      return ApiResponse.forbidden();
+    }
 
-//         await session.db.deleteRow(model);
+    if (deleteValidation != null) {
+      final validationError = await deleteValidation!.call(session, model);
 
-//         final afterUpdates = await afterDeleteTransactionActions?.call(
-//           session,
-//           transaction,
-//           model,
-//           wrappedUpdatesFromBeforeDeleteTransactionActions: beforeUpdates,
-//         );
+      if (validationError != null) {
+        return ApiResponse(
+          isOk: false,
+          value: false,
+          error: validationError,
+        );
+      }
+    }
 
-//         return [
-//           if (beforeUpdates != null) ...beforeUpdates,
-//           ObjectWrapper.deleted(object: model),
-//           if (afterUpdates != null) ...afterUpdates,
-//         ];
-//       });
-//     } on DatabaseException {
-//       return ApiResponse(
-//         isOk: false,
-//         value: false,
-//         error:
-//             'Невозможно удалить объект, к которому привязаны другие сущности',
-//       );
-//     }
+    List<ObjectWrapper>? beforeDeleteUpdates;
+    List<ObjectWrapper>? afterDeleteUpdates;
 
-//     return ApiResponse(
-//       isOk: true,
-//       value: true,
-//       updatedEntities: [
-//         // ObjectWrapper.deleted(object: model),
+    try {
+      await session.db.transaction((transaction) async {
+        beforeDeleteUpdates = await beforeDeleteTransactionActions?.call(
+          session,
+          transaction,
+          model,
+        );
 
-//         if (afterDeleteTriggers != null)
-//           ...(await (afterDeleteTriggers!(session, model))).map(
-//             (e) => ObjectWrapper(object: e),
-//           ),
-//       ],
-//     );
-//   }
-// }
+        await session.db.deleteRow(model);
+
+        afterDeleteUpdates = await afterDeleteTransactionActions?.call(
+          session,
+          transaction,
+          model,
+          beforeDeleteUpdates: beforeDeleteUpdates,
+        );
+      });
+    } on DatabaseException catch (e, st) {
+      session.log(
+        'Failed to delete $T with id ${model.id}: $e',
+        level: LogLevel.error,
+        stackTrace: st,
+      );
+
+      return ApiResponse(
+        isOk: false,
+        value: false,
+        error: 'При удалении объекта произошла ошибка',
+      );
+    }
+
+    if (afterDeleteSideEffects != null) {
+      unawaited(
+        Future(
+          () async {
+            // 3. Create a new session for background work
+            final newSession = await Serverpod.instance.createSession();
+            try {
+              await afterDeleteSideEffects!(
+                newSession,
+                model,
+                beforeDeleteUpdates: beforeDeleteUpdates,
+                afterDeleteUpdates: afterDeleteUpdates,
+              );
+            } catch (e) {
+              newSession.log(
+                  'Side effects failed after deletion of $T with id ${model.id}',
+                  level: LogLevel.warning);
+            } finally {
+              await newSession.close();
+            }
+          },
+        ),
+      );
+    }
+
+    return ApiResponse(
+      isOk: true,
+      value: true,
+      updatedEntities: [
+        if (beforeDeleteUpdates != null) ...beforeDeleteUpdates!,
+        ObjectWrapper.deleted(object: model),
+        if (afterDeleteUpdates != null) ...afterDeleteUpdates!,
+      ],
+    );
+  }
+}
