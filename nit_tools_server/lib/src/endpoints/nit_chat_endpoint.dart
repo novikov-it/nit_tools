@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -88,7 +87,7 @@ class NitChatEndpoint extends Endpoint {
     readMessageIds.sort();
     final maxMessageId = readMessageIds.last;
 
-    session.nitSendToChat(
+    await session.nitSendToChat(
       chatId,
       NitChatReadMessageEvent(messageId: maxMessageId, userId: userId!),
     );
@@ -125,7 +124,7 @@ class NitChatEndpoint extends Endpoint {
     participant.lastReadMessageId = newReadIds.last;
 
     await NitChatParticipant.db.updateRow(session, participant);
-    session.nitSendToUser(
+    await session.nitSendToUser(
       userId,
       participant,
     );
@@ -136,7 +135,7 @@ class NitChatEndpoint extends Endpoint {
     int channelId,
     bool isTyping,
   ) async {
-    session.nitSendToChat(
+    await session.nitSendToChat(
       channelId,
       NitTypingMessageEvent(
         userId: (await session.currentUserId)!,

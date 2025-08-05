@@ -101,7 +101,7 @@ final defaultChatCrudConfigs = [
           for (var p in participants) {
             final isLastMessage = p.lastMessageId == updatedModel.id;
             if (isLastMessage) {
-              session.nitSendToUser(
+              await session.nitSendToUser(
                 p.userId,
                 await NitChatParticipant.db.updateRow(
                   session,
@@ -136,7 +136,7 @@ final defaultChatCrudConfigs = [
           for (var p in participants) {
             final isLastMessage = p.lastMessageId == updatedModel.id;
             if (isLastMessage) {
-              session.nitSendToUser(
+              await session.nitSendToUser(
                 p.userId,
                 await NitChatParticipant.db.updateRow(
                   session,
@@ -157,7 +157,7 @@ final defaultChatCrudConfigs = [
         return;
       },
       afterUpdate: (session, initialModel, updatedModel) async {
-        session.nitSendToChat(
+       await session.nitSendToChat(
           initialModel.chatChannelId,
           updatedModel,
         );
@@ -198,7 +198,7 @@ final defaultChatCrudConfigs = [
       //   return [];
       // },
       afterInsert: (session, model) async {
-        session.nitSendToChat(
+       await session.nitSendToChat(
           model.chatChannelId,
           model,
         );
@@ -211,7 +211,7 @@ final defaultChatCrudConfigs = [
         );
 
         for (var p in participants) {
-          session.nitSendToUser(
+          await session.nitSendToUser(
             p.userId,
             await NitChatParticipant.db.updateRow(
               session,

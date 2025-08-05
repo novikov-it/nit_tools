@@ -35,14 +35,14 @@ extension NitSessionExtension on Session {
 
   Future<bool> isUser(int userId) async => userId == await currentUserId;
 
-  nitSendToUser(int userId, SerializableModel update) async {
+  Future<void> nitSendToUser(int userId, SerializableModel update) async {
     await messages.postMessage(
       NitUpdatesEndpoint.userUpdatesChannel(userId),
       update,
     );
   }
 
-  nitSendToChat(int chatId, SerializableModel update) async {
+  Future<void> nitSendToChat(int chatId, SerializableModel update) async {
     await messages.postMessage(
       NitChatEndpoint.chatUpdatesChannel(chatId),
       update,
