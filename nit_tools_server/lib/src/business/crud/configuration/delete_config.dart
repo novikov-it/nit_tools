@@ -5,7 +5,7 @@ import 'package:serverpod/serverpod.dart';
 
 class DeleteConfig<T extends TableRow> {
   const DeleteConfig({
-    this.allowDelete,
+    required this.allowDelete,
     this.deleteValidation,
     this.beforeDeleteTransactionActions,
     this.afterDeleteTransactionActions,
@@ -14,7 +14,7 @@ class DeleteConfig<T extends TableRow> {
 
   /// Срабатывает самой первой, проверяет полномочия на удаление объекта
   /// Если проверка не пройдена, на возвращается стандартное сообщение о недостаточности полномочий
-  final Future<bool> Function(Session session, T model)? allowDelete;
+  final Future<bool> Function(Session session, T model) allowDelete;
 
   /// Используется для проверки, что конкретно этот объект можно удалять
   /// Например, проверяется отсутствие критичных связей или иных блокеров для удаления
@@ -31,7 +31,7 @@ class DeleteConfig<T extends TableRow> {
     List<ObjectWrapper>? beforeDeleteUpdates,
   })? afterDeleteTransactionActions;
 
-  final Future<List<TableRow>> Function(
+  final Future<void> Function(
     Session session,
     T deletedModel, {
     List<ObjectWrapper>? beforeDeleteUpdates,
@@ -49,7 +49,7 @@ class DeleteConfig<T extends TableRow> {
       );
     }
 
-    if (true != await allowDelete?.call(session, model)) {
+    if (true != await allowDelete.call(session, model)) {
       return ApiResponse.forbidden();
     }
 
