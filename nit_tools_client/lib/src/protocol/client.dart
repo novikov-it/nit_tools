@@ -34,15 +34,15 @@ class EndpointNitChat extends _i1.EndpointRef {
         {},
       );
 
-  _i2.Future<void> readChatMessage(
-    int messageId,
+  _i2.Future<void> readChatMessages(
+    List<int> readMessageIds,
     int chatId,
   ) =>
       caller.callServerEndpoint<void>(
         'nit_tools.nitChat',
-        'readChatMessage',
+        'readChatMessages',
         {
-          'messageId': messageId,
+          'readMessageIds': readMessageIds,
           'chatId': chatId,
         },
       );

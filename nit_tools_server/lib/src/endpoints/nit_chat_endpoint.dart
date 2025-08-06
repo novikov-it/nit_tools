@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -34,9 +33,6 @@ class NitChatEndpoint extends Endpoint {
 
     final participantIds = participants.map((e) => e.userId).toSet();
 
-    final currentParticipant = participants.firstWhereOrNull(
-        (e) => e.userId != userId); //TODO: отследить для груповых чатов
-
     final initMedias = await NitMedia.db.find(
       session,
       where: (t) => t.id.inSet(
@@ -47,7 +43,13 @@ class NitChatEndpoint extends Endpoint {
     yield NitChatInitialData(
         messages: messages,
         participantIds: participantIds.toList(),
-        lastReadMessageId: currentParticipant?.lastReadMessageId,
+        lastReadMessageId: participants
+            .reduce(
+              (a, b) => (a.lastReadMessageId ?? 0) > (b.lastReadMessageId ?? 0)
+                  ? a
+                  : b,
+            )
+            .lastReadMessageId, //TODO: для групповых чатов не будет работать эффект прочтения
         additionalEntities: [
           ...initMedias.map((e) => ObjectWrapper(object: e)),
           ...await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
@@ -71,29 +73,60 @@ class NitChatEndpoint extends Endpoint {
     //     );
   }
 
-  Future<void> readChatMessage(
+  Future<void> readChatMessages(
     Session session,
-    int messageId,
+    List<int> readMessageIds,
     int chatId,
   ) async {
+    if (readMessageIds.isEmpty) {
+      return;
+    }
+
     final userId = await session.currentUserId;
+
+    readMessageIds.sort();
+    final maxMessageId = readMessageIds.last;
+
+    await session.nitSendToChat(
+      chatId,
+      NitChatReadMessageEvent(messageId: maxMessageId, userId: userId!),
+    );
+
     final participant = await NitChatParticipant.db.findFirstRow(session,
         where: (p0) =>
             p0.chatChannelId.equals(chatId) & p0.userId.equals(userId));
-    if (participant == null ||
-        messageId < (participant.lastReadMessageId ?? 0)) {
+
+    if (participant == null) {
       return;
     }
-    participant.unreadCount = participant.unreadCount > 0
-        ? participant.unreadCount - 1
-        : 0; //TODO: look for this
-    participant.lastReadMessageId = messageId;
+
+    final currentLastRead = participant.lastReadMessageId ?? 0;
+    final newReadIds =
+        readMessageIds.where((id) => id > currentLastRead).toList();
+
+    if (newReadIds.isEmpty) {
+      return;
+    }
+
+    // Уменьшаем unreadCount на количество новых прочитанных сообщений. //TODO: возможно излишне и стоит ставить просто unreadCount = 0
+    // if (participant.unreadCount > 0) {
+    //   if (newReadIds.last == participant.lastMessageId) {
+    //     participant.unreadCount = 0;
+    //   } else {
+    //     participant.unreadCount =
+    //         max(0, participant.unreadCount - newReadIds.length);
+    //   }
+    // } else {
+    //   participant.unreadCount = 0;
+    // }
+    participant.unreadCount = 0;
+
+    participant.lastReadMessageId = newReadIds.last;
 
     await NitChatParticipant.db.updateRow(session, participant);
-
-    session.nitSendToChat(
-      chatId,
-      NitChatReadMessageEvent(messageId: messageId, userId: userId!),
+    await session.nitSendToUser(
+      userId,
+      participant,
     );
   }
 
@@ -102,7 +135,7 @@ class NitChatEndpoint extends Endpoint {
     int channelId,
     bool isTyping,
   ) async {
-    session.nitSendToChat(
+    await session.nitSendToChat(
       channelId,
       NitTypingMessageEvent(
         userId: (await session.currentUserId)!,

@@ -89,11 +89,11 @@ final defaultChatCrudConfigs = [
       allowInsert: (session, model) async => session.isUser(model.userId),
       allowUpdate: (session, model) async => session.isUser(model.userId),
       allowDelete: (session, model) async => session.isUser(model.userId),
-      afterUpdate: (session, initialModel, updatedModel) async {
+      afterUpdateSideEffects:
+          (session, currentUserId, initialModel, updatedModel) async {
         final participants = await NitChatParticipant.db.find(
           session,
-          where: (t) => t.chatChannelId.equals(updatedModel
-              .chatChannelId), // Используем updatedModel для consistency
+          where: (t) => t.chatChannelId.equals(updatedModel.chatChannelId),
         );
 
         if (!updatedModel.isDeleted) {
@@ -101,7 +101,7 @@ final defaultChatCrudConfigs = [
           for (var p in participants) {
             final isLastMessage = p.lastMessageId == updatedModel.id;
             if (isLastMessage) {
-              session.nitSendToUser(
+              await session.nitSendToUser(
                 p.userId,
                 await NitChatParticipant.db.updateRow(
                   session,
@@ -128,21 +128,22 @@ final defaultChatCrudConfigs = [
             orderDescending: true,
             orderBy: (t) => t.id,
           );
-          if (newLastMessage == null) {
-            return [];
-          }
+
+          // if (newLastMessage == null) {
+          //   return;
+          // }
 
           for (var p in participants) {
             final isLastMessage = p.lastMessageId == updatedModel.id;
             if (isLastMessage) {
-              session.nitSendToUser(
+              await session.nitSendToUser(
                 p.userId,
                 await NitChatParticipant.db.updateRow(
                   session,
                   p.copyWith(
-                    lastMessage: newLastMessage.text,
-                    lastMessageId: newLastMessage.id,
-                    lastMessageSentAt: newLastMessage.sentAt,
+                    lastMessage: newLastMessage?.text,
+                    lastMessageId: newLastMessage?.id,
+                    lastMessageSentAt: newLastMessage?.sentAt,
                     unreadCount: p.unreadCount > 0
                         ? p.unreadCount - 1
                         : 0, //TODO: можно сделать лучше
@@ -153,7 +154,10 @@ final defaultChatCrudConfigs = [
           }
         }
 
-        session.nitSendToChat(
+        return;
+      },
+      afterUpdate: (session, initialModel, updatedModel) async {
+       await session.nitSendToChat(
           initialModel.chatChannelId,
           updatedModel,
         );
@@ -194,13 +198,20 @@ final defaultChatCrudConfigs = [
       //   return [];
       // },
       afterInsert: (session, model) async {
+       await session.nitSendToChat(
+          model.chatChannelId,
+          model,
+        );
+        return [];
+      },
+      afterInsertSideEffects: (session, currentUserId, model) async {
         final participants = await NitChatParticipant.db.find(
           session,
           where: (t) => t.chatChannelId.equals(model.chatChannelId),
         );
 
         for (var p in participants) {
-          session.nitSendToUser(
+          await session.nitSendToUser(
             p.userId,
             await NitChatParticipant.db.updateRow(
               session,
@@ -208,7 +219,7 @@ final defaultChatCrudConfigs = [
                 lastMessage: model.text,
                 lastMessageId: model.id,
                 lastMessageSentAt: model.sentAt,
-                unreadCount: await session.isUser(p.userId)
+                unreadCount: currentUserId == p.userId
                     ? p.unreadCount
                     : p.unreadCount + 1,
               ),
@@ -237,15 +248,9 @@ final defaultChatCrudConfigs = [
                 .goToPath(model.chatChannelId),
             pathQueryParams: NitChatsConfig.pushNotificationConfig!
                 .pathQueryParams(model.chatChannelId),
+            // includeBadgeCount: true,
           );
         }
-
-        session.nitSendToChat(
-          model.chatChannelId,
-          model,
-        );
-
-        return [];
       },
     ),
   ),
