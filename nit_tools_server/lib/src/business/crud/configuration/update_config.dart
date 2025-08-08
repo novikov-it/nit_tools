@@ -35,10 +35,11 @@ class UpdateConfig<T extends TableRow> {
   )? beforeUpdateTransactionActions;
 
   final Future<T> Function(
-    Session session,
+    Session session, {
     T initialModel,
     T newModel,
-  )? beforeUpdatePreProcessing;
+    List<ObjectWrapper>? beforeUpdateUpdates,
+  })? beforeUpdatePreProcessing;
 
   final Future<List<ObjectWrapper>> Function(
     Session session,
@@ -50,29 +51,30 @@ class UpdateConfig<T extends TableRow> {
 
   final Future<void> Function(
     Session session,
+    T initialModel,
     T updatedModel, {
     List<ObjectWrapper>? beforeUpdateUpdates,
     List<ObjectWrapper>? afterUpdateUpdates,
   })? afterUpdateSideEffects;
 
-  Future<ApiResponse<int>> update(Session session, T model) async {
-    final currentModel = await session.db.findById<T>(model.id!);
+  Future<ApiResponse<int>> update(Session session, T newModel) async {
+    final currentModel = await session.db.findById<T>(newModel.id!);
 
     if (currentModel == null) {
       return ApiResponse(
         isOk: false,
         value: null,
-        error: 'Объект с id ${model.id} не найден, возможно, удален ранее',
+        error: 'Объект с id ${newModel.id} не найден, возможно, удален ранее',
       );
     }
 
-    if (true != await allowUpdate.call(session, currentModel, model)) {
+    if (true != await allowUpdate.call(session, currentModel, newModel)) {
       return ApiResponse.forbidden();
     }
 
     if (updateValidation != null) {
       final validationError =
-          await updateValidation!(session, currentModel, model);
+          await updateValidation!(session, currentModel, newModel);
 
       if (validationError != null) {
         return ApiResponse(
@@ -94,17 +96,19 @@ class UpdateConfig<T extends TableRow> {
             session,
             transaction,
             currentModel,
-            model,
+            newModel,
           );
 
           updatedModel = await session.db.updateRow<T>(
             beforeUpdatePreProcessing == null
-                ? model
+                ? newModel
                 : await beforeUpdatePreProcessing!(
                     session,
-                    currentModel,
-                    model,
+                    initialModel: currentModel,
+                    newModel: newModel,
+                    beforeUpdateUpdates: beforeUpdateUpdates,
                   ),
+            transaction: transaction,
           );
 
           afterUpdateUpdates = await afterUpdateTransactionActions?.call(
@@ -139,6 +143,7 @@ class UpdateConfig<T extends TableRow> {
             try {
               await afterUpdateSideEffects!(
                 newSession,
+                currentModel,
                 updatedModel,
                 beforeUpdateUpdates: beforeUpdateUpdates,
                 afterUpdateUpdates: afterUpdateUpdates,
@@ -147,6 +152,10 @@ class UpdateConfig<T extends TableRow> {
               newSession.log(
                   'Side effects failed after update of $T with id ${updatedModel.id}',
                   level: LogLevel.warning);
+              newSession.log(
+                e.toString(),
+                level: LogLevel.warning,
+              );
             } finally {
               await newSession.close();
             }
@@ -156,7 +165,13 @@ class UpdateConfig<T extends TableRow> {
     }
 
     final updatedEntities = [
-      if (beforeUpdateUpdates != null) ...beforeUpdateUpdates!,
+      if (beforeUpdateUpdates != null)
+        ...beforeUpdateUpdates!.where(
+          (e) =>
+              afterUpdateUpdates == null ||
+              !afterUpdateUpdates!.any(
+                  (u) => u.className == e.className && u.modelId == e.modelId),
+        ),
       ObjectWrapper(object: updatedModel),
       if (afterUpdateUpdates != null) ...afterUpdateUpdates!,
     ];

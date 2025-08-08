@@ -116,6 +116,10 @@ class DeleteConfig<T extends TableRow> {
               newSession.log(
                   'Side effects failed after deletion of $T with id ${model.id}',
                   level: LogLevel.warning);
+              newSession.log(
+                e.toString(),
+                level: LogLevel.warning,
+              );
             } finally {
               await newSession.close();
             }
@@ -128,7 +132,13 @@ class DeleteConfig<T extends TableRow> {
       isOk: true,
       value: true,
       updatedEntities: [
-        if (beforeDeleteUpdates != null) ...beforeDeleteUpdates!,
+        if (beforeDeleteUpdates != null)
+          ...beforeDeleteUpdates!.where(
+            (e) =>
+                afterDeleteUpdates == null ||
+                !afterDeleteUpdates!.any((u) =>
+                    u.className == e.className && u.modelId == e.modelId),
+          ),
         ObjectWrapper.deleted(object: model),
         if (afterDeleteUpdates != null) ...afterDeleteUpdates!,
       ],

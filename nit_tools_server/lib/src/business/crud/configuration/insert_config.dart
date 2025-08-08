@@ -25,8 +25,11 @@ class InsertConfig<T extends TableRow> {
   final Future<List<ObjectWrapper>> Function(
           Session session, Transaction transaction, T model)?
       beforeInsertTransactionActions;
-  final Future<T> Function(Session session, T newModel)?
-      beforeInsertPreProcessing;
+  final Future<T> Function(
+    Session session,
+    T newModel, {
+    List<ObjectWrapper>? beforeInsertUpdates,
+  })? beforeInsertPreProcessing;
 
   final Future<List<ObjectWrapper>> Function(
     Session session,
@@ -75,7 +78,12 @@ class InsertConfig<T extends TableRow> {
           insertedModel = await session.db.insertRow<T>(
             beforeInsertPreProcessing == null
                 ? model
-                : await beforeInsertPreProcessing!(session, model),
+                : await beforeInsertPreProcessing!(
+                    session,
+                    model,
+                    beforeInsertUpdates: beforeInsertUpdates,
+                  ),
+            transaction: transaction,
           );
 
           afterInsertUpdates = await afterInsertTransactionActions?.call(
@@ -115,8 +123,13 @@ class InsertConfig<T extends TableRow> {
               );
             } catch (e) {
               newSession.log(
-                  'Side effects failed after insert of $T with id ${insertedModel.id}',
-                  level: LogLevel.warning);
+                'Side effects failed after insert of $T with id ${insertedModel.id}',
+                level: LogLevel.warning,
+              );
+              newSession.log(
+                e.toString(),
+                level: LogLevel.warning,
+              );
             } finally {
               await newSession.close();
             }
@@ -126,7 +139,13 @@ class InsertConfig<T extends TableRow> {
     }
 
     final updatedEntities = [
-      if (beforeInsertUpdates != null) ...beforeInsertUpdates!,
+      if (beforeInsertUpdates != null)
+        ...beforeInsertUpdates!.where(
+          (e) =>
+              afterInsertUpdates == null ||
+              !afterInsertUpdates!.any(
+                  (u) => u.className == e.className && u.modelId == e.modelId),
+        ),
       ObjectWrapper(object: insertedModel),
       if (afterInsertUpdates != null) ...afterInsertUpdates!,
     ];
