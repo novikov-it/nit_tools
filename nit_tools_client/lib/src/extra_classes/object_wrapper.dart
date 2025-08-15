@@ -39,6 +39,11 @@ class ObjectWrapper implements SerializableModel, ProtocolSerialization {
 
   String get nitMappingClassname => className.split('.').last;
 
+  @override
+  String toString() {
+    return 'Wrapper for ${isDeleted ? 'deleted ' : ''}$nitMappingClassname with $modelId';
+  }
+
   factory ObjectWrapper.fromJson(
     Map<String, dynamic> jsonSerialization,
   ) {
