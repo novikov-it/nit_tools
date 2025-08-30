@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:nit_tools_server/nit_tools_server.dart';
+import 'package:nit_tools_server/src/business/extensions/log_extension.dart';
 import 'package:serverpod/serverpod.dart';
 
 class UpdateConfig<T extends TableRow> {
@@ -125,6 +126,10 @@ class UpdateConfig<T extends TableRow> {
         'Failed to Update $T: $e',
         level: LogLevel.error,
         stackTrace: st,
+      );
+
+      NitAlerts.sendAlert(
+        message: '⚠️ Ошибка $e при обновлении $T ${updatedModel.toLogString()}',
       );
 
       return ApiResponse(

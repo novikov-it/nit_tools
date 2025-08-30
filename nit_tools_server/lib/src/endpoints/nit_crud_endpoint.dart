@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:nit_tools_server/nit_tools_server.dart';
+import 'package:nit_tools_server/src/business/extensions/log_extension.dart';
 import 'package:serverpod/serverpod.dart';
 
 class NitCrudEndpoint extends Endpoint {
@@ -64,8 +65,10 @@ class NitCrudEndpoint extends Endpoint {
         filter,
       );
     } catch (ex) {
-      print(ex);
-      print(StackTrace.current);
+      NitAlerts.sendAlert(
+        message:
+            '⚠️ Непредвиденная ошибка $ex при получении $className с фильтром ${filter.attributeMap}',
+      );
       return ApiResponse(
         isOk: false,
         value: null,
@@ -82,24 +85,37 @@ class NitCrudEndpoint extends Endpoint {
     int? limit,
     int? offset,
   }) async {
-    final caller = CrudConfig.getCaller(className);
+    try {
+      final caller = CrudConfig.getCaller(className);
 
-    print(
-      "Received getAll request for $className ${filter != null ? 'with filter: ${filter.attributeMap}' : ''}",
-    );
+      print(
+        "Received getAll request for $className ${filter != null ? 'with filter: ${filter.attributeMap}' : ''}",
+      );
 
-    if (caller?.getAll == null) {
-      return ApiResponse.notConfigured(source: 'получение списка $className');
+      if (caller?.getAll == null) {
+        return ApiResponse.notConfigured(source: 'получение списка $className');
+      }
+
+      return await caller!.getAll!.getIds(
+        session,
+        whereClause: filter?.prepareWhere(
+          caller.table,
+        ),
+        limit: limit,
+        offset: offset,
+      );
+    } catch (e) {
+      NitAlerts.sendAlert(
+        message:
+            '⚠️ Непредвиденная ошибка $e при получении списка $className с фильтром ${filter?.attributeMap}',
+      );
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error:
+            'Непредвиденная ошибка при обработке запроса на получение списка $className',
+      );
     }
-
-    return await caller!.getAll!.getIds(
-      session,
-      whereClause: filter?.prepareWhere(
-        caller.table,
-      ),
-      limit: limit,
-      offset: offset,
-    );
   }
 
   Future<ApiResponse<int>> getCount(
@@ -107,23 +123,36 @@ class NitCrudEndpoint extends Endpoint {
     required String className,
     NitBackendFilter? filter,
   }) async {
-    final caller = CrudConfig.getCaller(className);
+    try {
+      final caller = CrudConfig.getCaller(className);
 
-    print(
-      "CRUD: getCount for $className with filter: $filter",
-    );
+      print(
+        "CRUD: getCount for $className with filter: $filter",
+      );
 
-    if (caller?.getAll == null) {
-      return ApiResponse.notConfigured(
-          source: 'получение количества $className');
+      if (caller?.getAll == null) {
+        return ApiResponse.notConfigured(
+            source: 'получение количества $className');
+      }
+
+      return await caller!.getAll!.getCount(
+        session,
+        whereClause: filter?.prepareWhere(
+          caller.table,
+        ),
+      );
+    } catch (e) {
+      NitAlerts.sendAlert(
+        message:
+            '⚠️ Непредвиденная ошибка $e при получении количества $className с фильтром ${filter?.attributeMap}',
+      );
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error:
+            'Непредвиденная ошибка при обработке запроса на получение количества $className',
+      );
     }
-
-    return await caller!.getAll!.getCount(
-      session,
-      whereClause: filter?.prepareWhere(
-        caller.table,
-      ),
-    );
   }
 
   Future<ApiResponse<List<ObjectWrapper>>> getEntityList(
@@ -133,101 +162,138 @@ class NitCrudEndpoint extends Endpoint {
     int? limit,
     int? offset,
   }) async {
-    final caller = CrudConfig.getCaller(className);
+    try {
+      final caller = CrudConfig.getCaller(className);
 
-    print(
-      "CRUD: getEntityList for $className with filter: $filter limit: $limit offset: $offset",
-    );
+      print(
+        "CRUD: getEntityList for $className with filter: $filter limit: $limit offset: $offset",
+      );
 
-    if (caller?.getAll == null) {
-      return ApiResponse.notConfigured(source: 'получение списка $className');
+      if (caller?.getAll == null) {
+        return ApiResponse.notConfigured(source: 'получение списка $className');
+      }
+
+      return await caller!.getAll!.getEntityList(
+        session,
+        whereClause: filter?.prepareWhere(
+          caller.table,
+        ),
+        limit: limit,
+        offset: offset,
+      );
+    } catch (e) {
+      NitAlerts.sendAlert(
+        message:
+            '⚠️ Непредвиденная ошибка $e при получении списка $className с фильтром ${filter?.attributeMap}',
+      );
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error:
+            'Непредвиденная ошибка при обработке запроса на получение списка $className',
+      );
     }
-
-    return await caller!.getAll!.getEntityList(
-      session,
-      whereClause: filter?.prepareWhere(
-        caller.table,
-      ),
-      limit: limit,
-      offset: offset,
-    );
   }
 
   Future<ApiResponse<List<int>>> saveModels(
     Session session, {
     required List<ObjectWrapper> wrappedModels,
   }) async {
-    final res =
-        ApiResponse<List<int>>(isOk: true, value: [], updatedEntities: []);
-    for (ObjectWrapper model in wrappedModels) {
-      final t = await saveModel(session, wrappedModel: model);
+    try {
+      final res =
+          ApiResponse<List<int>>(isOk: true, value: [], updatedEntities: []);
+      for (ObjectWrapper model in wrappedModels) {
+        final t = await saveModel(session, wrappedModel: model);
 
-      if (t.isOk && t.value != null) {
-        res.value!.add(t.value!);
-        res.updatedEntities!.addAll(
-          t.updatedEntities ?? [],
-        );
-      } else {
-        return ApiResponse(
-          isOk: false,
-          value: null,
-          error: t.error,
-          warning: t.warning,
-        );
+        if (t.isOk && t.value != null) {
+          res.value!.add(t.value!);
+          res.updatedEntities!.addAll(
+            t.updatedEntities ?? [],
+          );
+        } else {
+          return ApiResponse(
+            isOk: false,
+            value: null,
+            error: t.error,
+            warning: t.warning,
+          );
+        }
       }
-    }
 
-    return res;
+      return res;
+    } catch (e) {
+      NitAlerts.sendAlert(
+        message: '⚠️ Непредвиденная ошибка $e при массовом сохранении моделей',
+      );
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error: 'Непредвиденная ошибка при массовом сохранении моделей',
+      );
+    }
   }
 
   Future<ApiResponse<int>> saveModel(
     Session session, {
     required ObjectWrapper wrappedModel,
   }) async {
-    final className = wrappedModel.nitMappingClassname;
+    try {
+      final className = wrappedModel.nitMappingClassname;
 
-    if (wrappedModel.object.id == null) {
-      final insertSpecificCaller =
-          CrudConfig.getCaller(className)?.insertConfig;
+      if (wrappedModel.object.id == null) {
+        final insertSpecificCaller =
+            CrudConfig.getCaller(className)?.insertConfig;
 
-      if (insertSpecificCaller != null) {
-        return await insertSpecificCaller.insert(
-          session,
-          wrappedModel.object,
-        );
+        if (insertSpecificCaller != null) {
+          return await insertSpecificCaller.insert(
+            session,
+            wrappedModel.object,
+          );
+        }
+      } else {
+        final updateSpecificCaller =
+            CrudConfig.getCaller(className)?.updateConfig;
+
+        if (updateSpecificCaller != null) {
+          return await updateSpecificCaller.update(
+            session,
+            wrappedModel.object,
+          );
+        }
       }
-    } else {
-      final updateSpecificCaller =
-          CrudConfig.getCaller(className)?.updateConfig;
 
-      if (updateSpecificCaller != null) {
-        return await updateSpecificCaller.update(
-          session,
-          wrappedModel.object,
-        );
+      final caller = CrudConfig.getCaller(className)?.post;
+
+      // if (caller == null ||
+      //     (wrappedModel.object.id == null
+      //             ? caller.allowInsert
+      //             : caller.allowUpdate) ==
+      //         null) {
+      // final a = caller?.allowInsert;
+      // final b = caller?.allowUpdate;
+      if (caller == null
+          // ||
+          // ((wrappedModel.object.id == null && a == null) ||
+          //     (wrappedModel.object.id != null && b == null))
+          //     ? caller.allowInsert
+          //     : caller.allowUpdate) ==
+          // null
+          ) {
+        return ApiResponse.notConfigured(source: 'сохранение $className');
       }
+      return await caller.upsert(session, wrappedModel.object);
+    } catch (e, st) {
+      NitAlerts.sendAlert(
+        message:
+            '⚠️ Непредвиденная ошибка $e при сохранении ${wrappedModel.nitMappingClassname} ${wrappedModel.object.toLogString()}',
+      );
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error:
+            'Непредвиденная ошибка при обработке запроса на сохранение ${wrappedModel.nitMappingClassname}',
+      );
     }
-
-    final caller = CrudConfig.getCaller(className)?.post;
-
-    // if (caller == null ||
-    //     (wrappedModel.object.id == null
-    //             ? caller.allowInsert
-    //             : caller.allowUpdate) ==
-    //         null) {
-    // final a = caller?.allowInsert;
-    // final b = caller?.allowUpdate;
-    if (caller == null
-        // ||
-        // ((wrappedModel.object.id == null && a == null) ||
-        //     (wrappedModel.object.id != null && b == null))
-        //     ? caller.allowInsert
-        //     : caller.allowUpdate) ==
-        // null
-        ) {
-      return ApiResponse.notConfigured(source: 'сохранение $className');
-    }
-    return await caller.upsert(session, wrappedModel.object);
   }
 
   Future<ApiResponse<bool>> delete(
@@ -237,25 +303,38 @@ class NitCrudEndpoint extends Endpoint {
     // required ObjectWrapper wrappedModel,
   }) async {
     // final className = wrappedModel.nitMappingClassname;
+    try {
+      final deleteSpecificCaller =
+          CrudConfig.getCaller(className)?.deleteConfig;
 
-    final deleteSpecificCaller = CrudConfig.getCaller(className)?.deleteConfig;
+      if (deleteSpecificCaller != null) {
+        return await deleteSpecificCaller.delete(
+          session,
+          modelId,
+        );
+      }
 
-    if (deleteSpecificCaller != null) {
-      return await deleteSpecificCaller.delete(
+      final caller = CrudConfig.getCaller(className)?.post;
+
+      if (caller == null) {
+        return ApiResponse.notConfigured(source: 'удаление $className');
+      }
+
+      return await caller.delete(
         session,
         modelId,
       );
+    } catch (ex) {
+      NitAlerts.sendAlert(
+        message:
+            '⚠️ Непредвиденная ошибка $ex при удалении $className $modelId',
+      );
+      return ApiResponse(
+        isOk: false,
+        value: null,
+        error:
+            'Непредвиденная ошибка при обработке запроса на удаление $className',
+      );
     }
-
-    final caller = CrudConfig.getCaller(className)?.post;
-
-    if (caller == null) {
-      return ApiResponse.notConfigured(source: 'удаление $className');
-    }
-
-    return await caller.delete(
-      session,
-      modelId,
-    );
   }
 }

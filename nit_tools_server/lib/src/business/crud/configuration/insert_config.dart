@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:nit_tools_server/nit_tools_server.dart';
+import 'package:nit_tools_server/src/business/extensions/log_extension.dart';
 import 'package:serverpod/serverpod.dart';
 
 class InsertConfig<T extends TableRow> {
@@ -99,6 +100,10 @@ class InsertConfig<T extends TableRow> {
         'Failed to insert $T: $e',
         level: LogLevel.error,
         stackTrace: st,
+      );
+
+      NitAlerts.sendAlert(
+        message: '⚠️ Ошибка $e при вставке $T ${model.toLogString()}',
       );
 
       return ApiResponse(

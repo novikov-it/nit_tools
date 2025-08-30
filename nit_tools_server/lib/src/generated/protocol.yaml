@@ -1,3 +1,5 @@
+nitAuth:
+  - signOutUser:
 nitChat:
   - updatesStream:
   - readChatMessages:

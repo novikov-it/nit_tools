@@ -16,4 +16,5 @@ export 'src/extra_classes/nit_backend_filter.dart';
 export 'src/extra_classes/object_wrapper.dart';
 export 'src/generated/endpoints.dart';
 export 'src/generated/protocol.dart';
+export 'src/services/nit_alerts.dart';
 export 'src/services/push_notifications.dart';

@@ -19,6 +19,21 @@ import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i6;
 import 'package:nit_tools_client/src/protocol/media/nit_media.dart' as _i7;
 
 /// {@category Endpoint}
+class EndpointNitAuth extends _i1.EndpointRef {
+  EndpointNitAuth(_i1.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'nit_tools.nitAuth';
+
+  _i2.Future<void> signOutUser({required bool revokeAllTokens}) =>
+      caller.callServerEndpoint<void>(
+        'nit_tools.nitAuth',
+        'signOutUser',
+        {'revokeAllTokens': revokeAllTokens},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointNitChat extends _i1.EndpointRef {
   EndpointNitChat(_i1.EndpointCaller caller) : super(caller);
 
@@ -218,12 +233,15 @@ class EndpointServices extends _i1.EndpointRef {
 
 class Caller extends _i1.ModuleEndpointCaller {
   Caller(_i1.ServerpodClientShared client) : super(client) {
+    nitAuth = EndpointNitAuth(this);
     nitChat = EndpointNitChat(this);
     nitCrud = EndpointNitCrud(this);
     nitUpdates = EndpointNitUpdates(this);
     nitUpload = EndpointNitUpload(this);
     services = EndpointServices(this);
   }
+
+  late final EndpointNitAuth nitAuth;
 
   late final EndpointNitChat nitChat;
 
@@ -237,6 +255,7 @@ class Caller extends _i1.ModuleEndpointCaller {
 
   @override
   Map<String, _i1.EndpointRef> get endpointRefLookup => {
+        'nit_tools.nitAuth': nitAuth,
         'nit_tools.nitChat': nitChat,
         'nit_tools.nitCrud': nitCrud,
         'nit_tools.nitUpdates': nitUpdates,
