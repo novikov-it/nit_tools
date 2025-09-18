@@ -94,7 +94,7 @@ class DeleteConfig<T extends TableRow> {
       );
 
       NitAlerts.sendAlert(
-        message: '⚠️ Ошибка $e при вставке $T ${model.toLogString()}',
+        message: '⚠️ Ошибка $e при удалении $T ${model.toLogString()}',
       );
 
       return ApiResponse(

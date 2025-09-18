@@ -8,18 +8,19 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
+import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
+    as _i8;
+import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i9;
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i10;
+
 import '../endpoints/nit_auth_endpoint.dart' as _i2;
 import '../endpoints/nit_chat_endpoint.dart' as _i3;
 import '../endpoints/nit_crud_endpoint.dart' as _i4;
 import '../endpoints/nit_updates_endpoint.dart' as _i5;
 import '../endpoints/nit_upload_endpoint.dart' as _i6;
 import '../endpoints/services_endpoint.dart' as _i7;
-import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
-    as _i8;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i9;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i10;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override
@@ -343,6 +344,27 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             className: params['className'],
             modelId: params['modelId'],
+          ),
+        ),
+        'subscribeOnUpdates': _i1.MethodStreamConnector(
+          name: 'subscribeOnUpdates',
+          params: {
+            'channel': _i1.ParameterDescription(
+              name: 'channel',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          streamParams: {},
+          returnType: _i1.MethodStreamReturnType.streamType,
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+            Map<String, Stream> streamParams,
+          ) =>
+              (endpoints['nitCrud'] as _i4.NitCrudEndpoint).subscribeOnUpdates(
+            session,
+            channel: params['channel'],
           ),
         ),
       },

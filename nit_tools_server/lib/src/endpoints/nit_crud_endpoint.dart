@@ -23,6 +23,14 @@ class NitCrudEndpoint extends Endpoint {
   final _deepEquality = const DeepCollectionEquality();
   // final MapEquality _mapEquality = const MapEquality();
 
+  Stream<SerializableModel> subscribeOnUpdates(
+    Session session, {
+    required String channel,
+  }) async* {
+    // Создаём стрим подписки
+    yield* session.messages.createStream<SerializableModel>(channel);
+  }
+
   Future<ApiResponse<int>> getOneCustom(
     Session session, {
     required String className,

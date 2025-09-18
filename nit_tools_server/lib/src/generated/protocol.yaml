@@ -5,6 +5,7 @@ nitChat:
   - readChatMessages:
   - typingToggle:
 nitCrud:
+  - subscribeOnUpdates:
   - getOneCustom:
   - getAll:
   - getCount:

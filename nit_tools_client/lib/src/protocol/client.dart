@@ -8,15 +8,16 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
-// ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:serverpod_serialization/src/serialization.dart' as _i3;
+
 import 'package:nit_tools_client/src/extra_classes/api_response.dart' as _i4;
 import 'package:nit_tools_client/src/extra_classes/nit_backend_filter.dart'
     as _i5;
 import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i6;
 import 'package:nit_tools_client/src/protocol/media/nit_media.dart' as _i7;
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:serverpod_client/serverpod_client.dart' as _i1;
+import 'package:serverpod_serialization/src/serialization.dart' as _i3;
 
 /// {@category Endpoint}
 class EndpointNitAuth extends _i1.EndpointRef {
@@ -82,6 +83,16 @@ class EndpointNitCrud extends _i1.EndpointRef {
 
   @override
   String get name => 'nit_tools.nitCrud';
+
+  _i2.Stream<_i3.SerializableModel> subscribeOnUpdates(
+          {required String channel}) =>
+      caller.callStreamingServerEndpoint<_i2.Stream<_i3.SerializableModel>,
+          _i3.SerializableModel>(
+        'nit_tools.nitCrud',
+        'subscribeOnUpdates',
+        {'channel': channel},
+        {},
+      );
 
   _i2.Future<_i4.ApiResponse<int>> getOneCustom({
     required String className,
