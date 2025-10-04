@@ -12,18 +12,23 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '/src/extra_classes/object_wrapper.dart' as _i2;
+import '../protocol.dart' as _i3;
 
 abstract class NitChatParticipant
     implements _i1.TableRow, _i1.ProtocolSerialization {
   NitChatParticipant._({
     this.id,
     required this.userId,
+    this.userProfileWrapper,
     required this.chatChannelId,
-    this.lastMessage,
+    this.chatChannel,
     this.lastMessageId,
+    this.lastMessage,
     this.lastMessageSentAt,
     int? unreadCount,
     this.lastReadMessageId,
+    this.lastReadMessage,
     bool? isDeleted,
   })  : unreadCount = unreadCount ?? 0,
         isDeleted = isDeleted ?? false;
@@ -31,12 +36,15 @@ abstract class NitChatParticipant
   factory NitChatParticipant({
     int? id,
     required int userId,
+    _i2.ObjectWrapper? userProfileWrapper,
     required int chatChannelId,
-    String? lastMessage,
+    _i3.NitChatChannel? chatChannel,
     int? lastMessageId,
+    _i3.NitChatMessage? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
     int? lastReadMessageId,
+    _i3.NitChatMessage? lastReadMessage,
     bool? isDeleted,
   }) = _NitChatParticipantImpl;
 
@@ -44,15 +52,29 @@ abstract class NitChatParticipant
     return NitChatParticipant(
       id: jsonSerialization['id'] as int?,
       userId: jsonSerialization['userId'] as int,
+      userProfileWrapper: jsonSerialization['userProfileWrapper'] == null
+          ? null
+          : _i2.ObjectWrapper.fromJson(jsonSerialization['userProfileWrapper']),
       chatChannelId: jsonSerialization['chatChannelId'] as int,
-      lastMessage: jsonSerialization['lastMessage'] as String?,
+      chatChannel: jsonSerialization['chatChannel'] == null
+          ? null
+          : _i3.NitChatChannel.fromJson(
+              (jsonSerialization['chatChannel'] as Map<String, dynamic>)),
       lastMessageId: jsonSerialization['lastMessageId'] as int?,
+      lastMessage: jsonSerialization['lastMessage'] == null
+          ? null
+          : _i3.NitChatMessage.fromJson(
+              (jsonSerialization['lastMessage'] as Map<String, dynamic>)),
       lastMessageSentAt: jsonSerialization['lastMessageSentAt'] == null
           ? null
           : _i1.DateTimeJsonExtension.fromJson(
               jsonSerialization['lastMessageSentAt']),
       unreadCount: jsonSerialization['unreadCount'] as int,
       lastReadMessageId: jsonSerialization['lastReadMessageId'] as int?,
+      lastReadMessage: jsonSerialization['lastReadMessage'] == null
+          ? null
+          : _i3.NitChatMessage.fromJson(
+              (jsonSerialization['lastReadMessage'] as Map<String, dynamic>)),
       isDeleted: jsonSerialization['isDeleted'] as bool,
     );
   }
@@ -66,17 +88,23 @@ abstract class NitChatParticipant
 
   int userId;
 
+  _i2.ObjectWrapper? userProfileWrapper;
+
   int chatChannelId;
 
-  String? lastMessage;
+  _i3.NitChatChannel? chatChannel;
 
   int? lastMessageId;
+
+  _i3.NitChatMessage? lastMessage;
 
   DateTime? lastMessageSentAt;
 
   int unreadCount;
 
   int? lastReadMessageId;
+
+  _i3.NitChatMessage? lastReadMessage;
 
   bool isDeleted;
 
@@ -86,12 +114,15 @@ abstract class NitChatParticipant
   NitChatParticipant copyWith({
     int? id,
     int? userId,
+    _i2.ObjectWrapper? userProfileWrapper,
     int? chatChannelId,
-    String? lastMessage,
+    _i3.NitChatChannel? chatChannel,
     int? lastMessageId,
+    _i3.NitChatMessage? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
     int? lastReadMessageId,
+    _i3.NitChatMessage? lastReadMessage,
     bool? isDeleted,
   });
   @override
@@ -99,13 +130,17 @@ abstract class NitChatParticipant
     return {
       if (id != null) 'id': id,
       'userId': userId,
+      if (userProfileWrapper != null)
+        'userProfileWrapper': userProfileWrapper?.toJson(),
       'chatChannelId': chatChannelId,
-      if (lastMessage != null) 'lastMessage': lastMessage,
+      if (chatChannel != null) 'chatChannel': chatChannel?.toJson(),
       if (lastMessageId != null) 'lastMessageId': lastMessageId,
+      if (lastMessage != null) 'lastMessage': lastMessage?.toJson(),
       if (lastMessageSentAt != null)
         'lastMessageSentAt': lastMessageSentAt?.toJson(),
       'unreadCount': unreadCount,
       if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
+      if (lastReadMessage != null) 'lastReadMessage': lastReadMessage?.toJson(),
       'isDeleted': isDeleted,
     };
   }
@@ -115,19 +150,32 @@ abstract class NitChatParticipant
     return {
       if (id != null) 'id': id,
       'userId': userId,
+      if (userProfileWrapper != null)
+        'userProfileWrapper': userProfileWrapper?.toJsonForProtocol(),
       'chatChannelId': chatChannelId,
-      if (lastMessage != null) 'lastMessage': lastMessage,
+      if (chatChannel != null) 'chatChannel': chatChannel?.toJsonForProtocol(),
       if (lastMessageId != null) 'lastMessageId': lastMessageId,
+      if (lastMessage != null) 'lastMessage': lastMessage?.toJsonForProtocol(),
       if (lastMessageSentAt != null)
         'lastMessageSentAt': lastMessageSentAt?.toJson(),
       'unreadCount': unreadCount,
       if (lastReadMessageId != null) 'lastReadMessageId': lastReadMessageId,
+      if (lastReadMessage != null)
+        'lastReadMessage': lastReadMessage?.toJsonForProtocol(),
       'isDeleted': isDeleted,
     };
   }
 
-  static NitChatParticipantInclude include() {
-    return NitChatParticipantInclude._();
+  static NitChatParticipantInclude include({
+    _i3.NitChatChannelInclude? chatChannel,
+    _i3.NitChatMessageInclude? lastMessage,
+    _i3.NitChatMessageInclude? lastReadMessage,
+  }) {
+    return NitChatParticipantInclude._(
+      chatChannel: chatChannel,
+      lastMessage: lastMessage,
+      lastReadMessage: lastReadMessage,
+    );
   }
 
   static NitChatParticipantIncludeList includeList({
@@ -162,22 +210,28 @@ class _NitChatParticipantImpl extends NitChatParticipant {
   _NitChatParticipantImpl({
     int? id,
     required int userId,
+    _i2.ObjectWrapper? userProfileWrapper,
     required int chatChannelId,
-    String? lastMessage,
+    _i3.NitChatChannel? chatChannel,
     int? lastMessageId,
+    _i3.NitChatMessage? lastMessage,
     DateTime? lastMessageSentAt,
     int? unreadCount,
     int? lastReadMessageId,
+    _i3.NitChatMessage? lastReadMessage,
     bool? isDeleted,
   }) : super._(
           id: id,
           userId: userId,
+          userProfileWrapper: userProfileWrapper,
           chatChannelId: chatChannelId,
-          lastMessage: lastMessage,
+          chatChannel: chatChannel,
           lastMessageId: lastMessageId,
+          lastMessage: lastMessage,
           lastMessageSentAt: lastMessageSentAt,
           unreadCount: unreadCount,
           lastReadMessageId: lastReadMessageId,
+          lastReadMessage: lastReadMessage,
           isDeleted: isDeleted,
         );
 
@@ -185,20 +239,31 @@ class _NitChatParticipantImpl extends NitChatParticipant {
   NitChatParticipant copyWith({
     Object? id = _Undefined,
     int? userId,
+    Object? userProfileWrapper = _Undefined,
     int? chatChannelId,
-    Object? lastMessage = _Undefined,
+    Object? chatChannel = _Undefined,
     Object? lastMessageId = _Undefined,
+    Object? lastMessage = _Undefined,
     Object? lastMessageSentAt = _Undefined,
     int? unreadCount,
     Object? lastReadMessageId = _Undefined,
+    Object? lastReadMessage = _Undefined,
     bool? isDeleted,
   }) {
     return NitChatParticipant(
       id: id is int? ? id : this.id,
       userId: userId ?? this.userId,
+      userProfileWrapper: userProfileWrapper is _i2.ObjectWrapper?
+          ? userProfileWrapper
+          : this.userProfileWrapper?.copyWith(),
       chatChannelId: chatChannelId ?? this.chatChannelId,
-      lastMessage: lastMessage is String? ? lastMessage : this.lastMessage,
+      chatChannel: chatChannel is _i3.NitChatChannel?
+          ? chatChannel
+          : this.chatChannel?.copyWith(),
       lastMessageId: lastMessageId is int? ? lastMessageId : this.lastMessageId,
+      lastMessage: lastMessage is _i3.NitChatMessage?
+          ? lastMessage
+          : this.lastMessage?.copyWith(),
       lastMessageSentAt: lastMessageSentAt is DateTime?
           ? lastMessageSentAt
           : this.lastMessageSentAt,
@@ -206,6 +271,9 @@ class _NitChatParticipantImpl extends NitChatParticipant {
       lastReadMessageId: lastReadMessageId is int?
           ? lastReadMessageId
           : this.lastReadMessageId,
+      lastReadMessage: lastReadMessage is _i3.NitChatMessage?
+          ? lastReadMessage
+          : this.lastReadMessage?.copyWith(),
       isDeleted: isDeleted ?? this.isDeleted,
     );
   }
@@ -220,10 +288,6 @@ class NitChatParticipantTable extends _i1.Table {
     );
     chatChannelId = _i1.ColumnInt(
       'chatChannelId',
-      this,
-    );
-    lastMessage = _i1.ColumnString(
-      'lastMessage',
       this,
     );
     lastMessageId = _i1.ColumnInt(
@@ -254,9 +318,11 @@ class NitChatParticipantTable extends _i1.Table {
 
   late final _i1.ColumnInt chatChannelId;
 
-  late final _i1.ColumnString lastMessage;
+  _i3.NitChatChannelTable? _chatChannel;
 
   late final _i1.ColumnInt lastMessageId;
+
+  _i3.NitChatMessageTable? _lastMessage;
 
   late final _i1.ColumnDateTime lastMessageSentAt;
 
@@ -264,27 +330,99 @@ class NitChatParticipantTable extends _i1.Table {
 
   late final _i1.ColumnInt lastReadMessageId;
 
+  _i3.NitChatMessageTable? _lastReadMessage;
+
   late final _i1.ColumnBool isDeleted;
+
+  _i3.NitChatChannelTable get chatChannel {
+    if (_chatChannel != null) return _chatChannel!;
+    _chatChannel = _i1.createRelationTable(
+      relationFieldName: 'chatChannel',
+      field: NitChatParticipant.t.chatChannelId,
+      foreignField: _i3.NitChatChannel.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.NitChatChannelTable(tableRelation: foreignTableRelation),
+    );
+    return _chatChannel!;
+  }
+
+  _i3.NitChatMessageTable get lastMessage {
+    if (_lastMessage != null) return _lastMessage!;
+    _lastMessage = _i1.createRelationTable(
+      relationFieldName: 'lastMessage',
+      field: NitChatParticipant.t.lastMessageId,
+      foreignField: _i3.NitChatMessage.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.NitChatMessageTable(tableRelation: foreignTableRelation),
+    );
+    return _lastMessage!;
+  }
+
+  _i3.NitChatMessageTable get lastReadMessage {
+    if (_lastReadMessage != null) return _lastReadMessage!;
+    _lastReadMessage = _i1.createRelationTable(
+      relationFieldName: 'lastReadMessage',
+      field: NitChatParticipant.t.lastReadMessageId,
+      foreignField: _i3.NitChatMessage.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i3.NitChatMessageTable(tableRelation: foreignTableRelation),
+    );
+    return _lastReadMessage!;
+  }
 
   @override
   List<_i1.Column> get columns => [
         id,
         userId,
         chatChannelId,
-        lastMessage,
         lastMessageId,
         lastMessageSentAt,
         unreadCount,
         lastReadMessageId,
         isDeleted,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'chatChannel') {
+      return chatChannel;
+    }
+    if (relationField == 'lastMessage') {
+      return lastMessage;
+    }
+    if (relationField == 'lastReadMessage') {
+      return lastReadMessage;
+    }
+    return null;
+  }
 }
 
 class NitChatParticipantInclude extends _i1.IncludeObject {
-  NitChatParticipantInclude._();
+  NitChatParticipantInclude._({
+    _i3.NitChatChannelInclude? chatChannel,
+    _i3.NitChatMessageInclude? lastMessage,
+    _i3.NitChatMessageInclude? lastReadMessage,
+  }) {
+    _chatChannel = chatChannel;
+    _lastMessage = lastMessage;
+    _lastReadMessage = lastReadMessage;
+  }
+
+  _i3.NitChatChannelInclude? _chatChannel;
+
+  _i3.NitChatMessageInclude? _lastMessage;
+
+  _i3.NitChatMessageInclude? _lastReadMessage;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes => {
+        'chatChannel': _chatChannel,
+        'lastMessage': _lastMessage,
+        'lastReadMessage': _lastReadMessage,
+      };
 
   @override
   _i1.Table get table => NitChatParticipant.t;
@@ -313,6 +451,10 @@ class NitChatParticipantIncludeList extends _i1.IncludeList {
 class NitChatParticipantRepository {
   const NitChatParticipantRepository._();
 
+  final attachRow = const NitChatParticipantAttachRowRepository._();
+
+  final detachRow = const NitChatParticipantDetachRowRepository._();
+
   Future<List<NitChatParticipant>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<NitChatParticipantTable>? where,
@@ -322,6 +464,7 @@ class NitChatParticipantRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NitChatParticipantTable>? orderByList,
     _i1.Transaction? transaction,
+    NitChatParticipantInclude? include,
   }) async {
     return session.db.find<NitChatParticipant>(
       where: where?.call(NitChatParticipant.t),
@@ -331,6 +474,7 @@ class NitChatParticipantRepository {
       limit: limit,
       offset: offset,
       transaction: transaction ?? session.transaction,
+      include: include,
     );
   }
 
@@ -342,6 +486,7 @@ class NitChatParticipantRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NitChatParticipantTable>? orderByList,
     _i1.Transaction? transaction,
+    NitChatParticipantInclude? include,
   }) async {
     return session.db.findFirstRow<NitChatParticipant>(
       where: where?.call(NitChatParticipant.t),
@@ -350,6 +495,7 @@ class NitChatParticipantRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction ?? session.transaction,
+      include: include,
     );
   }
 
@@ -357,10 +503,12 @@ class NitChatParticipantRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    NitChatParticipantInclude? include,
   }) async {
     return session.db.findById<NitChatParticipant>(
       id,
       transaction: transaction ?? session.transaction,
+      include: include,
     );
   }
 
@@ -454,6 +602,115 @@ class NitChatParticipantRepository {
     return session.db.count<NitChatParticipant>(
       where: where?.call(NitChatParticipant.t),
       limit: limit,
+      transaction: transaction ?? session.transaction,
+    );
+  }
+}
+
+class NitChatParticipantAttachRowRepository {
+  const NitChatParticipantAttachRowRepository._();
+
+  Future<void> chatChannel(
+    _i1.Session session,
+    NitChatParticipant nitChatParticipant,
+    _i3.NitChatChannel chatChannel, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.id == null) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+    if (chatChannel.id == null) {
+      throw ArgumentError.notNull('chatChannel.id');
+    }
+
+    var $nitChatParticipant =
+        nitChatParticipant.copyWith(chatChannelId: chatChannel.id);
+    await session.db.updateRow<NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [NitChatParticipant.t.chatChannelId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+
+  Future<void> lastMessage(
+    _i1.Session session,
+    NitChatParticipant nitChatParticipant,
+    _i3.NitChatMessage lastMessage, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.id == null) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+    if (lastMessage.id == null) {
+      throw ArgumentError.notNull('lastMessage.id');
+    }
+
+    var $nitChatParticipant =
+        nitChatParticipant.copyWith(lastMessageId: lastMessage.id);
+    await session.db.updateRow<NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [NitChatParticipant.t.lastMessageId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+
+  Future<void> lastReadMessage(
+    _i1.Session session,
+    NitChatParticipant nitChatParticipant,
+    _i3.NitChatMessage lastReadMessage, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.id == null) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+    if (lastReadMessage.id == null) {
+      throw ArgumentError.notNull('lastReadMessage.id');
+    }
+
+    var $nitChatParticipant =
+        nitChatParticipant.copyWith(lastReadMessageId: lastReadMessage.id);
+    await session.db.updateRow<NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [NitChatParticipant.t.lastReadMessageId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+}
+
+class NitChatParticipantDetachRowRepository {
+  const NitChatParticipantDetachRowRepository._();
+
+  Future<void> lastMessage(
+    _i1.Session session,
+    NitChatParticipant nitchatparticipant, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitchatparticipant.id == null) {
+      throw ArgumentError.notNull('nitchatparticipant.id');
+    }
+
+    var $nitchatparticipant = nitchatparticipant.copyWith(lastMessageId: null);
+    await session.db.updateRow<NitChatParticipant>(
+      $nitchatparticipant,
+      columns: [NitChatParticipant.t.lastMessageId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+
+  Future<void> lastReadMessage(
+    _i1.Session session,
+    NitChatParticipant nitchatparticipant, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitchatparticipant.id == null) {
+      throw ArgumentError.notNull('nitchatparticipant.id');
+    }
+
+    var $nitchatparticipant =
+        nitchatparticipant.copyWith(lastReadMessageId: null);
+    await session.db.updateRow<NitChatParticipant>(
+      $nitchatparticipant,
+      columns: [NitChatParticipant.t.lastReadMessageId],
       transaction: transaction ?? session.transaction,
     );
   }

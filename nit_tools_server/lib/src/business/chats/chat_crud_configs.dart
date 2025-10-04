@@ -1,6 +1,11 @@
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
-import 'package:serverpod_auth_server/serverpod_auth_server.dart';
+
+final chatParticipantInclude = NitChatParticipant.include(
+  chatChannel: NitChatChannel.include(),
+  lastMessage: NitChatMessage.include(),
+  lastReadMessage: NitChatMessage.include(),
+);
 
 final defaultChatCrudConfigs = [
   CrudConfig<NitChatParticipant>(
@@ -21,26 +26,27 @@ final defaultChatCrudConfigs = [
           orderDescending: true,
         ),
       ],
-      additionalEntitiesFetchFunction: (session, models) async => [
-        // TODO: убрать
-        ...await UserInfo.db.find(
-          session,
-          where: (t) => t.id.inSet(
-            models.map((e) => e.userId).toSet(),
-          ),
-        ),
-        ...await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
-          session,
-          models.map((e) => e.userId).toSet(),
-        ),
-        // TODO: непонятно
-        ...await NitChatChannel.db.find(
-          session,
-          where: (t) => t.id.inSet(
-            models.map((e) => e.chatChannelId).toSet(),
-          ),
-        ),
-      ],
+      include: chatParticipantInclude,
+      // additionalEntitiesFetchFunction: (session, models) async => [
+      //   // TODO: убрать
+      //   ...await UserInfo.db.find(
+      //     session,
+      //     where: (t) => t.id.inSet(
+      //       models.map((e) => e.userId).toSet(),
+      //     ),
+      //   ),
+      //   ...await NitChatsConfig.additionalEntitiesLoaderForInitialChatData(
+      //     session,
+      //     models.map((e) => e.userId).toSet(),
+      //   ),
+      //   // TODO: непонятно
+      //   ...await NitChatChannel.db.find(
+      //     session,
+      //     where: (t) => t.id.inSet(
+      //       models.map((e) => e.chatChannelId).toSet(),
+      //     ),
+      //   ),
+      // ],
     ),
     getOneCustomConfigs: [
       GetOneCustomConfig(
@@ -50,6 +56,7 @@ final defaultChatCrudConfigs = [
             NitBackendFilter.equalsPrototype(fieldName: 'userId'),
           ],
         ),
+        include: chatParticipantInclude,
         createIfMissing: (session, filter) async {
           final chatChannelId = filter.children!.first.fieldValue;
           final userId = filter.children!.last.fieldValue;
@@ -106,8 +113,7 @@ final defaultChatCrudConfigs = [
                 await NitChatParticipant.db.updateRow(
                   session,
                   p.copyWith(
-                    lastMessage:
-                        isLastMessage ? updatedModel.text : p.lastMessage,
+                    lastMessage: isLastMessage ? updatedModel : p.lastMessage,
                     lastMessageId:
                         isLastMessage ? updatedModel.id : p.lastMessageId,
                     lastMessageSentAt: isLastMessage
@@ -141,7 +147,7 @@ final defaultChatCrudConfigs = [
                 await NitChatParticipant.db.updateRow(
                   session,
                   p.copyWith(
-                    lastMessage: newLastMessage?.text,
+                    lastMessage: newLastMessage,
                     lastMessageId: newLastMessage?.id,
                     lastMessageSentAt: newLastMessage?.sentAt,
                     unreadCount: p.unreadCount > 0
@@ -157,7 +163,7 @@ final defaultChatCrudConfigs = [
         return;
       },
       afterUpdate: (session, initialModel, updatedModel) async {
-       await session.nitSendToChat(
+        await session.nitSendToChat(
           initialModel.chatChannelId,
           updatedModel,
         );
@@ -198,7 +204,7 @@ final defaultChatCrudConfigs = [
       //   return [];
       // },
       afterInsert: (session, model) async {
-       await session.nitSendToChat(
+        await session.nitSendToChat(
           model.chatChannelId,
           model,
         );
@@ -216,7 +222,7 @@ final defaultChatCrudConfigs = [
             await NitChatParticipant.db.updateRow(
               session,
               p.copyWith(
-                lastMessage: model.text,
+                lastMessage: model,
                 lastMessageId: model.id,
                 lastMessageSentAt: model.sentAt,
                 unreadCount: currentUserId == p.userId

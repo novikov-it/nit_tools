@@ -12,23 +12,30 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
+import '../protocol.dart' as _i2;
 
 abstract class NitChatChannel
     implements _i1.TableRow, _i1.ProtocolSerialization {
   NitChatChannel._({
     this.id,
     required this.channel,
+    this.chatParticipants,
   });
 
   factory NitChatChannel({
     int? id,
     required String channel,
+    List<_i2.NitChatParticipant>? chatParticipants,
   }) = _NitChatChannelImpl;
 
   factory NitChatChannel.fromJson(Map<String, dynamic> jsonSerialization) {
     return NitChatChannel(
       id: jsonSerialization['id'] as int?,
       channel: jsonSerialization['channel'] as String,
+      chatParticipants: (jsonSerialization['chatParticipants'] as List?)
+          ?.map((e) =>
+              _i2.NitChatParticipant.fromJson((e as Map<String, dynamic>)))
+          .toList(),
     );
   }
 
@@ -41,18 +48,24 @@ abstract class NitChatChannel
 
   String channel;
 
+  List<_i2.NitChatParticipant>? chatParticipants;
+
   @override
   _i1.Table get table => t;
 
   NitChatChannel copyWith({
     int? id,
     String? channel,
+    List<_i2.NitChatParticipant>? chatParticipants,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
       'channel': channel,
+      if (chatParticipants != null)
+        'chatParticipants':
+            chatParticipants?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -61,11 +74,15 @@ abstract class NitChatChannel
     return {
       if (id != null) 'id': id,
       'channel': channel,
+      if (chatParticipants != null)
+        'chatParticipants':
+            chatParticipants?.toJson(valueToJson: (v) => v.toJsonForProtocol()),
     };
   }
 
-  static NitChatChannelInclude include() {
-    return NitChatChannelInclude._();
+  static NitChatChannelInclude include(
+      {_i2.NitChatParticipantIncludeList? chatParticipants}) {
+    return NitChatChannelInclude._(chatParticipants: chatParticipants);
   }
 
   static NitChatChannelIncludeList includeList({
@@ -100,19 +117,25 @@ class _NitChatChannelImpl extends NitChatChannel {
   _NitChatChannelImpl({
     int? id,
     required String channel,
+    List<_i2.NitChatParticipant>? chatParticipants,
   }) : super._(
           id: id,
           channel: channel,
+          chatParticipants: chatParticipants,
         );
 
   @override
   NitChatChannel copyWith({
     Object? id = _Undefined,
     String? channel,
+    Object? chatParticipants = _Undefined,
   }) {
     return NitChatChannel(
       id: id is int? ? id : this.id,
       channel: channel ?? this.channel,
+      chatParticipants: chatParticipants is List<_i2.NitChatParticipant>?
+          ? chatParticipants
+          : this.chatParticipants?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -128,18 +151,67 @@ class NitChatChannelTable extends _i1.Table {
 
   late final _i1.ColumnString channel;
 
+  _i2.NitChatParticipantTable? ___chatParticipants;
+
+  _i1.ManyRelation<_i2.NitChatParticipantTable>? _chatParticipants;
+
+  _i2.NitChatParticipantTable get __chatParticipants {
+    if (___chatParticipants != null) return ___chatParticipants!;
+    ___chatParticipants = _i1.createRelationTable(
+      relationFieldName: '__chatParticipants',
+      field: NitChatChannel.t.id,
+      foreignField: _i2.NitChatParticipant.t.chatChannelId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.NitChatParticipantTable(tableRelation: foreignTableRelation),
+    );
+    return ___chatParticipants!;
+  }
+
+  _i1.ManyRelation<_i2.NitChatParticipantTable> get chatParticipants {
+    if (_chatParticipants != null) return _chatParticipants!;
+    var relationTable = _i1.createRelationTable(
+      relationFieldName: 'chatParticipants',
+      field: NitChatChannel.t.id,
+      foreignField: _i2.NitChatParticipant.t.chatChannelId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i2.NitChatParticipantTable(tableRelation: foreignTableRelation),
+    );
+    _chatParticipants = _i1.ManyRelation<_i2.NitChatParticipantTable>(
+      tableWithRelations: relationTable,
+      table: _i2.NitChatParticipantTable(
+          tableRelation: relationTable.tableRelation!.lastRelation),
+    );
+    return _chatParticipants!;
+  }
+
   @override
   List<_i1.Column> get columns => [
         id,
         channel,
       ];
+
+  @override
+  _i1.Table? getRelationTable(String relationField) {
+    if (relationField == 'chatParticipants') {
+      return __chatParticipants;
+    }
+    return null;
+  }
 }
 
 class NitChatChannelInclude extends _i1.IncludeObject {
-  NitChatChannelInclude._();
+  NitChatChannelInclude._(
+      {_i2.NitChatParticipantIncludeList? chatParticipants}) {
+    _chatParticipants = chatParticipants;
+  }
+
+  _i2.NitChatParticipantIncludeList? _chatParticipants;
 
   @override
-  Map<String, _i1.Include?> get includes => {};
+  Map<String, _i1.Include?> get includes =>
+      {'chatParticipants': _chatParticipants};
 
   @override
   _i1.Table get table => NitChatChannel.t;
@@ -168,6 +240,14 @@ class NitChatChannelIncludeList extends _i1.IncludeList {
 class NitChatChannelRepository {
   const NitChatChannelRepository._();
 
+  final attach = const NitChatChannelAttachRepository._();
+
+  final attachRow = const NitChatChannelAttachRowRepository._();
+
+  final detach = const NitChatChannelDetachRepository._();
+
+  final detachRow = const NitChatChannelDetachRowRepository._();
+
   Future<List<NitChatChannel>> find(
     _i1.Session session, {
     _i1.WhereExpressionBuilder<NitChatChannelTable>? where,
@@ -177,6 +257,7 @@ class NitChatChannelRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NitChatChannelTable>? orderByList,
     _i1.Transaction? transaction,
+    NitChatChannelInclude? include,
   }) async {
     return session.db.find<NitChatChannel>(
       where: where?.call(NitChatChannel.t),
@@ -186,6 +267,7 @@ class NitChatChannelRepository {
       limit: limit,
       offset: offset,
       transaction: transaction ?? session.transaction,
+      include: include,
     );
   }
 
@@ -197,6 +279,7 @@ class NitChatChannelRepository {
     bool orderDescending = false,
     _i1.OrderByListBuilder<NitChatChannelTable>? orderByList,
     _i1.Transaction? transaction,
+    NitChatChannelInclude? include,
   }) async {
     return session.db.findFirstRow<NitChatChannel>(
       where: where?.call(NitChatChannel.t),
@@ -205,6 +288,7 @@ class NitChatChannelRepository {
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction ?? session.transaction,
+      include: include,
     );
   }
 
@@ -212,10 +296,12 @@ class NitChatChannelRepository {
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
+    NitChatChannelInclude? include,
   }) async {
     return session.db.findById<NitChatChannel>(
       id,
       transaction: transaction ?? session.transaction,
+      include: include,
     );
   }
 
@@ -309,6 +395,102 @@ class NitChatChannelRepository {
     return session.db.count<NitChatChannel>(
       where: where?.call(NitChatChannel.t),
       limit: limit,
+      transaction: transaction ?? session.transaction,
+    );
+  }
+}
+
+class NitChatChannelAttachRepository {
+  const NitChatChannelAttachRepository._();
+
+  Future<void> chatParticipants(
+    _i1.Session session,
+    NitChatChannel nitChatChannel,
+    List<_i2.NitChatParticipant> nitChatParticipant, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+    if (nitChatChannel.id == null) {
+      throw ArgumentError.notNull('nitChatChannel.id');
+    }
+
+    var $nitChatParticipant = nitChatParticipant
+        .map((e) => e.copyWith(chatChannelId: nitChatChannel.id))
+        .toList();
+    await session.db.update<_i2.NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [_i2.NitChatParticipant.t.chatChannelId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+}
+
+class NitChatChannelAttachRowRepository {
+  const NitChatChannelAttachRowRepository._();
+
+  Future<void> chatParticipants(
+    _i1.Session session,
+    NitChatChannel nitChatChannel,
+    _i2.NitChatParticipant nitChatParticipant, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.id == null) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+    if (nitChatChannel.id == null) {
+      throw ArgumentError.notNull('nitChatChannel.id');
+    }
+
+    var $nitChatParticipant =
+        nitChatParticipant.copyWith(chatChannelId: nitChatChannel.id);
+    await session.db.updateRow<_i2.NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [_i2.NitChatParticipant.t.chatChannelId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+}
+
+class NitChatChannelDetachRepository {
+  const NitChatChannelDetachRepository._();
+
+  Future<void> chatParticipants(
+    _i1.Session session,
+    List<_i2.NitChatParticipant> nitChatParticipant, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+
+    var $nitChatParticipant =
+        nitChatParticipant.map((e) => e.copyWith(chatChannelId: null)).toList();
+    await session.db.update<_i2.NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [_i2.NitChatParticipant.t.chatChannelId],
+      transaction: transaction ?? session.transaction,
+    );
+  }
+}
+
+class NitChatChannelDetachRowRepository {
+  const NitChatChannelDetachRowRepository._();
+
+  Future<void> chatParticipants(
+    _i1.Session session,
+    _i2.NitChatParticipant nitChatParticipant, {
+    _i1.Transaction? transaction,
+  }) async {
+    if (nitChatParticipant.id == null) {
+      throw ArgumentError.notNull('nitChatParticipant.id');
+    }
+
+    var $nitChatParticipant = nitChatParticipant.copyWith(chatChannelId: null);
+    await session.db.updateRow<_i2.NitChatParticipant>(
+      $nitChatParticipant,
+      columns: [_i2.NitChatParticipant.t.chatChannelId],
       transaction: transaction ?? session.transaction,
     );
   }

@@ -8,19 +8,18 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 
-import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
-    as _i8;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i9;
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
-import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i10;
-
 import '../endpoints/nit_auth_endpoint.dart' as _i2;
 import '../endpoints/nit_chat_endpoint.dart' as _i3;
 import '../endpoints/nit_crud_endpoint.dart' as _i4;
 import '../endpoints/nit_updates_endpoint.dart' as _i5;
 import '../endpoints/nit_upload_endpoint.dart' as _i6;
 import '../endpoints/services_endpoint.dart' as _i7;
+import 'package:nit_tools_server/src/extra_classes/nit_backend_filter.dart'
+    as _i8;
+import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i9;
+import 'package:serverpod_auth_server/serverpod_auth_server.dart' as _i10;
 
 class Endpoints extends _i1.EndpointDispatch {
   @override

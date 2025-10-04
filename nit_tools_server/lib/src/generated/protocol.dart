@@ -310,12 +310,6 @@ class Protocol extends _i1.SerializationManagerServer {
           dartType: 'int',
         ),
         _i2.ColumnDefinition(
-          name: 'lastMessage',
-          columnType: _i2.ColumnType.text,
-          isNullable: true,
-          dartType: 'String?',
-        ),
-        _i2.ColumnDefinition(
           name: 'lastMessageId',
           columnType: _i2.ColumnType.bigint,
           isNullable: true,
@@ -606,6 +600,13 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data != null ? _i16.NitUpdatesTransport.fromJson(data) : null)
           as T;
     }
+    if (t == _i1.getType<List<_i17.NitChatParticipant>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i17.NitChatParticipant>(e))
+              .toList()
+          : null) as dynamic;
+    }
     if (t == List<_i17.NitChatMessage>) {
       return (data as List)
           .map((e) => deserialize<_i17.NitChatMessage>(e))
@@ -626,6 +627,9 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data != null
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as dynamic;
+    }
+    if (t == _i1.getType<_i18.ObjectWrapper?>()) {
+      return (data != null ? _i18.ObjectWrapper.fromJson(data) : null) as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;

@@ -10,13 +10,7 @@
 
 library protocol; // ignore_for_file: no_leading_underscores_for_library_prefixes
 
-import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i17;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i20;
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
-
-import '/src/extra_classes/api_response.dart' as _i18;
-import '/src/extra_classes/nit_backend_filter.dart' as _i19;
-import '/src/extra_classes/object_wrapper.dart' as _i16;
 import 'chats/chat_channel.dart' as _i2;
 import 'chats/chat_initial_data.dart' as _i3;
 import 'chats/chat_message.dart' as _i4;
@@ -31,7 +25,11 @@ import 'nit_backend_filter_type.dart' as _i12;
 import 'nit_fcm_token.dart' as _i13;
 import 'nit_updates_transport.dart' as _i14;
 import 'protocol.dart' as _i15;
-
+import '/src/extra_classes/object_wrapper.dart' as _i16;
+import 'package:nit_tools_client/src/extra_classes/object_wrapper.dart' as _i17;
+import '/src/extra_classes/api_response.dart' as _i18;
+import '/src/extra_classes/nit_backend_filter.dart' as _i19;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i20;
 export 'chats/chat_channel.dart';
 export 'chats/chat_initial_data.dart';
 export 'chats/chat_message.dart';
@@ -39,13 +37,13 @@ export 'chats/chat_participant.dart';
 export 'chats/chat_read_message_event.dart';
 export 'chats/chat_typing_message_event.dart';
 export 'chats/custom_message_type.dart';
-export 'client.dart';
 export 'media/nit_media.dart';
 export 'media/nit_media_type.dart';
 export 'nit_app_notification.dart';
 export 'nit_backend_filter_type.dart';
 export 'nit_fcm_token.dart';
 export 'nit_updates_transport.dart';
+export 'client.dart';
 
 class Protocol extends _i1.SerializationManager {
   Protocol._();
@@ -60,7 +58,6 @@ class Protocol extends _i1.SerializationManager {
     Type? t,
   ]) {
     t ??= T;
-
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
     }
@@ -153,6 +150,13 @@ class Protocol extends _i1.SerializationManager {
       return (data != null ? _i14.NitUpdatesTransport.fromJson(data) : null)
           as T;
     }
+    if (t == _i1.getType<List<_i15.NitChatParticipant>?>()) {
+      return (data != null
+          ? (data as List)
+              .map((e) => deserialize<_i15.NitChatParticipant>(e))
+              .toList()
+          : null) as dynamic;
+    }
     if (t == List<_i15.NitChatMessage>) {
       return (data as List)
           .map((e) => deserialize<_i15.NitChatMessage>(e))
@@ -173,6 +177,9 @@ class Protocol extends _i1.SerializationManager {
       return (data != null
           ? (data as List).map((e) => deserialize<int>(e)).toList()
           : null) as dynamic;
+    }
+    if (t == _i1.getType<_i16.ObjectWrapper?>()) {
+      return (data != null ? _i16.ObjectWrapper.fromJson(data) : null) as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;

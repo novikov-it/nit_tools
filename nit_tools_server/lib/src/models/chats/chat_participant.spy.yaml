@@ -2,12 +2,12 @@ class: NitChatParticipant
 table: nit_chat_participant
 fields:
     userId: int
-    chatChannelId: int, relation(parent=nit_chat_channel, onDelete=Cascade)
-    lastMessage: String?
-    lastMessageId: int?, relation(parent=nit_chat_message)
+    userProfileWrapper: ObjectWrapper?, !persist
+    chatChannel: NitChatChannel?, relation(name=chat_participants, onDelete=Cascade)
+    lastMessage: NitChatMessage?, relation(optional=true)
     lastMessageSentAt: DateTime?
     unreadCount: int, default=0
-    lastReadMessageId: int?, relation(parent=nit_chat_message)
+    lastReadMessage: NitChatMessage?, relation(optional=true)
     isDeleted: bool, default=false
 
 indexes:

@@ -37,6 +37,7 @@ class NitAlerts {
     required String message,
   }) async {
     if (_alertsChatId == null || _alertsToken == null) {
+      print(message);
       // debugPrint(
       //     '⚠️ TelegramAlerts: Не настроен токен/чат, сообщение не отправлено.');
       return;

@@ -2,6 +2,7 @@ class: NitChatChannel
 table: nit_chat_channel
 fields:
     channel: String
+    chatParticipants: List<NitChatParticipant>?, relation(name=chat_participants)
 
 indexes:
   channel_name_idx:
