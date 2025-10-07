@@ -28,9 +28,8 @@ import 'nit_fcm_token.dart' as _i15;
 import 'nit_updates_transport.dart' as _i16;
 import 'protocol.dart' as _i17;
 import '/src/extra_classes/object_wrapper.dart' as _i18;
-import 'package:nit_tools_server/src/extra_classes/object_wrapper.dart' as _i19;
-import '/src/extra_classes/api_response.dart' as _i20;
-import '/src/extra_classes/nit_backend_filter.dart' as _i21;
+import '/src/extra_classes/api_response.dart' as _i19;
+import '/src/extra_classes/nit_backend_filter.dart' as _i20;
 export 'chats/chat_channel.dart';
 export 'chats/chat_initial_data.dart';
 export 'chats/chat_message.dart';
@@ -634,25 +633,20 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as dynamic;
     }
-    if (t == List<_i19.ObjectWrapper>) {
-      return (data as List)
-          .map((e) => deserialize<_i19.ObjectWrapper>(e))
-          .toList() as dynamic;
+    if (t == _i19.ApiResponse) {
+      return _i19.ApiResponse.fromJson(data) as T;
     }
-    if (t == _i20.ApiResponse) {
-      return _i20.ApiResponse.fromJson(data) as T;
-    }
-    if (t == _i21.NitBackendFilter) {
-      return _i21.NitBackendFilter.fromJson(data) as T;
+    if (t == _i20.NitBackendFilter) {
+      return _i20.NitBackendFilter.fromJson(data) as T;
     }
     if (t == _i1.getType<_i18.ObjectWrapper?>()) {
       return (data != null ? _i18.ObjectWrapper.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i20.ApiResponse?>()) {
-      return (data != null ? _i20.ApiResponse.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i19.ApiResponse?>()) {
+      return (data != null ? _i19.ApiResponse.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i21.NitBackendFilter?>()) {
-      return (data != null ? _i21.NitBackendFilter.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i20.NitBackendFilter?>()) {
+      return (data != null ? _i20.NitBackendFilter.fromJson(data) : null) as T;
     }
     try {
       return _i3.Protocol().deserialize<T>(data, t);
@@ -670,10 +664,10 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i18.ObjectWrapper) {
       return 'ObjectWrapper';
     }
-    if (data is _i20.ApiResponse) {
+    if (data is _i19.ApiResponse) {
       return 'ApiResponse';
     }
-    if (data is _i21.NitBackendFilter) {
+    if (data is _i20.NitBackendFilter) {
       return 'NitBackendFilter';
     }
     if (data is _i4.NitChatChannel) {
@@ -732,10 +726,10 @@ class Protocol extends _i1.SerializationManagerServer {
       return deserialize<_i18.ObjectWrapper>(data['data']);
     }
     if (data['className'] == 'ApiResponse') {
-      return deserialize<_i20.ApiResponse>(data['data']);
+      return deserialize<_i19.ApiResponse>(data['data']);
     }
     if (data['className'] == 'NitBackendFilter') {
-      return deserialize<_i21.NitBackendFilter>(data['data']);
+      return deserialize<_i20.NitBackendFilter>(data['data']);
     }
     if (data['className'] == 'NitChatChannel') {
       return deserialize<_i4.NitChatChannel>(data['data']);

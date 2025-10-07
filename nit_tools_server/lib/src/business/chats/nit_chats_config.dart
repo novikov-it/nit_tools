@@ -2,7 +2,17 @@ import 'dart:async';
 
 import 'package:serverpod/serverpod.dart';
 
+import 'crud_configs/nit_chat_message_config.dart';
+import 'crud_configs/nit_chat_participant_config.dart';
+import 'crud_configs/nit_media_config.dart';
+
 class NitChatsConfig {
+  static final defaultChatCrudConfigs = [
+    nitChatMessageCrudConfig,
+    nitMediaCrudConfig,
+    nitChatParticipantCrudConfig,
+  ];
+
   static late final Future<List<TableRow>> Function(
           Session session, Set<int> userIds)
       additionalEntitiesLoaderForInitialChatData;

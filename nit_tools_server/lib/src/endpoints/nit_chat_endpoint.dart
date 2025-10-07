@@ -1,6 +1,8 @@
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
+import '../business/chats/crud_configs/nit_chat_participant_config.dart';
+
 class NitChatEndpoint extends Endpoint {
   static chatUpdatesChannel(int chatId) => 'chatUpdates$chatId';
 
@@ -92,9 +94,11 @@ class NitChatEndpoint extends Endpoint {
       NitChatReadMessageEvent(messageId: maxMessageId, userId: userId!),
     );
 
-    final participant = await NitChatParticipant.db.findFirstRow(session,
-        where: (p0) =>
-            p0.chatChannelId.equals(chatId) & p0.userId.equals(userId));
+    final participant = await NitChatParticipant.db.findFirstRow(
+      session,
+      where: (p0) => p0.chatChannelId.equals(chatId) & p0.userId.equals(userId),
+      include: chatParticipantInclude,
+    );
 
     if (participant == null) {
       return;
@@ -124,6 +128,7 @@ class NitChatEndpoint extends Endpoint {
     participant.lastReadMessageId = newReadIds.last;
 
     await NitChatParticipant.db.updateRow(session, participant);
+
     await session.nitSendToUser(
       userId,
       participant,

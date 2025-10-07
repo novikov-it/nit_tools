@@ -10,7 +10,6 @@ nitCrud:
   - getAll:
   - getCount:
   - getEntityList:
-  - saveModels:
   - saveModel:
   - delete:
 nitUpdates:

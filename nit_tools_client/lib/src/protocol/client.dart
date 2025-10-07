@@ -153,14 +153,6 @@ class EndpointNitCrud extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i4.ApiResponse<List<int>>> saveModels(
-          {required List<_i6.ObjectWrapper> wrappedModels}) =>
-      caller.callServerEndpoint<_i4.ApiResponse<List<int>>>(
-        'nit_tools.nitCrud',
-        'saveModels',
-        {'wrappedModels': wrappedModels},
-      );
-
   _i2.Future<_i4.ApiResponse<int>> saveModel(
           {required _i6.ObjectWrapper wrappedModel}) =>
       caller.callServerEndpoint<_i4.ApiResponse<int>>(

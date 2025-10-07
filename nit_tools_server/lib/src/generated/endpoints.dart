@@ -285,24 +285,6 @@ class Endpoints extends _i1.EndpointDispatch {
             offset: params['offset'],
           ),
         ),
-        'saveModels': _i1.MethodConnector(
-          name: 'saveModels',
-          params: {
-            'wrappedModels': _i1.ParameterDescription(
-              name: 'wrappedModels',
-              type: _i1.getType<List<_i9.ObjectWrapper>>(),
-              nullable: false,
-            )
-          },
-          call: (
-            _i1.Session session,
-            Map<String, dynamic> params,
-          ) async =>
-              (endpoints['nitCrud'] as _i4.NitCrudEndpoint).saveModels(
-            session,
-            wrappedModels: params['wrappedModels'],
-          ),
-        ),
         'saveModel': _i1.MethodConnector(
           name: 'saveModel',
           params: {

@@ -1,0 +1,43 @@
+{
+  "actions": [
+    {
+      "type": "alterTable",
+      "alterTable": {
+        "name": "nit_chat_participant",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "lastMessage"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "type": "columnDropped",
+            "message": "Column \"lastMessage\" of table \"nit_chat_participant\" will be dropped.",
+            "table": "nit_chat_participant",
+            "columns": [
+              "lastMessage"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "type": "columnDropped",
+      "message": "Column \"lastMessage\" of table \"nit_chat_participant\" will be dropped.",
+      "table": "nit_chat_participant",
+      "columns": [
+        "lastMessage"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

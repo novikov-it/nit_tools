@@ -203,44 +203,6 @@ class NitCrudEndpoint extends Endpoint {
     }
   }
 
-  Future<ApiResponse<List<int>>> saveModels(
-    Session session, {
-    required List<ObjectWrapper> wrappedModels,
-  }) async {
-    try {
-      final res =
-          ApiResponse<List<int>>(isOk: true, value: [], updatedEntities: []);
-      for (ObjectWrapper model in wrappedModels) {
-        final t = await saveModel(session, wrappedModel: model);
-
-        if (t.isOk && t.value != null) {
-          res.value!.add(t.value!);
-          res.updatedEntities!.addAll(
-            t.updatedEntities ?? [],
-          );
-        } else {
-          return ApiResponse(
-            isOk: false,
-            value: null,
-            error: t.error,
-            warning: t.warning,
-          );
-        }
-      }
-
-      return res;
-    } catch (e) {
-      NitAlerts.sendAlert(
-        message: '⚠️ Непредвиденная ошибка $e при массовом сохранении моделей',
-      );
-      return ApiResponse(
-        isOk: false,
-        value: null,
-        error: 'Непредвиденная ошибка при массовом сохранении моделей',
-      );
-    }
-  }
-
   Future<ApiResponse<int>> saveModel(
     Session session, {
     required ObjectWrapper wrappedModel,
@@ -248,27 +210,26 @@ class NitCrudEndpoint extends Endpoint {
     try {
       final className = wrappedModel.nitMappingClassname;
 
-      if (wrappedModel.object.id == null) {
-        final insertSpecificCaller =
-            CrudConfig.getCaller(className)?.insertConfig;
+      // if (wrappedModel.object.id == null) {
+      final saveCaller = CrudConfig.getCaller(className)?.saveConfig;
 
-        if (insertSpecificCaller != null) {
-          return await insertSpecificCaller.insert(
-            session,
-            wrappedModel.object,
-          );
-        }
-      } else {
-        final updateSpecificCaller =
-            CrudConfig.getCaller(className)?.updateConfig;
-
-        if (updateSpecificCaller != null) {
-          return await updateSpecificCaller.update(
-            session,
-            wrappedModel.object,
-          );
-        }
+      if (saveCaller != null) {
+        return await saveCaller.save(
+          session,
+          wrappedModel.object,
+        );
       }
+      // } else {
+      //   final updateSpecificCaller =
+      //       CrudConfig.getCaller(className)?.updateConfig;
+
+      //   if (updateSpecificCaller != null) {
+      //     return await updateSpecificCaller.update(
+      //       session,
+      //       wrappedModel.object,
+      //     );
+      //   }
+      // }
 
       final caller = CrudConfig.getCaller(className)?.post;
 
@@ -345,4 +306,42 @@ class NitCrudEndpoint extends Endpoint {
       );
     }
   }
+
+  // Future<ApiResponse<List<int>>> saveModels(
+  //   Session session, {
+  //   required List<ObjectWrapper> wrappedModels,
+  // }) async {
+  //   try {
+  //     final res =
+  //         ApiResponse<List<int>>(isOk: true, value: [], updatedEntities: []);
+  //     for (ObjectWrapper model in wrappedModels) {
+  //       final t = await saveModel(session, wrappedModel: model);
+
+  //       if (t.isOk && t.value != null) {
+  //         res.value!.add(t.value!);
+  //         res.updatedEntities!.addAll(
+  //           t.updatedEntities ?? [],
+  //         );
+  //       } else {
+  //         return ApiResponse(
+  //           isOk: false,
+  //           value: null,
+  //           error: t.error,
+  //           warning: t.warning,
+  //         );
+  //       }
+  //     }
+
+  //     return res;
+  //   } catch (e) {
+  //     NitAlerts.sendAlert(
+  //       message: '⚠️ Непредвиденная ошибка $e при массовом сохранении моделей',
+  //     );
+  //     return ApiResponse(
+  //       isOk: false,
+  //       value: null,
+  //       error: 'Непредвиденная ошибка при массовом сохранении моделей',
+  //     );
+  //   }
+  // }
 }
