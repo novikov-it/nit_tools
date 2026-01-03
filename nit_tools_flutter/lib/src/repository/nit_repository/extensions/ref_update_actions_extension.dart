@@ -1,0 +1,115 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nit_tools_client/nit_tools_client.dart';
+import 'package:nit_tools_flutter/nit_tools_flutter.dart';
+import 'package:nit_tools_flutter/src/dw_bridge/dw_singleton.dart';
+
+extension RefUpdateActionsExtension on Ref {
+  Future<int> saveModel<T extends SerializableModel>(
+    T model, {
+    bool updateListeners = true,
+  }) async {
+    final response = await nitToolsCaller!.nitCrud.saveModel(
+      wrappedModel: ObjectWrapper.wrap(model: model),
+    );
+
+    final res = processApiResponse<int>(
+      response,
+      updateListeners: updateListeners,
+    );
+
+    if (res == null) {
+      throw Exception('Failed to save ${NitRepository.typeName<T>()} $model');
+    }
+
+    return res;
+
+    // return saveModels([model], updateListeners: updateListeners).then(
+    //   (ids) => ids.isNotEmpty
+    //       ? ids[0]
+    //       : throw Exception(
+    //           'Failed to save ${NitRepository.typeName<T>()} $model',
+    //         ),
+    // );
+  }
+
+  // Future<List<int>> saveModels(List<SerializableModel> models,
+  //     {bool updateListeners = true}) async {
+  //   return await nitToolsCaller!.nitCrud
+  //       .saveModels(
+  //         wrappedModels:
+  //             models.map((model) => ObjectWrapper.wrap(model: model)).toList(),
+  //       )
+  //       .then(
+  //         (response) =>
+  //             processApiResponse<List<int>>(response,
+  //                 updateListeners: updateListeners) ??
+  //             [],
+  //       );
+  // }
+
+  Future<bool> deleteModel<T extends SerializableModel>(T model) async {
+    // TODO: подумать, как сделать это получше, может апи поменять или засылать objectWrapper.deleted просто
+
+    final modelId = model.toJson()['id'];
+    if (modelId == null) {
+      // notifyUser(NitNotification.warning(
+      //   'Мое',
+      // ));
+      return true;
+    }
+    return await nitToolsCaller!.nitCrud
+        .delete(
+          className: ObjectWrapper.getClassNameForObject(model),
+          modelId: modelId,
+        )
+        .then((response) => processApiResponse<bool>(response) ?? false);
+  }
+
+  updateRepository(
+    List<ObjectWrapper> wrappedModels, {
+    bool updateListeners = true,
+  }) {
+    for (var wrapper in wrappedModels) {
+      for (var repo in NitRepository.getAllModelProviders(wrapper)) {
+        read(repo.notifier).state = wrapper.isDeleted ? null : wrapper.model;
+      }
+    }
+
+    if (updateListeners) {
+      NitRepository.updateListeningStates(wrappedModelUpdates: wrappedModels);
+    }
+  }
+
+  K? processApiResponse<K>(
+    ApiResponse<K> response, {
+    bool updateListeners = true,
+  }) {
+    debugPrint(response.toJson().toString());
+    if (response.error != null || response.warning != null) {
+      response.error != null
+          ? dw.notify.error(response.error!)
+          : dw.notify.warning(response.warning!);
+
+      // notifyUser(
+      //   response.error != null
+      //       ? NitNotification.error(response.error!)
+      //       : NitNotification.warning(response.warning!),
+      // );
+    }
+
+    if ((response.updatedEntities ?? []).isNotEmpty) {
+      updateRepository(
+        response.updatedEntities ?? [],
+        updateListeners: updateListeners,
+      );
+    }
+    return response.value;
+  }
+
+  updateFromStream(List<ObjectWrapper> updates) {
+    // if (update.modelId != null) {
+    updateRepository(updates);
+    // }
+  }
+}

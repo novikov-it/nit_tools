@@ -1,0 +1,85 @@
+import 'package:dartway_flutter/dartway_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nit_tools_client/nit_tools_client.dart';
+import 'package:nit_tools_flutter/nit_tools_flutter.dart';
+// import 'package:nit_app/src/chats/UI/widget/message_bubbles/widgets/bubble_overlay.dart';
+import 'package:swipe_to/swipe_to.dart';
+
+import 'widgets/bubble_overlay.dart';
+
+class MessageBubble extends ConsumerWidget {
+  const MessageBubble({
+    super.key,
+    required this.chatId,
+    required this.message,
+    this.customMessageBuilders,
+  });
+
+  final int chatId;
+  final NitChatMessage message;
+  final Map<String, Widget Function(NitChatMessage)>? customMessageBuilders;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chatNotifier = ref.read(chatStateProvider(chatId).notifier);
+    final theme = ChatTheme.of(context);
+    final isMe = message.userId == ref.signedInUserId;
+
+    final enableMessageOverlay = theme.settings.enableMessageOverlay;
+
+    return ConditionalParentWidget(
+      condition: enableMessageOverlay,
+      parentBuilder:
+          (Widget child) => BubbleOverlay(
+            isMe: isMe,
+            onReply: () {
+              chatNotifier.setRepliedMessage(message);
+              FocusScope.of(context).requestFocus();
+            },
+            onDelete: () async {
+              await chatNotifier.deleteMessage(message);
+              chatNotifier.setRepliedMessage(null);
+              chatNotifier.setEditedMessage(null);
+            },
+            onEdit: () {
+              chatNotifier.setEditedMessage(message);
+              FocusScope.of(context).requestFocus();
+            },
+            onReact: (emoji) {
+              // chatNotifier.reactToMessage(message.id!, emoji);
+            },
+            isCustomMessage: message.customMessageType?.type != null,
+            child: child,
+          ),
+      child: SwipeTo(
+        onRightSwipe:
+            !isMe
+                ? (details) {
+                  chatNotifier.setRepliedMessage(message);
+                  FocusScope.of(context).requestFocus();
+                }
+                : null,
+        onLeftSwipe:
+            isMe
+                ? (details) {
+                  chatNotifier.setRepliedMessage(message);
+                  FocusScope.of(context).requestFocus();
+                }
+                : null,
+        child:
+            ChatBubbleType.personal == theme.settings.chatBubbleType
+                ? PersonalMessageBubble(
+                  message: message,
+                  customMessageBuilders: customMessageBuilders,
+                  chatId: chatId,
+                )
+                : GroupMessageBubble(
+                  message: message,
+                  customMessageBuilders: customMessageBuilders,
+                  chatId: chatId,
+                ),
+      ),
+    );
+  }
+}

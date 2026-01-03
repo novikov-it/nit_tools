@@ -251,7 +251,7 @@ class NitCrudEndpoint extends Endpoint {
         return ApiResponse.notConfigured(source: 'сохранение $className');
       }
       return await caller.upsert(session, wrappedModel.object);
-    } catch (e, st) {
+    } catch (e, _) {
       NitAlerts.sendAlert(
         message:
             '⚠️ Непредвиденная ошибка $e при сохранении ${wrappedModel.nitMappingClassname} ${wrappedModel.object.toLogString()}',

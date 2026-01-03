@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:nit_tools_server/nit_tools_server.dart';
 import 'package:serverpod/serverpod.dart';
 
@@ -96,8 +97,9 @@ class DwSaveConfig<T extends TableRow> {
         saveContext.transaction = transaction;
 
         // beforeSave — подготовка модели
-        if (beforeSaveTransaction != null)
+        if (beforeSaveTransaction != null) {
           await beforeSaveTransaction!(session, saveContext);
+        }
 
         // основной insert / update
         saveContext.currentModel = saveContext.isInsert
@@ -111,8 +113,9 @@ class DwSaveConfig<T extends TableRow> {
               );
 
         // afterSave — дополнительные действия в БД
-        if (afterSaveTransaction != null)
+        if (afterSaveTransaction != null) {
           await afterSaveTransaction!(session, saveContext);
+        }
       });
     } on DatabaseException catch (e) {
       // TODO: Добавить логирование ошибки и алертинг
